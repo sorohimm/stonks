@@ -4,19 +4,26 @@ import "os"
 
 type Config struct {
 	Port string
-
 	NAPIAuthData
 }
 
 type NAPIAuthData struct {
-	Key string
+	NKey string
 }
 
-func New() (*Config, error) {
+func New() *Config {
 	return &Config{
-		Port: os.Getenv("PORT"),
+		Port: getEnv("PORT", ""),
 		NAPIAuthData: NAPIAuthData{
-			Key: os.Getenv("NCAPI_KEY"),
+			NKey: getEnv("NCAPI_KEY", ""),
 		},
-	}, nil
+	}
+}
+
+func getEnv(key string, defaultVal string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+
+	return defaultVal
 }

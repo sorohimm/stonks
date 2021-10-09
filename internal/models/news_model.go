@@ -9,9 +9,9 @@ type Article struct {
 }
 
 type News struct {
-	TotalHits  string    `json:"total_hits"`
-	Page       string    `json:"page"`
-	TotalPages string    `json:"total_pages"`
-	PageSize   string    `json:"page_size"`
+	TotalHits  int    `json:"total_hits"`
+	Page       int    `json:"page"`
+	TotalPages int    `json:"total_pages"`
+	PageSize   int    `json:"page_size"`
 	Articles   []Article `json:"articles"`
 }

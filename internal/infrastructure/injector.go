@@ -4,6 +4,7 @@ import (
 	"go.uber.org/zap"
 	"stonks/internal/config"
 	"stonks/internal/controllers"
+	"stonks/internal/interfaces"
 	"stonks/internal/repos"
 	"stonks/internal/services"
 )
@@ -16,7 +17,8 @@ var env *environment
 
 type environment struct {
 	logger *zap.SugaredLogger
-	config *config.Config
+	httpClient interfaces.INewsHandler
+	cfg *config.Config
 }
 
 func (e *environment) InjectNewsController() controllers.NewsControllers {
@@ -24,15 +26,19 @@ func (e *environment) InjectNewsController() controllers.NewsControllers {
 		Log: e.logger,
 		NewsService: &services.NewsService{
 			NewsRepo: &repos.NewsRepo{},
+			NewsHandler: e.httpClient,
+			Config: e.cfg,
 		},
-		Config: e.config,
+
 	}
 }
 
 func Injector(logger *zap.SugaredLogger, config *config.Config) (IInjector, error) {
+	client := InitNewsAPIClient(config)
 	env = &environment{
 		logger: logger,
-		config: config,
+		httpClient: client,
+		cfg: config,
 	}
 	return env, nil
 }

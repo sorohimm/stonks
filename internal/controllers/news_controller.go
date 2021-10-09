@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"regexp"
-	"stonks/internal/config"
 	"strconv"
 	"time"
 
@@ -18,7 +16,6 @@ import (
 type NewsControllers struct {
 	Log         *zap.SugaredLogger
 	NewsService interfaces.INewsService
-	Config *config.Config
 }
 
 func CurrentUTCDate() string {
@@ -35,64 +32,71 @@ func CurrentUTCDate() string {
 func (c *NewsControllers) GetNews(ctx *gin.Context) {
 
 	validate := validator.New()
+	var err error
 
-	company := ctx.Request.URL.Query().Get("c")
+	parameter := ctx.Request.URL.Query()
+	if parameter.Has("q") {
+		err = validate.Var(parameter["q"], "required")
+		if err != nil {
+			c.Log.Warn("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "The request must contain the 'c' field "})
+			return
+		}
+	} else {
+		c.Log.Fatal("invalid request")
+	}
 
-	err := validate.Var(company, "required")
+	if parameter.Has("sort_by") {
+		switch parameter["sort_by"][0] {
+		case "relevancy", "date", "rank":
+		default:
+			c.Log.Warn("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'sort' parameter"})
+			return
+		}
+	}
+
+	if parameter.Has("page") {
+		err = validate.Var(parameter["page"], "omitempty,numeric,min=1,max=100")
+		if err != nil {
+			c.Log.Warn("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'page' parameter"})
+			return
+		}
+	}
+
+
+	if parameter.Has("page_size") {
+		err = validate.Var(parameter["page_size"], "omitempty,numeric,min=1,max=100")
+		if err != nil {
+			c.Log.Warn("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'page' parameter"})
+			return
+		}
+	}
+
+	if parameter.Has("from") {
+		err = validate.Var(parameter["from"], "datetime")
+		if err == nil {
+			c.Log.Warn("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'from' parameter"})
+			return
+		}
+	}
+
+
+	if parameter.Has("to") {
+		err = validate.Var(parameter["to"], "datetime")
+		if err == nil {
+			c.Log.Warn("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'from' parameter"})
+			return
+		}
+	}
+
+	resp, err :=c.NewsService.GetNews(parameter)
 	if err != nil {
-		c.Log.Panic("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "The request must contain the 'c' field "})
-		return
-	}
-
-	sort := ctx.DefaultQuery("sort", "relevancy")
-
-	switch sort {
-	case "relevancy", "date", "rank":
-	default:
-		c.Log.Panic("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'sort' parameter"})
-		return
-	}
-
-	page := ctx.DefaultQuery("page", "50")
-	err = validate.Var(page, "omitempty,numeric,min=1,max=100")
-	if err != nil {
-		c.Log.Panic("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'page' parameter"})
-		return
-	}
-
-	pageSize := ctx.DefaultQuery("page_size", "15")
-	err = validate.Var(pageSize, "omitempty,numeric,min=1,max=100")
-	if err != nil {
-		c.Log.Panic("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'page' parameter"})
-		return
-	}
-
-	to := ctx.DefaultQuery("to", "2021-10-9")
-	re := regexp.MustCompile("((19|20)\\d\\d)/(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])")
-	if re == nil {
-		c.Log.Panic("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'to' parameter"})
-		return
-	}
-
-	from := ctx.DefaultQuery("from", "2021-10-8")
-	re = regexp.MustCompile("((19|20)\\d\\d)/(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])")
-	if re == nil {
-		c.Log.Panic("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid value of the 'from' parameter"})
-		return
-	}
-
-	body := "https://api.newscatcherapi.com/v2/search?"
-	query := fmt.Sprintf("%sq=%s&sort_by=%s&page=%s&page_size=%s&to=%s&from=%s", body, company, sort, page, pageSize, to, from)
-
-	resp, err :=c.NewsService.GetNews(query)
-	if err != nil {
-		c.Log.Panic("invalid request")
+		c.Log.Warn("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Invalid value of the 'to' parameter"})
 		return
 	}

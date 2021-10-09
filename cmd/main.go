@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"os"
+	"regexp"
 	"stonks/internal/config"
 	"stonks/internal/infrastructure"
 )
@@ -15,6 +17,20 @@ var (
 	cfg *config.Config
 	log *zap.SugaredLogger
 )
+
+const projectDirName = "stonkks"
+
+func loadEnv() {
+	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)
+	currentWorkDirectory, _ := os.Getwd()
+	rootPath := projectName.Find([]byte(currentWorkDirectory))
+
+	err := godotenv.Load(string(rootPath) + `/configs/config.env`)
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+}
 
 func init() {
 	logger, err := zap.NewDevelopment()
@@ -26,10 +42,9 @@ func init() {
 
 	log = logger.Sugar()
 
-	cfg, err := config.New()
-	if err != nil {
-		log.Fatalf("config init error: %s", err)
-	}
+	loadEnv()
+
+	cfg = config.New()
 	log.Infof("Config loaded:\n%+v", cfg)
 
 
@@ -48,5 +63,5 @@ func main() {
 		v1.GET("/news", newsController.GetNews)
 	}
 
-	log.Fatal(router.Run())
+	router.Run()
 }

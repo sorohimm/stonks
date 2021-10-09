@@ -1,7 +1,11 @@
 package interfaces
 
-import "stonks/internal/models"
+import (
+	"net/http"
+	"stonks/internal/config"
+	"stonks/internal/models"
+)
 
 type INewsRepo interface {
-	GetNewsR(string) (models.News, error)
+	GetNewsR(*config.Config, http.Client, string) (models.News, error)
 }
