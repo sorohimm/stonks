@@ -1,4 +1,4 @@
 /.idea
-/configs/config.env
+/configs
 
-.Ds_Store
+.DS_Store
