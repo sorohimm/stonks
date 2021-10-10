@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -13,12 +12,11 @@ import (
 )
 
 var (
-	ctx context.Context
 	cfg *config.Config
 	log *zap.SugaredLogger
 )
 
-const projectDirName = "stonkks"
+const projectDirName = "stonks"
 
 func loadEnv() {
 	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)
@@ -46,9 +44,6 @@ func init() {
 
 	cfg = config.New()
 	log.Infof("Config loaded:\n%+v", cfg)
-
-
-	ctx = context.Background()
 }
 
 func main() {
@@ -56,7 +51,6 @@ func main() {
 	newsController := injector.InjectNewsController()
 
 	router := gin.Default()
-
 
 	v1 := router.Group("/stonks/v1")
 	{

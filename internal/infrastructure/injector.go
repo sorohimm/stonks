@@ -1,10 +1,10 @@
 package infrastructure
 
 import (
+	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"stonks/internal/config"
 	"stonks/internal/controllers"
-	"stonks/internal/interfaces"
 	"stonks/internal/repos"
 	"stonks/internal/services"
 )
@@ -17,8 +17,7 @@ var env *environment
 
 type environment struct {
 	logger *zap.SugaredLogger
-	httpClient interfaces.INewsHandler
-	cfg *config.Config
+	cfg    *config.Config
 }
 
 func (e *environment) InjectNewsController() controllers.NewsControllers {
@@ -26,19 +25,16 @@ func (e *environment) InjectNewsController() controllers.NewsControllers {
 		Log: e.logger,
 		NewsService: &services.NewsService{
 			NewsRepo: &repos.NewsRepo{},
-			NewsHandler: e.httpClient,
-			Config: e.cfg,
+			Config:   e.cfg,
 		},
-
+		Validator: validator.New(),
 	}
 }
 
 func Injector(logger *zap.SugaredLogger, config *config.Config) (IInjector, error) {
-	client := InitNewsAPIClient(config)
 	env = &environment{
 		logger: logger,
-		httpClient: client,
-		cfg: config,
+		cfg:    config,
 	}
 	return env, nil
 }
