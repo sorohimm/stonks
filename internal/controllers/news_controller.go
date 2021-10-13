@@ -5,28 +5,20 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
-	"stonks/internal/interfaces"
+	"stonks/internal/interfaces/news_interfaces"
+	"stonks/internal/models/news"
 )
 
 type NewsControllers struct {
 	Log         *zap.SugaredLogger
-	NewsService interfaces.INewsService
+	NewsService news_interface.INewsService
 	Validator   *validator.Validate
-}
-
-type Request struct {
-	Company  string `validate:"required"`
-	SortBy   string `validate:"omitempty,oneof=relevancy date rank"`
-	Page     string `validate:"omitempty,numeric,min=1,max=100"`
-	PageSize string `validate:"omitempty,numeric,min=1,max=100"`
-	From     string `validate:"datetime"`
-	To       string `validate:"datetime"`
 }
 
 func (c *NewsControllers) GetNews(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := Request{
+	request := news_models.Request{
 		Company:  parameters.Get("q"),
 		SortBy:   parameters.Get("sort_by"),
 		Page:     parameters.Get("page"),

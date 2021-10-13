@@ -11,6 +11,8 @@ import (
 
 type IInjector interface {
 	InjectNewsController() controllers.NewsControllers
+	InjectOverviewController() controllers.OverviewControllers
+	InjectEarningsController() controllers.EarningsControllers
 }
 
 var env *environment
@@ -26,6 +28,27 @@ func (e *environment) InjectNewsController() controllers.NewsControllers {
 		NewsService: &services.NewsService{
 			NewsRepo: &repos.NewsRepo{},
 			Config:   e.cfg,
+		},
+		Validator: validator.New(),
+	}
+}
+
+func (e *environment) InjectOverviewController() controllers.OverviewControllers {
+	return controllers.OverviewControllers{
+		Log: e.logger,
+		OverviewService: &services.OverviewService{
+			OverviewRepo: &repos.OverviewRepo{},
+			Config:       e.cfg,
+		},
+		Validator: validator.New(),
+	}
+}
+func (e *environment) InjectEarningsController() controllers.EarningsControllers {
+	return controllers.EarningsControllers{
+		Log: e.logger,
+		EarningsService: &services.EarningsService{
+			EarningsRepo: &repos.EarningsRepo{},
+			Config:       e.cfg,
 		},
 		Validator: validator.New(),
 	}

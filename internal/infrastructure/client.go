@@ -2,17 +2,17 @@ package infrastructure
 
 import (
 	"stonks/internal/config"
-	"stonks/internal/interfaces"
+	"stonks/internal/interfaces/client_interfaces"
 )
 
-type NewsClient struct {
+type StonksConfig struct {
 	Config *config.Config
 }
 
-func InitNewsAPIClient(cfg *config.Config) interfaces.INewsHandler {
-	return &NewsClient{Config: cfg}
+func InitNewsAPIClient(cfg *config.Config) client_interfaces.INewsHandler {
+	return &StonksConfig{Config: cfg}
 }
 
-func (h *NewsClient) GetConfig() *config.Config {
+func (h *StonksConfig) GetConfig() *config.Config {
 	return h.Config
 }
