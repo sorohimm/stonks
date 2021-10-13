@@ -15,3 +15,12 @@ type News struct {
 	PageSize   int       `json:"page_size"`
 	Articles   []Article `json:"articles"`
 }
+
+type Request struct {
+	Company  string `validate:"required"`
+	SortBy   string `validate:"omitempty,oneof=relevancy date rank"`
+	Page     string `validate:"omitempty,numeric,min=1,max=100"`
+	PageSize string `validate:"omitempty,numeric,min=1,max=100"`
+	From     string `validate:"datetime"`
+	To       string `validate:"datetime"`
+}

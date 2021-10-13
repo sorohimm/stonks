@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"stonks/internal/interfaces"
+	"stonks/internal/models"
 )
 
 type NewsControllers struct {
@@ -14,19 +15,10 @@ type NewsControllers struct {
 	Validator   *validator.Validate
 }
 
-type Request struct {
-	Company  string `validate:"required"`
-	SortBy   string `validate:"omitempty,oneof=relevancy date rank"`
-	Page     string `validate:"omitempty,numeric,min=1,max=100"`
-	PageSize string `validate:"omitempty,numeric,min=1,max=100"`
-	From     string `validate:"datetime"`
-	To       string `validate:"datetime"`
-}
-
 func (c *NewsControllers) GetNews(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := Request{
+	request := models.Request{
 		Company:  parameters.Get("q"),
 		SortBy:   parameters.Get("sort_by"),
 		Page:     parameters.Get("page"),

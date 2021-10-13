@@ -4,22 +4,20 @@ import (
 	"net/http"
 	"net/url"
 	"stonks/internal/config"
+
+	"stonks/internal/constants/news"
 	"stonks/internal/interfaces"
 	"stonks/internal/models"
 )
 
 type NewsService struct {
 	NewsRepo    interfaces.INewsRepo
-	NewsHandler interfaces.INewsHandler
 	Config      *config.Config
 }
 
 func (s *NewsService) GetNews(queryParams url.Values) (models.News, error) {
-	u := "https://api.newscatcherapi.com"
-	p := "/v2/search"
-
-	req, _ := http.NewRequest(http.MethodGet, u, nil)
-	req.URL.Path = p
+	req, _ := http.NewRequest(http.MethodGet, news.URL, nil)
+	req.URL.Path = news.Path
 	req.URL.RawQuery = queryParams.Encode()
 	req.Header.Set("x-api-key", s.Config.NKey)
 
