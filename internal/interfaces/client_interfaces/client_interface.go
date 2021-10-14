@@ -1,4 +1,4 @@
-package interfaces
+package client_interfaces
 
 import (
 	"stonks/internal/config"

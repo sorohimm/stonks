@@ -4,18 +4,26 @@ import "os"
 
 type Config struct {
 	Port string
-	NAPIAuthData
+	NewsAuthData
+	MarketAuthData
 }
 
-type NAPIAuthData struct {
-	NKey string
+type NewsAuthData struct {
+	NewsKey string
+}
+
+type MarketAuthData struct {
+	MarketKey string
 }
 
 func New() *Config {
 	return &Config{
 		Port: getEnv("PORT", ""),
-		NAPIAuthData: NAPIAuthData{
-			NKey: getEnv("NCAPI_KEY", ""),
+		NewsAuthData: NewsAuthData{
+			NewsKey: getEnv("NEWS_KEY", ""),
+		},
+		MarketAuthData: MarketAuthData{
+			MarketKey: getEnv("MARKET_KEY", ""),
 		},
 	}
 }

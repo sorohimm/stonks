@@ -1,24 +1,24 @@
-package repos
+package news_repo
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"stonks/internal/models/news"
+	nm "stonks/internal/models/news"
 )
 
 type NewsRepo struct {
 	client *http.Client
 }
 
-func (r *NewsRepo) GetNews(req *http.Request) (news.News, error) {
-	resp, err := r.client.Do(req)
+func (r *NewsRepo) GetNews(request *http.Request) (nm.News, error) {
+	resp, err := r.client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		log.Print(json.NewDecoder(resp.Body))
-		return news.News{}, err
+		return nm.News{}, err
 	}
 
-	newsBody := news.News{}
+	newsBody := nm.News{}
 
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&newsBody)
