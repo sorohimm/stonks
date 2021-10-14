@@ -2,9 +2,9 @@ package overview_interfaces
 
 import (
 	"net/url"
-	"stonks/internal/models/overview"
+	om "stonks/internal/models/overview"
 )
 
 type IOverviewService interface {
-	GetOverview(url.Values) (overview_models.Overview, error)
+	GetOverview(url.Values) (om.Overview, error)
 }

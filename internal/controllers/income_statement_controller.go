@@ -5,20 +5,20 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
-	"stonks/internal/interfaces/earnings_interfaces"
-	"stonks/internal/models/earnings"
+	"stonks/internal/interfaces/income_statement_interfaces"
+	"stonks/internal/models/income_statement"
 )
 
-type EarningsControllers struct {
-	Log             *zap.SugaredLogger
-	EarningsService earnings_interfaces.IEarningsService
-	Validator       *validator.Validate
+type IncomeStatementControllers struct {
+	Log                    *zap.SugaredLogger
+	IncomeStatementService income_statement_interfaces.IIncomeStatementService
+	Validator              *validator.Validate
 }
 
-func (c *EarningsControllers) GetEarnings(ctx *gin.Context) {
+func (c *IncomeStatementControllers) GetIncomeStatement(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := earnings_model.Request{
+	request := income_statement_model.Request{
 		Symbol: parameters.Get("symbol"),
 	}
 
@@ -28,7 +28,7 @@ func (c *EarningsControllers) GetEarnings(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := c.EarningsService.GetEarnings(parameters)
+	resp, err := c.IncomeStatementService.GetIncomeStatement(parameters)
 	if err != nil {
 		c.Log.Error("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})

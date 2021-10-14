@@ -6,5 +6,5 @@ import (
 )
 
 type IEarningsService interface {
-	GetEarnings(url.Values) (earnings_models.Earnings, error)
+	GetEarnings(url.Values) (earnings_model.Earnings, error)
 }

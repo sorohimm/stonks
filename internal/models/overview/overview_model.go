@@ -1,4 +1,4 @@
-package overview_models
+package overview_model
 
 type Overview struct {
 	Symbol               string `json:"Symbol"`

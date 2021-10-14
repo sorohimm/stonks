@@ -18,7 +18,7 @@ type OverviewControllers struct {
 func (c *OverviewControllers) GetOverview(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := overview_models.Request{
+	request := overview_model.Request{
 		Symbol: parameters.Get("symbol"),
 	}
 
@@ -30,7 +30,7 @@ func (c *OverviewControllers) GetOverview(ctx *gin.Context) {
 
 	resp, err := c.OverviewService.GetOverview(parameters)
 	if err != nil {
-		c.Log.Warn("unknown error")
+		c.Log.Error("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}

@@ -51,6 +51,7 @@ func main() {
 	newsController := injector.InjectNewsController()
 	overviewController := injector.InjectOverviewController()
 	earningsController := injector.InjectEarningsController()
+	incomeStatementController := injector.InjectIncomeStatementController()
 
 	router := gin.Default()
 
@@ -59,6 +60,7 @@ func main() {
 		v1.GET("/news", newsController.GetNews)
 		v1.GET("/market", overviewController.GetOverview)
 		v1.GET("/earnings", earningsController.GetEarnings)
+		v1.GET("/income_statement", incomeStatementController.GetIncomeStatement)
 	}
 
 	router.Run()

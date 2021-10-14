@@ -7,7 +7,7 @@ import (
 	"stonks/internal/config"
 	"stonks/internal/constants/market"
 	"stonks/internal/interfaces/earnings_interfaces"
-	"stonks/internal/models/earnings"
+	em "stonks/internal/models/earnings"
 )
 
 type EarningsService struct {
@@ -15,7 +15,7 @@ type EarningsService struct {
 	Config       *config.Config
 }
 
-func (s *EarningsService) GetEarnings(queryParams url.Values) (earnings_models.Earnings, error) {
+func (s *EarningsService) GetEarnings(queryParams url.Values) (em.Earnings, error) {
 	queryParams.Set("function", market_constants.Earnings)
 	queryParams.Set("apikey", s.Config.MarketKey)
 	req, _ := http.NewRequest(http.MethodGet, market_constants.URL, nil)
@@ -25,7 +25,7 @@ func (s *EarningsService) GetEarnings(queryParams url.Values) (earnings_models.E
 	fmt.Print(sss)
 	resp, err := s.EarningsRepo.GetEarnings(req)
 	if err != nil {
-		return earnings_models.Earnings{}, err
+		return em.Earnings{}, err
 	}
 
 	return resp, nil

@@ -6,5 +6,5 @@ import (
 )
 
 type IEarningsRepo interface {
-	GetEarnings(*http.Request) (earnings_models.Earnings, error)
+	GetEarnings(*http.Request) (earnings_model.Earnings, error)
 }

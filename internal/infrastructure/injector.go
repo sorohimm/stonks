@@ -13,6 +13,7 @@ type IInjector interface {
 	InjectNewsController() controllers.NewsControllers
 	InjectOverviewController() controllers.OverviewControllers
 	InjectEarningsController() controllers.EarningsControllers
+	InjectIncomeStatementController() controllers.IncomeStatementControllers
 }
 
 var env *environment
@@ -43,11 +44,23 @@ func (e *environment) InjectOverviewController() controllers.OverviewControllers
 		Validator: validator.New(),
 	}
 }
+
 func (e *environment) InjectEarningsController() controllers.EarningsControllers {
 	return controllers.EarningsControllers{
 		Log: e.logger,
 		EarningsService: &services.EarningsService{
 			EarningsRepo: &repos.EarningsRepo{},
+			Config:       e.cfg,
+		},
+		Validator: validator.New(),
+	}
+}
+
+func (e *environment) InjectIncomeStatementController() controllers.IncomeStatementControllers {
+	return controllers.IncomeStatementControllers{
+		Log: e.logger,
+		IncomeStatementService: &services.IncomeStatementService{
+			IncomeStatementRepo: &repos.IncomeStatementRepo{},
 			Config:       e.cfg,
 		},
 		Validator: validator.New(),

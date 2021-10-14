@@ -1,4 +1,4 @@
-package earnings_models
+package earnings_model
 
 type AnnualEarnings struct {
 	FiscalDateEnding string `json:"fiscalDateEnding"`
