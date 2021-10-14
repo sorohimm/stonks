@@ -4,6 +4,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"stonks/internal/config"
+
 	ec "stonks/internal/controllers/market/earnings"
 	isc "stonks/internal/controllers/market/income_statement"
 	ovc "stonks/internal/controllers/market/overview"

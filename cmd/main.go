@@ -43,6 +43,7 @@ func init() {
 	loadEnv()
 
 	cfg = config.New()
+
 	log.Infof("Config loaded:\n%+v", cfg)
 }
 

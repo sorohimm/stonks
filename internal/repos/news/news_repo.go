@@ -8,7 +8,7 @@ import (
 )
 
 type NewsRepo struct {
-	client http.Client
+	client *http.Client
 }
 
 func (r *NewsRepo) GetNews(request *http.Request) (nm.News, error) {
