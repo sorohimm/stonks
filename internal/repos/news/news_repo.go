@@ -1,4 +1,4 @@
-package repos
+package news_repo
 
 import (
 	"encoding/json"

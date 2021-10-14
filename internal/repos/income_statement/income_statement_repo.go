@@ -1,4 +1,4 @@
-package repos
+package income_statement_repo
 
 import (
 	"encoding/json"

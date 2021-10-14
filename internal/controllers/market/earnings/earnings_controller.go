@@ -1,4 +1,4 @@
-package controllers
+package earnings_controllers
 
 import (
 	"github.com/gin-gonic/gin"

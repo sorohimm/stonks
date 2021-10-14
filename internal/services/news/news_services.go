@@ -1,4 +1,4 @@
-package services
+package news_service
 
 import (
 	"net/http"

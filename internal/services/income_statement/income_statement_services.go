@@ -1,4 +1,4 @@
-package services
+package income_statement_service
 
 import (
 	"fmt"

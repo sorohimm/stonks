@@ -1,4 +1,4 @@
-package repos
+package earnings_repo
 
 import (
 	"encoding/json"

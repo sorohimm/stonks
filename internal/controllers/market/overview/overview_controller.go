@@ -1,4 +1,4 @@
-package controllers
+package overview_controllers
 
 import (
 	"github.com/gin-gonic/gin"

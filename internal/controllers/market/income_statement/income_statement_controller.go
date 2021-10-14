@@ -1,4 +1,4 @@
-package controllers
+package income_statement_controllers
 
 import (
 	"github.com/gin-gonic/gin"
