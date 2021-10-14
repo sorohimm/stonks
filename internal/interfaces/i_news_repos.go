@@ -2,9 +2,9 @@ package interfaces
 
 import (
 	"net/http"
-	"stonks/internal/models/news"
+	"stonks/internal/models"
 )
 
 type INewsRepo interface {
-	GetNews(*http.Request) (news.News, error)
+	GetNews(*http.Request) (models.News, error)
 }
