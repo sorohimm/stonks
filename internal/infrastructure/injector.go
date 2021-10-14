@@ -4,13 +4,13 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"stonks/internal/config"
-	"stonks/internal/controllers"
+	"stonks/internal/controllers/news"
 	"stonks/internal/repos"
-	"stonks/internal/services"
+	news2 "stonks/internal/services/news"
 )
 
 type IInjector interface {
-	InjectNewsController() controllers.NewsControllers
+	InjectNewsController() news.NewsControllers
 }
 
 var env *environment
@@ -20,10 +20,10 @@ type environment struct {
 	cfg    *config.Config
 }
 
-func (e *environment) InjectNewsController() controllers.NewsControllers {
-	return controllers.NewsControllers{
+func (e *environment) InjectNewsController() news.NewsControllers {
+	return news.NewsControllers{
 		Log: e.logger,
-		NewsService: &services.NewsService{
+		NewsService: &news2.NewsService{
 			NewsRepo: &repos.NewsRepo{},
 			Config:   e.cfg,
 		},

@@ -1,13 +1,13 @@
-package services
+package news
 
 import (
 	"net/http"
 	"net/url"
 	"stonks/internal/config"
+	news2 "stonks/internal/models/news"
 
 	"stonks/internal/constants/news"
 	"stonks/internal/interfaces"
-	"stonks/internal/models"
 )
 
 type NewsService struct {
@@ -15,7 +15,7 @@ type NewsService struct {
 	Config      *config.Config
 }
 
-func (s *NewsService) GetNews(queryParams url.Values) (models.News, error) {
+func (s *NewsService) GetNews(queryParams url.Values) (news2.News, error) {
 	req, _ := http.NewRequest(http.MethodGet, news.URL, nil)
 	req.URL.Path = news.Path
 	req.URL.RawQuery = queryParams.Encode()
@@ -23,7 +23,7 @@ func (s *NewsService) GetNews(queryParams url.Values) (models.News, error) {
 
 	resp, err := s.NewsRepo.GetNews(req)
 	if err != nil {
-		return models.News{}, err
+		return news2.News{}, err
 	}
 
 	return resp, nil

@@ -1,4 +1,4 @@
-package controllers
+package news
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"stonks/internal/interfaces"
-	"stonks/internal/models"
+	"stonks/internal/models/news"
 )
 
 type NewsControllers struct {
@@ -18,7 +18,7 @@ type NewsControllers struct {
 func (c *NewsControllers) GetNews(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := models.Request{
+	request := news.Request{
 		Company:  parameters.Get("q"),
 		SortBy:   parameters.Get("sort_by"),
 		Page:     parameters.Get("page"),

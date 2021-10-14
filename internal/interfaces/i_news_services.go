@@ -2,10 +2,10 @@ package interfaces
 
 import (
 	"net/url"
-	"stonks/internal/models"
+	"stonks/internal/models/news"
 )
 
 type INewsService interface {
-	GetNews(url.Values) (models.News, error)
+	GetNews(url.Values) (news.News, error)
 }
 
