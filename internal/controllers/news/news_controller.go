@@ -1,4 +1,4 @@
-package news_controllers
+package news_controller
 
 import (
 	"github.com/gin-gonic/gin"
@@ -19,7 +19,7 @@ type NewsControllers struct {
 func (c *NewsControllers) GetNews(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := news_model.Request{
+	request := news_models.Request{
 		Company:  parameters.Get("q"),
 		SortBy:   parameters.Get("sort_by"),
 		Page:     parameters.Get("page"),

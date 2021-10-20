@@ -1,4 +1,4 @@
-package news_model
+package news_models
 
 type Article struct {
 	Title         string `json:"title"`
