@@ -50,18 +50,28 @@ func init() {
 func main() {
 	injector, _ := infrastructure.Injector(log, cfg)
 	newsController := injector.InjectNewsController()
+<<<<<<< Updated upstream
 	overviewController := injector.InjectOverviewController()
 	earningsController := injector.InjectEarningsController()
 	incomeStatementController := injector.InjectIncomeStatementController()
+=======
+	overviewController := injector.InjectDetailsController()
+	stockController := injector.InjectStockController()
+>>>>>>> Stashed changes
 
 	router := gin.Default()
 
 	v1 := router.Group("/stonks/v1")
 	{
 		v1.GET("/news", newsController.GetNews)
+<<<<<<< Updated upstream
 		v1.GET("/market", overviewController.GetOverview)
 		v1.GET("/earnings", earningsController.GetEarnings)
 		v1.GET("/income_statement", incomeStatementController.GetIncomeStatement)
+=======
+		v1.GET("/details", overviewController.GetCompanyDetails)
+		v1.GET("/stock",stockController.GetStock)
+>>>>>>> Stashed changes
 	}
 
 	router.Run()

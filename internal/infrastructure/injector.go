@@ -3,8 +3,8 @@ package infrastructure
 import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
-	"stonks/internal/config"
 
+<<<<<<< Updated upstream
 	ec "stonks/internal/controllers/market/earnings"
 	isc "stonks/internal/controllers/market/income_statement"
 	ovc "stonks/internal/controllers/market/overview"
@@ -26,6 +26,24 @@ type IInjector interface {
 	InjectOverviewController() ovc.OverviewControllers
 	InjectEarningsController() ec.EarningsControllers
 	InjectIncomeStatementController() isc.IncomeStatementControllers
+=======
+	"stonks/internal/config"
+	"stonks/internal/controllers/market/details"
+	"stonks/internal/controllers/news"
+	"stonks/internal/controllers/stock"
+	"stonks/internal/repos/details"
+	"stonks/internal/repos/news"
+	"stonks/internal/repos/stock"
+	"stonks/internal/services/details"
+	"stonks/internal/services/news"
+	"stonks/internal/services/stock"
+)
+
+type IInjector interface {
+	InjectNewsController() news_controller.NewsControllers
+	InjectDetailsController() details.CompanyDetailsControllers
+	InjectStockController() stock_controller.StockControllers
+>>>>>>> Stashed changes
 }
 
 var env *environment
@@ -35,11 +53,11 @@ type environment struct {
 	cfg    *config.Config
 }
 
-func (e *environment) InjectNewsController() nc.NewsControllers {
-	return nc.NewsControllers{
+func (e *environment) InjectNewsController() news_controller.NewsControllers {
+	return news_controller.NewsControllers{
 		Log: e.logger,
-		NewsService: &ns.NewsService{
-			NewsRepo: &nr.NewsRepo{},
+		NewsService: &news_service.NewsService{
+			NewsRepo: &news_repo.NewsRepo{},
 			Config:   e.cfg,
 		},
 		Validator: validator.New(),
@@ -74,6 +92,17 @@ func (e *environment) InjectIncomeStatementController() isc.IncomeStatementContr
 		IncomeStatementService: &iss.IncomeStatementService{
 			IncomeStatementRepo: &isr.IncomeStatementRepo{},
 			Config:              e.cfg,
+		},
+		Validator: validator.New(),
+	}
+}
+
+func (e *environment) InjectStockController() stock_controller.StockControllers {
+	return stock_controller.StockControllers{
+		Log: e.logger,
+		StockService: &stock_service.StockService{
+			StockRepo: &stock_repo.StockRepo{},
+			Config:    e.cfg,
 		},
 		Validator: validator.New(),
 	}

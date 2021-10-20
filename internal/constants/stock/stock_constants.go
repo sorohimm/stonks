@@ -1,4 +1,4 @@
-package market_constants
+package stock_constants
 
 var (
 	URL  = "https://www.alphavantage.co/"

@@ -1,4 +1,4 @@
-package news_controllers
+package news_controller
 
 import (
 	"github.com/gin-gonic/gin"
