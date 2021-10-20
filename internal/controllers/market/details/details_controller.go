@@ -1,4 +1,4 @@
-package details
+package details_controller
 
 import (
 	"github.com/gin-gonic/gin"

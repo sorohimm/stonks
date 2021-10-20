@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"stonks/internal/config"
-	"stonks/internal/constants/details"
+	"stonks/internal/constants/market"
 	"stonks/internal/interfaces/stock_interfaces"
 )
 

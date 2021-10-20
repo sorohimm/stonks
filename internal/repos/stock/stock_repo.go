@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"stonks/internal/models/stock"
+	stock_models "stonks/internal/models/stock"
 )
 
 

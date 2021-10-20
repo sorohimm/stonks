@@ -14,7 +14,7 @@ type MonthlyTimeSeries struct {
 }
 
 type DailyTimeSeries struct {
-	MetaData Meta               `json:"Meta Data,omitempty"`
+	MetaData Meta               `json:"Meta Data,omitempty" `
 	Cell     map[string]Session `json:"Time Series (Daily),omitempty"`
 }
 
