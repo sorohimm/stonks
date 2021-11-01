@@ -11,7 +11,9 @@ type CompanyDetailsRepo struct {
 	client *http.Client
 }
 
-var structs map[string]interface{}
+var (
+	structs map[string]interface{}
+)
 
 func init() {
 	structs = make(map[string]interface{})

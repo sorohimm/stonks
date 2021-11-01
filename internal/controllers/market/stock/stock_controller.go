@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"stonks/internal/interfaces/stock_interfaces"
-	"stonks/internal/models/stock"
+	stock_models "stonks/internal/models/stock"
 )
 
 type StockControllers struct {
@@ -21,6 +21,7 @@ func (c *StockControllers) GetStock(ctx *gin.Context) {
 	request := stock_models.Request{
 		Symbol:     parameters.Get("symbol"),
 		Function:   parameters.Get("function"),
+		Interval:   parameters.Get("interval"),
 		OutputSize: parameters.Get("outputsize"),
 	}
 
@@ -36,6 +37,6 @@ func (c *StockControllers) GetStock(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}
-
 	ctx.JSON(http.StatusOK, resp)
+
 }
