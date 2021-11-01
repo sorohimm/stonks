@@ -33,6 +33,12 @@ type Intraday60TimeSeries struct {
 	Cell     map[string]Session `json:"Time Series (60min)"`
 }
 
+type MonthlyTimeSeries struct {
+	MetaData Meta               `json:"Meta Data,omitempty"`
+	Cell     map[string]Session `json:"Monthly Time Series,omitempty"`
+
+}
+
 type DailyTimeSeries struct {
 	MetaData Meta               `json:"Meta Data,omitempty" `
 	Cell     map[string]Session `json:"Time Series (Daily),omitempty"`
@@ -41,11 +47,6 @@ type DailyTimeSeries struct {
 type WeeklyTimeSeries struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
 	Cell     map[string]Session `json:"Weekly Time Series,omitempty"`
-}
-
-type MonthlyTimeSeries struct {
-	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Monthly Time Series,omitempty"`
 }
 
 type Request struct {

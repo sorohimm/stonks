@@ -37,6 +37,6 @@ func (c *StockControllers) GetStock(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}
-	ctx.JSON(http.StatusOK, resp)
 
+	ctx.JSON(http.StatusOK, resp)
 }
