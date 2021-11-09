@@ -1,34 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"os"
-	"regexp"
 	"stonks/internal/config"
 	"stonks/internal/infrastructure"
 )
 
 var (
 	cfg *config.Config
+	ctx context.Context
 	log *zap.SugaredLogger
 )
-
-const projectDirName = "stonks"
-
-func loadEnv() {
-	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)
-	currentWorkDirectory, _ := os.Getwd()
-	rootPath := projectName.Find([]byte(currentWorkDirectory))
-
-	err := godotenv.Load(string(rootPath) + `/configs/config.env`)
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-}
 
 func init() {
 	logger, err := zap.NewDevelopment()
@@ -40,18 +26,18 @@ func init() {
 
 	log = logger.Sugar()
 
-	loadEnv()
-
 	cfg = config.New()
-
+	if err != nil {
+		log.Fatalf("config init error: %s", err)
+	}
 	log.Infof("Config loaded:\n%+v", cfg)
 }
 
 func main() {
-	injector, _ := infrastructure.Injector(log, cfg)
+	injector, _ := infrastructure.Injector(log, ctx, cfg)
 	newsController := injector.InjectNewsController()
 	overviewController := injector.InjectDetailsController()
-	stockController := injector.InjectStockController()
+	quotesController := injector.InjectQuotesController()
 
 	router := gin.Default()
 
@@ -59,7 +45,7 @@ func main() {
 	{
 		v1.GET("/news", newsController.GetNews)
 		v1.GET("/details", overviewController.GetCompanyDetails)
-		v1.GET("/stock",stockController.GetStock)
+		v1.GET("/quotes", quotesController.GetQuotes)
 	}
 
 	router.Run()

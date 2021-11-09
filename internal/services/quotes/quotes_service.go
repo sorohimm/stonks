@@ -1,19 +1,19 @@
-package stock_service
+package quotes_service
 
 import (
 	"net/http"
 	"net/url"
 	"stonks/internal/config"
 	"stonks/internal/constants/market"
-	"stonks/internal/interfaces/stock_interfaces"
+	"stonks/internal/interfaces/quotes_interfaces"
 )
 
-type StockService struct {
-	StockRepo stock_interfaces.IStockRepo
+type QuotesService struct {
+	StockRepo quotes_interfaces.IStockRepo
 	Config    *config.Config
 }
 
-func (s *StockService) GetStock(queryParams url.Values) (interface{}, error) {
+func (s *QuotesService) GetQuotes(queryParams url.Values) (interface{}, error) {
 	queryParams.Set("function", queryParams.Get("function"))
 	queryParams.Set("apikey", s.Config.MarketKey)
 
@@ -21,7 +21,7 @@ func (s *StockService) GetStock(queryParams url.Values) (interface{}, error) {
 	request.URL.Path = market_constants.Path
 	request.URL.RawQuery = queryParams.Encode()
 
-	resp, err := s.StockRepo.GetStock(request)
+	resp, err := s.StockRepo.GetQuotes(request)
 	if err != nil {
 		return err, nil
 	}

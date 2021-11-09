@@ -3,9 +3,10 @@ package config
 import "os"
 
 type Config struct {
-	Port string
+	StonksPort string
 	NewsAuthData
 	MarketAuthData
+	DbAuthenticationData
 }
 
 type NewsAuthData struct {
@@ -16,22 +17,31 @@ type MarketAuthData struct {
 	MarketKey string
 }
 
-func New() *Config {
-	return &Config{
-		Port: getEnv("PORT", ""),
-		NewsAuthData: NewsAuthData{
-			NewsKey: getEnv("NEWS_KEY", ""),
-		},
-		MarketAuthData: MarketAuthData{
-			MarketKey: getEnv("MARKET_KEY", ""),
-		},
-	}
+type DbAuthenticationData struct {
+	DbUsername string
+	DbPassword string
+	DbName     string
+	DbHost     string
+	DbPort     string
+	DbURI      string
 }
 
-func getEnv(key string, defaultVal string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
+func New() *Config {
+	return &Config{
+		StonksPort: os.Getenv("STONKS_PORT"),
+		NewsAuthData: NewsAuthData{
+			NewsKey: os.Getenv("NEWS_KEY"),
+		},
+		MarketAuthData: MarketAuthData{
+			MarketKey: os.Getenv("MARKET_KEY"),
+		},
+		DbAuthenticationData: DbAuthenticationData{
+			DbUsername: os.Getenv("MONGODB_USER"),
+			DbPassword: os.Getenv("MONGODB_PASSWORD"),
+			DbHost:     os.Getenv("MONGODB_HOST"),
+			DbPort:     os.Getenv("MONGODB_PORT"),
+			DbName:     os.Getenv("MONGODB_NAME"),
+			DbURI:      os.Getenv("MONGODB_URI"),
+		},
 	}
-
-	return defaultVal
 }

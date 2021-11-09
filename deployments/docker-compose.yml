@@ -2,18 +2,51 @@ version: "3.9"
 
 services:
   app:
-    container_name: stonks_bks
+    container_name: stonks
     build:
       context: ./..
       dockerfile: deployments/Dockerfile
-    ports:
-      - "12342:12342"
     env_file:
       - ../configs/config.env
+    ports:
+      - ${STONKS_PORT:-8080}:8080
     networks:
       - network
     restart: always
-#  O9GVT5VWQWKE2Z5Q
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    env_file:
+      - ../configs/config.env
+    ports:
+      - ${MONGODB_PORT:-27017}:27017
+    networks:
+      - network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-admin}
+      MONGO_INITDB_DATABASE: ${MONGODB_NAME:-admin}
+    volumes:
+      - ../assets/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok'
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: db-adminer
+    restart: always
+    ports:
+      - ${ADMINER_PORT:-17860}:8080
+    networks:
+      - network
+    depends_on:
+      - mongo
+
 networks:
   network:
     driver: bridge

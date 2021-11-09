@@ -1,4 +1,4 @@
-package stock_models
+package quotes_models
 
 type Session struct {
 	Open   string `json:"1. open,omitempty"`
@@ -36,7 +36,6 @@ type Intraday60TimeSeries struct {
 type MonthlyTimeSeries struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
 	Cell     map[string]Session `json:"Monthly Time Series,omitempty"`
-
 }
 
 type DailyTimeSeries struct {

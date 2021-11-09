@@ -1,24 +1,24 @@
-package stock_controller
+package quotes_controller
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
-	"stonks/internal/interfaces/stock_interfaces"
-	stock_models "stonks/internal/models/stock"
+	"stonks/internal/interfaces/quotes_interfaces"
+	"stonks/internal/models/quotes"
 )
 
-type StockControllers struct {
-	Log          *zap.SugaredLogger
-	StockService stock_interfaces.IStockService
-	Validator    *validator.Validate
+type QuotesControllers struct {
+	Log           *zap.SugaredLogger
+	QuotesService quotes_interfaces.IStockService
+	Validator     *validator.Validate
 }
 
-func (c *StockControllers) GetStock(ctx *gin.Context) {
+func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
-	request := stock_models.Request{
+	request := quotes_models.Request{
 		Symbol:     parameters.Get("symbol"),
 		Function:   parameters.Get("function"),
 		Interval:   parameters.Get("interval"),
@@ -31,7 +31,7 @@ func (c *StockControllers) GetStock(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := c.StockService.GetStock(parameters)
+	resp, err := c.QuotesService.GetQuotes(parameters)
 	if err != nil {
 		c.Log.Error("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})

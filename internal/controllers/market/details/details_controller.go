@@ -5,7 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
-	details_interface "stonks/internal/interfaces/details_interfaces"
+	"stonks/internal/interfaces/details_interfaces"
 	"stonks/internal/models/company_details"
 )
 

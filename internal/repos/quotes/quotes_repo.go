@@ -1,14 +1,14 @@
-package stock_repo
+package quotes_repo
 
 import (
 	"encoding/json"
 	_ "github.com/json-iterator/go"
 	"log"
 	"net/http"
-	stock_models "stonks/internal/models/stock"
+	"stonks/internal/models/quotes"
 )
 
-type StockRepo struct {
+type QuotesRepo struct {
 	client http.Client
 }
 
@@ -19,16 +19,16 @@ var (
 
 func init() {
 	models = make(map[string]interface{})
-	models["TIME_SERIES_DAILY"] = stock_models.DailyTimeSeries{}
-	models["TIME_SERIES_WEEKLY"] = stock_models.WeeklyTimeSeries{}
-	models["TIME_SERIES_MONTHLY"] = stock_models.MonthlyTimeSeries{}
+	models["TIME_SERIES_DAILY"] = quotes_models.DailyTimeSeries{}
+	models["TIME_SERIES_WEEKLY"] = quotes_models.WeeklyTimeSeries{}
+	models["TIME_SERIES_MONTHLY"] = quotes_models.MonthlyTimeSeries{}
 
 	intradayModels = make(map[string]interface{})
-	intradayModels["1"] = stock_models.Intraday1TimeSeries{}
-	intradayModels["5"] = stock_models.Intraday5TimeSeries{}
-	intradayModels["15"] = stock_models.Intraday15TimeSeries{}
-	intradayModels["30"] = stock_models.Intraday30TimeSeries{}
-	intradayModels["60"] = stock_models.Intraday60TimeSeries{}
+	intradayModels["1"] = quotes_models.Intraday1TimeSeries{}
+	intradayModels["5"] = quotes_models.Intraday5TimeSeries{}
+	intradayModels["15"] = quotes_models.Intraday15TimeSeries{}
+	intradayModels["30"] = quotes_models.Intraday30TimeSeries{}
+	intradayModels["60"] = quotes_models.Intraday60TimeSeries{}
 }
 
 func GetModel(request *http.Request) interface{} {
@@ -39,7 +39,7 @@ func GetModel(request *http.Request) interface{} {
 	}
 }
 
-func (r *StockRepo) GetStock(request *http.Request) (interface{}, error) {
+func (r *QuotesRepo) GetQuotes(request *http.Request) (interface{}, error) {
 	resp, err := r.client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		log.Print(json.NewDecoder(resp.Body))

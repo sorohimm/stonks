@@ -1,7 +1,10 @@
 package details_repo
 
 import (
+	"context"
 	"encoding/json"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
 	"stonks/internal/models/company_details"
@@ -39,4 +42,22 @@ func (r *CompanyDetailsRepo) GetCompanyDetails(request *http.Request) (interface
 		log.Print(err.Error())
 	}
 	return detailsBody, nil
+}
+
+func (r *CompanyDetailsRepo) GetDbCompanyDetails(function string, collection string, db *mongo.Database, filter bson.D) (interface{}, error) {
+	detailsBody := structs[function]
+	err := db.Collection(collection).FindOne(context.TODO(), filter).Decode(&detailsBody)
+	if err != nil {
+		return nil, err
+	}
+	return detailsBody, nil
+}
+
+func (r *CompanyDetailsRepo) InsertCompanyDetails(collection string, db *mongo.Database, body interface{}) (interface{}, error)  {
+	id, err := db.Collection(collection).InsertOne(context.TODO(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	return id.InsertedID, nil
 }

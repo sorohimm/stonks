@@ -1,35 +1,40 @@
 package infrastructure
 
 import (
+	"context"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
-	"stonks/internal/controllers/market/stock"
-	details_repo "stonks/internal/repos/details"
-	details_service "stonks/internal/services/details"
+	"log"
+	"stonks/internal/controllers/market/quotes"
+	"stonks/internal/interfaces/db_interfaces"
+	 "stonks/internal/repos/details"
+	 "stonks/internal/services/details"
 	"stonks/internal/services/news"
 
 	"stonks/internal/config"
 	"stonks/internal/controllers/market/details"
 	"stonks/internal/controllers/news"
 	"stonks/internal/repos/news"
-	"stonks/internal/repos/stock"
-	"stonks/internal/services/stock"
+	"stonks/internal/repos/quotes"
+	"stonks/internal/services/quotes"
 )
 
 type IInjector interface {
 	InjectNewsController() news_controller.NewsControllers
 	InjectDetailsController() details_controller.CompanyDetailsControllers
-	InjectStockController() stock_controller.StockControllers
+	InjectQuotesController() quotes_controller.QuotesControllers
 }
 
 var env *environment
 
 type environment struct {
-	logger *zap.SugaredLogger
-	cfg    *config.Config
+	logger   *zap.SugaredLogger
+	cfg      *config.Config
+	dbClient db_interfaces.IDBHandler
 }
 
 func (e *environment) InjectDetailsController() details_controller.CompanyDetailsControllers {
+	log.Println("inject details done")
 	return details_controller.CompanyDetailsControllers{
 		Log: e.logger,
 		CompanyDetailsService: &details_service.CompanyDetailsService{
@@ -41,6 +46,7 @@ func (e *environment) InjectDetailsController() details_controller.CompanyDetail
 }
 
 func (e *environment) InjectNewsController() news_controller.NewsControllers {
+	log.Println("inject news done")
 	return news_controller.NewsControllers{
 		Log: e.logger,
 		NewsService: &news_service.NewsService{
@@ -51,21 +57,33 @@ func (e *environment) InjectNewsController() news_controller.NewsControllers {
 	}
 }
 
-func (e *environment) InjectStockController() stock_controller.StockControllers {
-	return stock_controller.StockControllers{
+func (e *environment) InjectQuotesController() quotes_controller.QuotesControllers {
+	log.Println("inject quotes done")
+	return quotes_controller.QuotesControllers{
 		Log: e.logger,
-		StockService: &stock_service.StockService{
-			StockRepo: &stock_repo.StockRepo{},
+		QuotesService: &quotes_service.QuotesService{
+			StockRepo: &quotes_repo.QuotesRepo{},
 			Config:    e.cfg,
 		},
 		Validator: validator.New(),
 	}
 }
 
-func Injector(logger *zap.SugaredLogger, config *config.Config) (IInjector, error) {
-	env = &environment{
-		logger: logger,
-		cfg:    config,
+func Injector(logger *zap.SugaredLogger, ctx context.Context, cfg *config.Config) (IInjector, error) {
+	logger.Infof("injector starting...")
+	dbClient, err := InitDbClient(logger, cfg, ctx)
+	if err != nil {
+		logger.Infof("db init error")
+		return nil, err
 	}
+	logger.Infof("db init ok")
+
+	env = &environment{
+		logger:   logger,
+		cfg:      cfg,
+		dbClient: dbClient,
+	}
+
+	log.Println("injecting done")
 	return env, nil
 }
