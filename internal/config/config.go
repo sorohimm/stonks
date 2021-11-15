@@ -3,7 +3,7 @@ package config
 import "os"
 
 type Config struct {
-	StonksPort string
+	ApplicationPort string
 	NewsAuthData
 	MarketAuthData
 	DbAuthenticationData
@@ -28,7 +28,7 @@ type DbAuthenticationData struct {
 
 func New() *Config {
 	return &Config{
-		StonksPort: os.Getenv("STONKS_PORT"),
+		ApplicationPort: os.Getenv("APPLICATION_PORT"),
 		NewsAuthData: NewsAuthData{
 			NewsKey: os.Getenv("NEWS_KEY"),
 		},
@@ -40,7 +40,7 @@ func New() *Config {
 			DbPassword: os.Getenv("MONGODB_PASSWORD"),
 			DbHost:     os.Getenv("MONGODB_HOST"),
 			DbPort:     os.Getenv("MONGODB_PORT"),
-			DbName:     os.Getenv("MONGODB_NAME"),
+			DbName:     os.Getenv("MONGODB_DATABASE"),
 			DbURI:      os.Getenv("MONGODB_URI"),
 		},
 	}

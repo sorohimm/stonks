@@ -1,6 +1,7 @@
 package news_service
 
 import (
+	"go.uber.org/zap"
 	"net/http"
 	"net/url"
 	"stonks/internal/config"
@@ -11,6 +12,7 @@ import (
 )
 
 type NewsService struct {
+	Log         *zap.SugaredLogger
 	NewsRepo    news_interface.INewsRepo
 	Config      *config.Config
 }

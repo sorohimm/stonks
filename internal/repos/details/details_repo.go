@@ -3,59 +3,102 @@ package details_repo
 import (
 	"context"
 	"encoding/json"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 	"stonks/internal/models/company_details"
 )
 
 type CompanyDetailsRepo struct {
-	client *http.Client
+	Log    *zap.SugaredLogger
+	Client *http.Client
 }
 
 var (
-	structs map[string]interface{}
+	models map[string]interface{}
 )
 
 func init() {
-	structs = make(map[string]interface{})
-	structs["OVERVIEW"] = details_models.Overview{}
-	structs["EARNINGS"] = details_models.Earnings{}
-	structs["INCOME_STATEMENT"] = details_models.IncomeStatement{}
-	structs["BALANCE_SHEET"] = details_models.BalanceSheet{}
-	structs["CASH_FLOW"] = details_models.CashFlow{}
+	models = make(map[string]interface{})
+	models["Overview"] = &details_models.Overview{}
+	models["Earnings"] = &details_models.Earnings{}
+	models["IncomeStatement"] = &details_models.IncomeStatement{}
+	models["BalanceSheet"] = &details_models.BalanceSheet{}
+	models["CashFlow"] = &details_models.CashFlow{}
 }
 
 func (r *CompanyDetailsRepo) GetCompanyDetails(request *http.Request) (interface{}, error) {
-	resp, err := r.client.Do(request)
+	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		log.Print(json.NewDecoder(resp.Body))
+		r.Log.Errorf("details repo: GetCompanyDetails request error: %s", err)
 		return nil, err
 	}
 
-	detailsBody := structs[request.URL.Query().Get("function")]
+	body := models[request.URL.Query().Get("function")]
 
 	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(&detailsBody)
+	err = decoder.Decode(&body)
 	if err != nil {
-		log.Print(err.Error())
-	}
-	return detailsBody, nil
-}
-
-func (r *CompanyDetailsRepo) GetDbCompanyDetails(function string, collection string, db *mongo.Database, filter bson.D) (interface{}, error) {
-	detailsBody := structs[function]
-	err := db.Collection(collection).FindOne(context.TODO(), filter).Decode(&detailsBody)
-	if err != nil {
+		r.Log.Errorf("details repo: GetCompanyDetails decode error: %s", err)
 		return nil, err
 	}
-	return detailsBody, nil
+	return body, nil
 }
 
-func (r *CompanyDetailsRepo) InsertCompanyDetails(collection string, db *mongo.Database, body interface{}) (interface{}, error)  {
+func (r *CompanyDetailsRepo) GetOverview(db *mongo.Database, filter interface{}) (interface{}, error) {
+	body := details_models.Overview{}
+	err := db.Collection("Overview").FindOne(context.TODO(), filter).Decode(&body)
+	if err != nil {
+		r.Log.Errorf("details repo: GetOverview decode error: %s", err)
+		return nil, err
+	}
+	return body, nil
+}
+
+func (r *CompanyDetailsRepo) GetEarnings(db *mongo.Database, filter interface{}) (details_models.Earnings, error) {
+	body := details_models.Earnings{}
+	err := db.Collection("Earnings").FindOne(context.TODO(), filter).Decode(&body)
+	if err != nil {
+		r.Log.Errorf("details repo: GetEarnings decode error: %s", err)
+		return details_models.Earnings{}, err
+	}
+	return body, nil
+}
+
+func (r *CompanyDetailsRepo) GetIncomeStatement(db *mongo.Database, filter interface{}) (details_models.IncomeStatement, error) {
+	body := details_models.IncomeStatement{}
+	err := db.Collection("IncomeStatement").FindOne(context.TODO(), filter).Decode(&body)
+	if err != nil {
+		r.Log.Errorf("details repo: GetIncomeStatement decode error: %s", err)
+		return details_models.IncomeStatement{}, err
+	}
+	return body, nil
+}
+
+func (r *CompanyDetailsRepo) GetBalanceSheet(db *mongo.Database, filter interface{}) (details_models.BalanceSheet, error) {
+	body := details_models.BalanceSheet{}
+	err := db.Collection("BalanceSheet").FindOne(context.TODO(), filter).Decode(&body)
+	if err != nil {
+		r.Log.Errorf("details repo: GetBalanceSheet decode error: %s", err)
+		return details_models.BalanceSheet{}, err
+	}
+	return body, nil
+}
+
+func (r *CompanyDetailsRepo) GetCashFlow(db *mongo.Database, filter interface{}) (details_models.CashFlow, error) {
+	body := details_models.CashFlow{}
+	err := db.Collection("CashFlow").FindOne(context.TODO(), filter).Decode(&body)
+	if err != nil {
+		r.Log.Errorf("details repo: GetCashFlow decode error: %s", err)
+		return details_models.CashFlow{}, err
+	}
+	return body, nil
+}
+
+func (r *CompanyDetailsRepo) InsertCompanyDetails(collection string, db *mongo.Database, body interface{}) (interface{}, error) {
 	id, err := db.Collection(collection).InsertOne(context.TODO(), body)
 	if err != nil {
+		r.Log.Errorf("details repo: InsertCompanyDetails insertion error: %s", err)
 		return nil, err
 	}
 

@@ -21,11 +21,10 @@ func InitDbClient(logger *zap.SugaredLogger, cfg *config.Config, ctx context.Con
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
-		logger.Info(err.Error())
+		logger.Error(err.Error())
 		return &MongoClient{}, errors.Wrap(err, "mongo initialization err")
 	}
-
-	logger.Infof("db client init ok")
+	logger.Info("db client init ok")
 
 	return &MongoClient{Client: client}, nil
 }

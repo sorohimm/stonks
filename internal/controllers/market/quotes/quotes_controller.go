@@ -16,13 +16,16 @@ type QuotesControllers struct {
 }
 
 func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
-	parameters := ctx.Request.URL.Query()
+	values := ctx.Request.URL.Query()
 
 	request := quotes_models.Request{
-		Symbol:     parameters.Get("symbol"),
-		Function:   parameters.Get("function"),
-		Interval:   parameters.Get("interval"),
-		OutputSize: parameters.Get("outputsize"),
+		Symbol:     values.Get("symbol"),
+		Function:   values.Get("function"),
+		Interval:   values.Get("interval"),
+		From:       values.Get("from"),
+		To:         values.Get("to"),
+		Date:       values.Get("date"),
+		OutputSize: values.Get("outputsize"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
@@ -31,7 +34,7 @@ func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := c.QuotesService.GetQuotes(parameters)
+	resp, err := c.QuotesService.GetQuotes(values)
 	if err != nil {
 		c.Log.Error("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})

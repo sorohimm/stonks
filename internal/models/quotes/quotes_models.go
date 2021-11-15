@@ -8,57 +8,65 @@ type Session struct {
 	Volume string `json:"5. volume,omitempty"`
 }
 
-type Intraday1TimeSeries struct {
+type Intraday1TS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Time Series (1min)"`
+	Series   map[string]Session `json:"Time Series (1min)"`
 }
 
-type Intraday5TimeSeries struct {
+type Intraday5TS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Time Series (5min)"`
+	Series   map[string]Session `json:"Time Series (5min)"`
 }
 
-type Intraday15TimeSeries struct {
+type Intraday15TS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Time Series (15min)"`
+	Series   map[string]Session `json:"Time Series (15min)"`
 }
 
-type Intraday30TimeSeries struct {
+type Intraday30TS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Time Series (30min)"`
+	Series   map[string]Session `json:"Time Series (30min)"`
 }
 
-type Intraday60TimeSeries struct {
+type Intraday60TS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Time Series (60min)"`
+	Series   map[string]Session `json:"Time Series (60min)"`
 }
 
-type MonthlyTimeSeries struct {
+type MonthlyTS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Monthly Time Series,omitempty"`
+	Series   map[string]Session `json:"Monthly Time Series,omitempty"`
 }
 
-type DailyTimeSeries struct {
+type DailyTS struct {
 	MetaData Meta               `json:"Meta Data,omitempty" `
-	Cell     map[string]Session `json:"Time Series (Daily),omitempty"`
+	Series   map[string]Session `json:"Time Series (Daily),omitempty"`
 }
 
-type WeeklyTimeSeries struct {
+type WeeklyTS struct {
 	MetaData Meta               `json:"Meta Data,omitempty"`
-	Cell     map[string]Session `json:"Weekly Time Series,omitempty"`
-}
-
-type Request struct {
-	Symbol     string `json:"symbol" validate:"required"`
-	Function   string `json:"function" validate:"required,oneof=TIME_SERIES_DAILY TIME_SERIES_WEEKLY TIME_SERIES_MONTHLY TIME_SERIES_INTRADAY"`
-	Interval   string `json:"interval"  validate:"required_if=Function TIME_SERIES_INTRADAY"`
-	OutputSize string `json:"outputsize" validate:"omitempty"`
+	Series   map[string]Session `json:"Weekly Time Series,omitempty"`
 }
 
 type Meta struct {
 	Information   string `json:"1. Information,omitempty"`
 	Symbol        string `json:"2. Symbol,omitempty"`
 	LastRefreshed string `json:"3. Last Refreshed,omitempty"`
-	OutputSize    string `json:"4. Output Size,omitempty"`
-	TimeZone      string `json:"5. Time Zone,omitempty"`
+	TimeZone      string `json:"4. Time Zone,omitempty"`
+}
+
+type SessionMongo struct {
+	Date   string `json:"date,omitempty"`
+	Open   string `json:"open,omitempty"`
+	High   string `json:"high,omitempty"`
+	Low    string `json:"low,omitempty"`
+	Close  string `json:"close,omitempty"`
+	Volume string `json:"volume,omitempty"`
+}
+
+type MetaMongo struct {
+	Information   string `json:"information,omitempty"`
+	Symbol        string `json:"symbol,omitempty"`
+	LastRefreshed string `json:"last-refreshed,omitempty" `
+	TimeZone      string `json:"time-zone,omitempty" `
 }

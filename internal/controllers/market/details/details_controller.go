@@ -16,11 +16,14 @@ type CompanyDetailsControllers struct {
 }
 
 func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
-	parameters := ctx.Request.URL.Query()
+	values := ctx.Request.URL.Query()
 
 	request := details_models.DetailsRequest{
-		Symbol:   parameters.Get("symbol"),
-		Function: parameters.Get("function"),
+		Symbol:   values.Get("symbol"),
+		Function: values.Get("function"),
+		From:     values.Get("from"),
+		To:       values.Get("to"),
+		Timing:   values.Get("timing"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
@@ -28,10 +31,17 @@ func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
 		return
 	}
+	/*if values.Get("function") == "OVERVIEW" {
+		if values.Has("from") || values.Has("to") || values.Has("timing") {
+			c.Log.Error("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+			return
+		}
+	}*/
 
-	resp, err := c.CompanyDetailsService.GetCompanyDetails(parameters)
+	resp, err := c.CompanyDetailsService.GetCompanyDetails(values)
 	if err != nil {
-		c.Log.Error("unknown error")
+		c.Log.Error("unknown server error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}

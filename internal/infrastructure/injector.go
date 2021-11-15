@@ -4,11 +4,11 @@ import (
 	"context"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
-	"log"
+	"net/http"
 	"stonks/internal/controllers/market/quotes"
 	"stonks/internal/interfaces/db_interfaces"
-	 "stonks/internal/repos/details"
-	 "stonks/internal/services/details"
+	"stonks/internal/repos/details"
+	"stonks/internal/services/details"
 	"stonks/internal/services/news"
 
 	"stonks/internal/config"
@@ -30,60 +30,75 @@ var env *environment
 type environment struct {
 	logger   *zap.SugaredLogger
 	cfg      *config.Config
+	client *http.Client
 	dbClient db_interfaces.IDBHandler
 }
 
 func (e *environment) InjectDetailsController() details_controller.CompanyDetailsControllers {
-	log.Println("inject details done")
+	e.logger.Info("inject details...")
 	return details_controller.CompanyDetailsControllers{
 		Log: e.logger,
 		CompanyDetailsService: &details_service.CompanyDetailsService{
-			DetailsRepo: &details_repo.CompanyDetailsRepo{},
+			Log: e.logger,
 			Config:      e.cfg,
-		},
-		Validator: validator.New(),
-	}
-}
-
-func (e *environment) InjectNewsController() news_controller.NewsControllers {
-	log.Println("inject news done")
-	return news_controller.NewsControllers{
-		Log: e.logger,
-		NewsService: &news_service.NewsService{
-			NewsRepo: &news_repo.NewsRepo{},
-			Config:   e.cfg,
+			DetailsRepo: &details_repo.CompanyDetailsRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
+			DbHandler: e.dbClient,
 		},
 		Validator: validator.New(),
 	}
 }
 
 func (e *environment) InjectQuotesController() quotes_controller.QuotesControllers {
-	log.Println("inject quotes done")
+	e.logger.Info("inject quotes...")
 	return quotes_controller.QuotesControllers{
 		Log: e.logger,
 		QuotesService: &quotes_service.QuotesService{
-			StockRepo: &quotes_repo.QuotesRepo{},
+			Log: e.logger,
 			Config:    e.cfg,
+			QuotesRepo: &quotes_repo.QuotesRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
+			DbHandler: e.dbClient,
 		},
 		Validator: validator.New(),
 	}
 }
 
-func Injector(logger *zap.SugaredLogger, ctx context.Context, cfg *config.Config) (IInjector, error) {
-	logger.Infof("injector starting...")
-	dbClient, err := InitDbClient(logger, cfg, ctx)
+func (e *environment) InjectNewsController() news_controller.NewsControllers {
+	e.logger.Info("inject news...")
+	return news_controller.NewsControllers{
+		Log: e.logger,
+		NewsService: &news_service.NewsService{
+			Log: e.logger,
+			NewsRepo: &news_repo.NewsRepo{
+				Client: http.DefaultClient,
+			},
+			Config:   e.cfg,
+		},
+		Validator: validator.New(),
+	}
+}
+
+func Injector(log *zap.SugaredLogger, ctx context.Context, cfg *config.Config) (IInjector, error) {
+	log.Infof("injector starting...")
+	dbClient, err := InitDbClient(log, cfg, ctx)
 	if err != nil {
-		logger.Infof("db init error")
+		log.Fatal("db init error")
 		return nil, err
 	}
-	logger.Infof("db init ok")
+	log.Infof("db init ok")
 
 	env = &environment{
-		logger:   logger,
+		logger:   log,
 		cfg:      cfg,
+		client:   http.DefaultClient,
 		dbClient: dbClient,
 	}
 
-	log.Println("injecting done")
+	log.Info("injecting done")
 	return env, nil
 }

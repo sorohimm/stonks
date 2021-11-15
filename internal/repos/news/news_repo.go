@@ -9,11 +9,11 @@ import (
 )
 
 type NewsRepo struct {
-	client *http.Client
+	Client *http.Client
 }
 
 func (r *NewsRepo) GetNews(request *http.Request) (nm.News, error) {
-	resp, err := r.client.Do(request)
+	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		log.Print(json.NewDecoder(resp.Body))
 		return nm.News{}, err
