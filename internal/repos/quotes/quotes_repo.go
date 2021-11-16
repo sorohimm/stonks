@@ -29,16 +29,6 @@ func init() {
 	intradayModels["60min"] = quotes_models.Intraday60TS{}
 }
 
-func (r *QuotesRepo) GetIntraday(collection string, db *mongo.Database, filter interface{}) (qmodels.IntradayTSMongo, error) {
-	body := qmodels.IntradayTSMongo{}
-	err := db.Collection(collection).FindOne(context.TODO(), filter).Decode(&body)
-	if err != nil {
-		r.Log.Errorf("decode error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
-	}
-	return body, nil
-}
-
 func (r *QuotesRepo) GetQuotesDB(db *mongo.Database, coll string , filter interface{}) (interface{}, error) {
 	var body qmodels.TSMongo
 	cursor, err := db.Collection(coll).Aggregate(context.TODO(), filter)

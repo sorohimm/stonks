@@ -7,8 +7,6 @@ import (
 )
 
 type IQuotesRepo interface {
-	GetIntraday(string, *mongo.Database, interface{}) (qmodels.IntradayTSMongo, error)
-
 	GetQuotesDB(*mongo.Database, string, interface{}) (interface{}, error)
 
 	GetIntraday1Quotes(*http.Request) (qmodels.TSMongo, error)
