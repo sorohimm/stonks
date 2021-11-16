@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	_ "github.com/json-iterator/go"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 	"net/http"
@@ -40,91 +39,29 @@ func (r *QuotesRepo) GetIntraday(collection string, db *mongo.Database, filter i
 	return body, nil
 }
 
-func (r *QuotesRepo) GetDaily(ctx string, db *mongo.Database, filter interface{}) (qmodels.DailyTSMongo, error) {
-	var body qmodels.DailyTSMongo
-	var err error
-	var res *mongo.Cursor
-
-	if ctx == "d" {
-		res, err = db.Collection("DailySeries").Aggregate(context.TODO(), filter)
-		if err != nil {
-			return qmodels.DailyTSMongo{}, err
-		}
-		err = res.Decode(&body)
-	} else if ctx == "w" {
-		err = db.Collection("DailySeries").FindOne(context.TODO(), filter).Decode(&body)
-	}
+func (r *QuotesRepo) GetQuotesDB(db *mongo.Database, coll string , filter interface{}) (interface{}, error) {
+	var body qmodels.TSMongo
+	cursor, err := db.Collection(coll).Aggregate(context.TODO(), filter)
 	if err != nil {
-		r.Log.Errorf("quotes repo: GetDaily error: %s", err)
-		return qmodels.DailyTSMongo{}, err
+		r.Log.Infof("quotes repo: GetQuotesDB: %s", err)
+		return nil, err
 	}
-	return body, nil
-}
 
-func (r *QuotesRepo) GetWeekly(ctx string, db *mongo.Database, filter interface{}) (qmodels.WeeklyTSMongo, error) {
-	var body qmodels.WeeklyTSMongo
-	var err error
-	var res *mongo.Cursor
-
-	if ctx == "d" {
-		res, err = db.Collection("WeeklySeries").Aggregate(context.TODO(), filter)
-		if err != nil {
-			r.Log.Info("quotes_repo: GetWeekly decode: %s", err)
-			return qmodels.WeeklyTSMongo{}, err
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&body); err != nil {
+			return nil, err
 		}
-		err = res.Decode(&body)
-		if err != nil {
-			r.Log.Info("quotes_repo: GetWeekly decode: %s", err)
-			return qmodels.WeeklyTSMongo{}, err
-		}
-	} else if ctx == "w" {
-		err = db.Collection("WeeklySeries").FindOne(context.TODO(), filter).Decode(&body)
-	}
-	if err != nil {
-		r.Log.Errorf("quotes repo: GetWeekly error: %s", err)
-		return qmodels.WeeklyTSMongo{}, err
-	}
-	return body, nil
-}
-
-func (r *QuotesRepo) GetMonthly(ctx string, db *mongo.Database, filter interface{}) (qmodels.MonthlyTSMongo, error) {
-	var body qmodels.MonthlyTSMongo
-	var err error
-
-	if ctx == "d" {
-		var cursor *mongo.Cursor
-		cursor, err = db.Collection("MonthlySeries").Aggregate(context.TODO(), filter)
-		if err != nil {
-			r.Log.Infof("quotes repo: GetMonthly: %s", err)
-			return qmodels.MonthlyTSMongo{}, err
-		}
-
-		var results []bson.M
-		if err = cursor.All(context.TODO(), &results); err != nil {
-			panic(err)
-		}
-
-		if err != nil {
-			r.Log.Infof("quotes repo: GetMonthly decode: %s", body)
-			return qmodels.MonthlyTSMongo{}, err
-		}
-		return body, nil
-	} else if ctx == "w" {
-		err = db.Collection("MonthlySeries").FindOne(context.TODO(), filter).Decode(&body)
-		if err != nil {
-			r.Log.Infof("quotes repo: GetMonthly error: %s", err)
-			return qmodels.MonthlyTSMongo{}, err
-		}
+		break
 	}
 
 	return body, nil
 }
 
-func (r *QuotesRepo) GetIntraday1Quotes(request *http.Request) (qmodels.IntradayTSMongo, error) {
+func (r *QuotesRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetDailyQuotes request error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.Intraday1TS{}
@@ -133,19 +70,19 @@ func (r *QuotesRepo) GetIntraday1Quotes(request *http.Request) (qmodels.Intraday
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetDailyQuotes decode error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.IntradayTSMongo{}
+	res := qmodels.TSMongo{}
 	res.Set1(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetIntraday5Quotes(request *http.Request) (qmodels.IntradayTSMongo, error) {
+func (r *QuotesRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetDailyQuotes request error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.Intraday5TS{}
@@ -154,19 +91,19 @@ func (r *QuotesRepo) GetIntraday5Quotes(request *http.Request) (qmodels.Intraday
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetDailyQuotes decode error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.IntradayTSMongo{}
+	res := qmodels.TSMongo{}
 	res.Set5(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetIntraday15Quotes(request *http.Request) (qmodels.IntradayTSMongo, error) {
+func (r *QuotesRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetDailyQuotes request error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.Intraday15TS{}
@@ -175,19 +112,19 @@ func (r *QuotesRepo) GetIntraday15Quotes(request *http.Request) (qmodels.Intrada
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetDailyQuotes decode error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.IntradayTSMongo{}
+	res := qmodels.TSMongo{}
 	res.Set15(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetIntraday30Quotes(request *http.Request) (qmodels.IntradayTSMongo, error) {
+func (r *QuotesRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetDailyQuotes request error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.Intraday30TS{}
@@ -196,19 +133,19 @@ func (r *QuotesRepo) GetIntraday30Quotes(request *http.Request) (qmodels.Intrada
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetDailyQuotes decode error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.IntradayTSMongo{}
+	res := qmodels.TSMongo{}
 	res.Set30(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetIntraday60Quotes(request *http.Request) (qmodels.IntradayTSMongo, error) {
+func (r *QuotesRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetDailyQuotes request error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.Intraday60TS{}
@@ -217,19 +154,19 @@ func (r *QuotesRepo) GetIntraday60Quotes(request *http.Request) (qmodels.Intrada
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetDailyQuotes decode error: %s", err)
-		return qmodels.IntradayTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.IntradayTSMongo{}
+	res := qmodels.TSMongo{}
 	res.Set60(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetDailyQuotes(request *http.Request) (qmodels.DailyTSMongo, error) {
+func (r *QuotesRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetDailyQuotes request error: %s", err)
-		return qmodels.DailyTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.DailyTS{}
@@ -238,19 +175,19 @@ func (r *QuotesRepo) GetDailyQuotes(request *http.Request) (qmodels.DailyTSMongo
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetDailyQuotes decode error: %s", err)
-		return qmodels.DailyTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.DailyTSMongo{}
-	res.Set(body)
+	res := qmodels.TSMongo{}
+	res.SetD(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetWeeklyQuotes(request *http.Request) (qmodels.WeeklyTSMongo, error) {
+func (r *QuotesRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetWeeklyQuotes request error: %s", err)
-		return qmodels.WeeklyTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.WeeklyTS{}
@@ -259,19 +196,19 @@ func (r *QuotesRepo) GetWeeklyQuotes(request *http.Request) (qmodels.WeeklyTSMon
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetWeeklyQuotes decode error: %s", err)
-		return qmodels.WeeklyTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.WeeklyTSMongo{}
-	res.Set(body)
+	res := qmodels.TSMongo{}
+	res.SetW(body)
 	return res, nil
 }
 
-func (r *QuotesRepo) GetMonthlyQuotes(request *http.Request) (qmodels.MonthlyTSMongo, error) {
+func (r *QuotesRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Errorf("quotes repo: GetMonthlyQuotes request error: %s", err)
-		return qmodels.MonthlyTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
 	body := qmodels.MonthlyTS{}
@@ -280,11 +217,11 @@ func (r *QuotesRepo) GetMonthlyQuotes(request *http.Request) (qmodels.MonthlyTSM
 	err = decoder.Decode(&body)
 	if err != nil {
 		r.Log.Errorf("quotes repo: GetMonthlyQuotes decode error: %s", err)
-		return qmodels.MonthlyTSMongo{}, err
+		return qmodels.TSMongo{}, err
 	}
 
-	res := qmodels.MonthlyTSMongo{}
-	res.Set(body)
+	res := qmodels.TSMongo{}
+	res.SetM(body)
 	return res, nil
 }
 

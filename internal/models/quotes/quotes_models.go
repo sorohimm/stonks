@@ -66,7 +66,9 @@ type SessionMongo struct {
 
 type MetaMongo struct {
 	Information   string `json:"information,omitempty"`
-	Symbol        string `json:"symbol,omitempty"`
+	Symbol        string `json:"symbol,omitempty" bson:"symbol"`
 	LastRefreshed string `json:"last-refreshed,omitempty" `
 	TimeZone      string `json:"time-zone,omitempty" `
 }
+
+

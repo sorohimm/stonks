@@ -1,13 +1,15 @@
 package quotes_service
 
 import (
+	"errors"
 	"go.uber.org/zap"
-	"net/http"
 	"net/url"
 	"stonks/internal/config"
-	"stonks/internal/constants/market"
+	"stonks/internal/db"
+	"stonks/internal/db/filter"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/quotes_interfaces"
+	"stonks/internal/models"
 )
 
 type QuotesService struct {
@@ -17,45 +19,44 @@ type QuotesService struct {
 	DbHandler  db_interfaces.IDBHandler
 }
 
-func (s *QuotesService) BuildRequest(values url.Values) *http.Request {
-	if values.Get("function") == "TIME_SERIES_DAILY" {
-		values.Set("outputsize", "full")
-	}
-	values.Set("apikey", s.Config.MarketKey)
-
-	request, _ := http.NewRequest(http.MethodGet, market_constants.URL, nil)
-	request.URL.Path = market_constants.Path
-	request.URL.RawQuery = values.Encode()
-
-	return request
-}
-
 func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
-	db := s.DbHandler.AcquireDatabase(s.Config.DbName)
+	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
+	var coll = getCll(values)
+	var t models.Timing
+	t.Set(values)
+	var pipe = filter.Pipeline(t)
 
-	result, err := s.DbQuotesRoutine(values, db)
-	if err != nil {
-		response, err := s.QuotesRoutine(values)
+	if db.IsDocExist(database, coll, filter.Exist(values.Get("symbol"))) {
+		result, err := s.QuotesRepo.GetQuotesDB(database, coll, pipe)
 		if err != nil {
-			s.Log.Infof("quotes_service: routine error")
+			s.Log.Infof("quotes_service :: dbroutine error")
+			return nil, err
+		}
+		return result, nil
+	} else {
+		request := s.BuildRequest(values)
+		response, err := s.QuotesRoutine(request)
+		if err != nil {
+			s.Log.Infof("quotes_service :: routine error")
 			return nil, err
 		}
 
-		collection := getCll(values)
-		_, err = s.QuotesRepo.InsertQuotes(collection, db, response)
+		_, err = s.QuotesRepo.InsertQuotes(coll, database, response)
 		if err != nil {
-			s.Log.Infof("db insert error")
+			s.Log.Infof("quotes_service :: database insert error")
+			return nil, errors.New("server error")
+		}
+
+		if !t.HasInterval() {
 			return response, nil
 		}
 
-		res, err := s.DbQuotesRoutine(values, db)
+		result, err := s.QuotesRepo.GetQuotesDB(database, coll, pipe)
 		if err != nil {
-			s.Log.Infof("get error")
-			return response, nil
+			s.Log.Infof("quotes_service :: dbroutine error")
+			return nil, err
 		}
 
-		return res, nil
+		return result, nil
 	}
-
-	return result, nil
 }

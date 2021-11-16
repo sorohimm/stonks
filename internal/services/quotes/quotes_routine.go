@@ -1,10 +1,10 @@
 package quotes_service
 
 import (
-	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	"net/url"
-	"stonks/internal/db"
+	m_const "stonks/internal/constants/market"
+
 )
 
 var (
@@ -34,50 +34,6 @@ func getCll(values url.Values) string {
 	}
 }
 
-func isDateRequest(v url.Values) bool {
-	return v.Has("from") || v.Has("to") || v.Has("date")
-}
-
-func (s *QuotesService) DbQuotesRoutine(values url.Values, database *mongo.Database) (interface{}, error) {
-	var err error
-	filter, err := db.MakeFilter(values)
-	if err != nil {
-		s.Log.Errorf("make filter error: %s", err)
-		return nil, err
-	}
-
-	var res interface{}
-
-	switch values.Get("function") {
-	case "TIME_SERIES_INTRADAY":
-		res, err = s.QuotesRepo.GetIntraday(intradayCollections[values.Get("interval")], database, filter)
-	case "TIME_SERIES_DAILY":
-		if isDateRequest(values) {
-			res, err = s.QuotesRepo.GetDaily("d", database, filter)
-		} else {
-			res, err = s.QuotesRepo.GetDaily("w", database, filter)
-		}
-	case "TIME_SERIES_WEEKLY":
-		if isDateRequest(values) {
-			res, err = s.QuotesRepo.GetWeekly("d", database, filter)
-		} else {
-			res, err = s.QuotesRepo.GetWeekly("w", database, filter)
-		}
-	case "TIME_SERIES_MONTHLY":
-		if isDateRequest(values) {
-			res, err = s.QuotesRepo.GetMonthly("d", database, filter)
-		} else {
-			res, err = s.QuotesRepo.GetMonthly("w", database, filter)
-		}
-	}
-
-	if err != nil {
-		s.Log.Infof("quotes_service: DbQuotesRoutine: %s", err)
-		return nil, err
-	}
-	return res, nil
-}
-
 func (s *QuotesService) IntradayQuotesRoutine(r *http.Request) (interface{}, error) {
 	var err error
 	var res interface{}
@@ -101,12 +57,24 @@ func (s *QuotesService) IntradayQuotesRoutine(r *http.Request) (interface{}, err
 	return res, nil
 }
 
-func (s *QuotesService) QuotesRoutine(values url.Values) (interface{}, error) {
-	request := s.BuildRequest(values)
+func (s *QuotesService) BuildRequest(values url.Values) *http.Request {
+	if values.Get("function") == "TIME_SERIES_DAILY" {
+		values.Set("outputsize", "full")
+	}
+	values.Set("apikey", s.Config.MarketKey)
+
+	request, _ := http.NewRequest(http.MethodGet, m_const.URL, nil)
+	request.URL.Path = m_const.Path
+	request.URL.RawQuery = values.Encode()
+
+	return request
+}
+
+func (s *QuotesService) QuotesRoutine(request *http.Request) (interface{}, error) {
 	var err error
 	var res interface{}
 
-	switch values.Get("function") {
+	switch request.URL.Query().Get("function") {
 	case "TIME_SERIES_INTRADAY":
 		res, err = s.IntradayQuotesRoutine(request)
 	case "TIME_SERIES_DAILY":

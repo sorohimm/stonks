@@ -64,16 +64,16 @@ type BalanceSheet struct {
 }
 
 func (b *BalanceSheet) Annual(t models.Timing) ([]BalanceSheetReports, error) {
-	if t.HasFrom() && t.HasTo() && t.HasDate() {
+	if t.Has("from") && t.Has("to") && t.Has("date") {
 		return nil, errors.New("invalid data parameters")
 	}
 
-	if !t.HasFrom() && !t.HasTo() && !t.HasDate() {
+	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
 		return b.AnnualReports, nil
 	}
 
 	var res []BalanceSheetReports
-	if t.HasFrom() && t.HasTo() && !t.HasDate() {
+	if t.Has("from") && t.Has("to") && !t.Has("date") {
 		for _, el := range b.AnnualReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-5]
 
@@ -88,7 +88,7 @@ func (b *BalanceSheet) Annual(t models.Timing) ([]BalanceSheetReports, error) {
 		return res, nil
 	}
 
-	if t.HasFrom() && !t.HasTo() && !t.HasDate() {
+	if t.Has("from") && !t.Has("to") && !t.Has("date") {
 		for _, el := range b.AnnualReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
 			if fde >= t.From {
@@ -102,7 +102,7 @@ func (b *BalanceSheet) Annual(t models.Timing) ([]BalanceSheetReports, error) {
 		return res, nil
 	}
 
-	if !t.HasFrom() && t.HasTo() && !t.HasDate() {
+	if !t.Has("from") && t.Has("to") && !t.Has("date") {
 		for _, el := range b.AnnualReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
 			if fde <= t.To {
@@ -116,7 +116,7 @@ func (b *BalanceSheet) Annual(t models.Timing) ([]BalanceSheetReports, error) {
 		return res, nil
 	}
 
-	if t.HasDate() && !t.HasFrom() && !t.HasTo() {
+	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
 		for _, el := range b.AnnualReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
 			if fde == t.Date {
@@ -134,16 +134,16 @@ func (b *BalanceSheet) Annual(t models.Timing) ([]BalanceSheetReports, error) {
 }
 
 func (b *BalanceSheet) Quarterly(t models.Timing) ([]BalanceSheetReports, error) {
-	if t.HasFrom() && t.HasTo() && t.HasDate() {
+	if t.Has("from") && t.Has("to") && t.Has("date") {
 		return nil, errors.New("invalid data parameters")
 	}
 
-	if !t.HasFrom() && !t.HasTo() && !t.HasDate() {
+	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
 		return b.QuarterlyReports, nil
 	}
 
 	var res []BalanceSheetReports
-	if t.HasFrom() && t.HasTo() && !t.HasDate() {
+	if t.Has("from") && t.Has("to") && !t.Has("date") {
 		for _, el := range b.QuarterlyReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
 			if fde >= t.From && fde <= t.To {
@@ -157,7 +157,7 @@ func (b *BalanceSheet) Quarterly(t models.Timing) ([]BalanceSheetReports, error)
 		return res, nil
 	}
 
-	if t.HasFrom() && !t.HasTo() && !t.HasDate() {
+	if t.Has("from") && !t.Has("to") && !t.Has("date") {
 		for _, el := range b.QuarterlyReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
 			if fde >= t.From {
@@ -171,7 +171,7 @@ func (b *BalanceSheet) Quarterly(t models.Timing) ([]BalanceSheetReports, error)
 		return res, nil
 	}
 
-	if !t.HasFrom() && t.HasTo() && !t.HasDate() {
+	if !t.Has("from") && t.Has("to") && !t.Has("date") {
 		for _, el := range b.QuarterlyReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
 			if fde <= t.To {
@@ -185,7 +185,7 @@ func (b *BalanceSheet) Quarterly(t models.Timing) ([]BalanceSheetReports, error)
 		return res, nil
 	}
 
-	if t.HasDate() && !t.HasFrom() && !t.HasTo() {
+	if t.Has("date") && !t.Has("from") && !t.Has("to") {
 		for _, el := range b.QuarterlyReports {
 			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
 			if fde == t.Date {
