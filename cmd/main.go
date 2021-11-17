@@ -38,6 +38,7 @@ func main() {
 	newsController := injector.InjectNewsController()
 	overviewController := injector.InjectDetailsController()
 	quotesController := injector.InjectQuotesController()
+	growthController := injector.InjectGrowthController()
 
 	router := gin.Default()
 
@@ -46,6 +47,7 @@ func main() {
 		v1.GET("/news", newsController.GetNews)
 		v1.GET("/details", overviewController.GetCompanyDetails)
 		v1.GET("/quotes", quotesController.GetQuotes)
+		v1.GET("/growth", growthController.GetQuotes)
 	}
 
 	router.Run()

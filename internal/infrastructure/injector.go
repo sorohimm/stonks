@@ -5,10 +5,13 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
+	growth_controller "stonks/internal/controllers/market/growth"
 	"stonks/internal/controllers/market/quotes"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/repos/details"
+	growth_repo "stonks/internal/repos/growth"
 	"stonks/internal/services/details"
+	growth_services "stonks/internal/services/growth"
 	"stonks/internal/services/news"
 
 	"stonks/internal/config"
@@ -23,6 +26,7 @@ type IInjector interface {
 	InjectNewsController() news_controller.NewsControllers
 	InjectDetailsController() details_controller.CompanyDetailsControllers
 	InjectQuotesController() quotes_controller.QuotesControllers
+	InjectGrowthController() growth_controller.GrowthControllers
 }
 
 var env *environment
@@ -32,6 +36,21 @@ type environment struct {
 	cfg      *config.Config
 	client *http.Client
 	dbClient db_interfaces.IDBHandler
+}
+
+func (e *environment) InjectNewsController() news_controller.NewsControllers {
+	e.logger.Info("inject news...")
+	return news_controller.NewsControllers{
+		Log: e.logger,
+		NewsService: &news_service.NewsService{
+			Log: e.logger,
+			NewsRepo: &news_repo.NewsRepo{
+				Client: http.DefaultClient,
+			},
+			Config:   e.cfg,
+		},
+		Validator: validator.New(),
+	}
 }
 
 func (e *environment) InjectDetailsController() details_controller.CompanyDetailsControllers {
@@ -68,16 +87,18 @@ func (e *environment) InjectQuotesController() quotes_controller.QuotesControlle
 	}
 }
 
-func (e *environment) InjectNewsController() news_controller.NewsControllers {
-	e.logger.Info("inject news...")
-	return news_controller.NewsControllers{
+func (e *environment) InjectGrowthController() growth_controller.GrowthControllers {
+	e.logger.Info("inject growth...")
+	return growth_controller.GrowthControllers{
 		Log: e.logger,
-		NewsService: &news_service.NewsService{
+		GrowthService: &growth_services.GrowthService{
 			Log: e.logger,
-			NewsRepo: &news_repo.NewsRepo{
+			Config:    e.cfg,
+			GrowthRepo: &growth_repo.GrowthRepo{
+				Log: e.logger,
 				Client: http.DefaultClient,
 			},
-			Config:   e.cfg,
+			DbHandler: e.dbClient,
 		},
 		Validator: validator.New(),
 	}

@@ -24,7 +24,7 @@ func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
 	var coll = getCll(values)
 	var t models.Timing
 	t.Set(values)
-	var pipe = filter.Pipeline(t)
+	var pipe = filter.QuotesPipeline(t)
 
 	if db.IsDocExist(database, coll, filter.Exist(values.Get("symbol"))) {
 		result, err := s.QuotesRepo.GetQuotesDB(database, coll, pipe)

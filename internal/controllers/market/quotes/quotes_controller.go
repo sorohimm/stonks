@@ -29,14 +29,14 @@ func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Error("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		c.Log.Info("invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
 	}
 
 	resp, err := c.QuotesService.GetQuotes(values)
 	if err != nil {
-		c.Log.Error("unknown error")
+		c.Log.Info("server error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}

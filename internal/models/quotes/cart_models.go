@@ -70,5 +70,3 @@ type MetaMongo struct {
 	LastRefreshed string `json:"last-refreshed,omitempty" `
 	TimeZone      string `json:"time-zone,omitempty" `
 }
-
-

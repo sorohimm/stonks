@@ -29,7 +29,7 @@ func init() {
 	intradayModels["60min"] = quotes_models.Intraday60TS{}
 }
 
-func (r *QuotesRepo) GetQuotesDB(db *mongo.Database, coll string , filter interface{}) (interface{}, error) {
+func (r *QuotesRepo) GetQuotesDB(db *mongo.Database, coll string, filter interface{}) (interface{}, error) {
 	var body qmodels.TSMongo
 	cursor, err := db.Collection(coll).Aggregate(context.TODO(), filter)
 	if err != nil {
