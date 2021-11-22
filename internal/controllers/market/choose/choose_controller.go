@@ -20,9 +20,10 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
 	request := choose_models.Request{
-		By:  values.Get("by"),
-		Min: values.Get("min"),
-		Max: values.Get("max"),
+		By:    values.Get("by"),
+		Min:   values.Get("min"),
+		Max:   values.Get("max"),
+		Point: values.Get("point"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {

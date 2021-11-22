@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"stonks/internal/models"
@@ -171,11 +172,11 @@ func CurrentPrice(symbol string) mongo.Pipeline {
 func SymbolsByPrice(t models.PriceTag) mongo.Pipeline {
 	if t.Has("min") && t.Has("max") {
 		p := mongo.Pipeline{
-			{{"$match", bson.M{"series.0.high": bson.M{"$gte": t.Get("min"), "$lte": t.Get("max")}}}},
+			{{"$match", bson.M{fmt.Sprintf("series.0.%s", t.Get("point")): bson.M{"$gte": t.Get("min"), "$lte": t.Get("max")}}}},
 			{{
 				"$project", bson.M{
 					"symbol": "$_meta.symbol",
-					"price":  bson.M{"$first": "$series.high"},
+					"price":  bson.M{"$first": fmt.Sprintf("$series.%s", t.Get("point"))},
 				},
 			}},
 		}
@@ -185,11 +186,11 @@ func SymbolsByPrice(t models.PriceTag) mongo.Pipeline {
 
 	if t.Has("min") && !t.Has("max") {
 		p := mongo.Pipeline{
-			{{"$match", bson.M{"series.0.high": bson.M{"$gte": t.Get("min")}}}},
+			{{"$match", bson.M{fmt.Sprintf("series.0.%s", t.Get("point")): bson.M{"$gte": t.Get("min")}}}},
 			{{
 				"$project", bson.M{
 					"symbol": "$_meta.symbol",
-					"price":  bson.M{"$first": "$series.high"},
+					"price":  bson.M{"$first": fmt.Sprintf("$series.%s", t.Get("point"))},
 				},
 			}},
 		}
@@ -199,11 +200,11 @@ func SymbolsByPrice(t models.PriceTag) mongo.Pipeline {
 
 	if !t.Has("min") && t.Has("max") {
 		p := mongo.Pipeline{
-			{{"$match", bson.M{"series.0.high": bson.M{"$lte": t.Get("max")}}}},
+			{{"$match", bson.M{fmt.Sprintf("series.0.%s", t.Get("point")): bson.M{"$lte": t.Get("max")}}}},
 			{{
 				"$project", bson.M{
 					"symbol": "$_meta.symbol",
-					"price":  bson.M{"$first": "$series.high"},
+					"price":  bson.M{"$first": fmt.Sprintf("$series.%s", t.Get("point"))},
 				},
 			}},
 		}
