@@ -140,9 +140,9 @@ func (s *CompanyDetailsService) DbGetDetailsRoutine(values url.Values, db *mongo
 }
 
 func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{}, error) {
-	db := s.DbHandler.AcquireDatabase(s.Config.DbName)
+	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
 
-	result, err := s.DbGetDetailsRoutine(values, db)
+	result, err := s.DbGetDetailsRoutine(values, database)
 	if err != nil {
 		request := s.BuildRequest(values)
 		response, err := s.DetailsRepo.GetCompanyDetails(request)
@@ -151,13 +151,13 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 			return nil, err
 		}
 
-		_, err = s.DetailsRepo.InsertCompanyDetails(collections[values.Get("function")], db, response)
+		_, err = s.DetailsRepo.InsertCompanyDetails(collections[values.Get("function")], database, response)
 		if err != nil {
-			s.Log.Error("db insert error")
+			s.Log.Error("database insert error")
 			return response, nil
 		}
 
-		res, err := s.DbGetDetailsRoutine(values, db)
+		res, err := s.DbGetDetailsRoutine(values, database)
 		if err != nil {
 			s.Log.Error("get error")
 			return nil, err
@@ -166,6 +166,6 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 		s.Log.Info("obtained from the api")
 		return res, nil
 	}
-	s.Log.Info("obtained from the db")
+	s.Log.Info("obtained from the database")
 	return result, nil
 }

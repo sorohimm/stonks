@@ -1,32 +1,28 @@
-package quotes_controller
+package choose_controller
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
+	"stonks/internal/interfaces/choose_interfaces"
+	choose_models "stonks/internal/models/choose"
 	"stonks/internal/validate"
-	"stonks/internal/interfaces/quotes_interfaces"
-	"stonks/internal/models/quotes"
 )
 
-type QuotesControllers struct {
+type ChooseControllers struct {
 	Log           *zap.SugaredLogger
-	QuotesService quotes_interfaces.IStockService
+	ChooseService choose_interfaces.IChooseService
 	Validator     *validator.Validate
 }
 
-func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
+func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
-	request := quotes_models.Request{
-		Symbol:     values.Get("symbol"),
-		Function:   values.Get("function"),
-		Interval:   values.Get("interval"),
-		From:       values.Get("from"),
-		To:         values.Get("to"),
-		Date:       values.Get("date"),
-		OutputSize: values.Get("outputsize"),
+	request := choose_models.Request{
+		By:  values.Get("by"),
+		Min: values.Get("min"),
+		Max: values.Get("max"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
@@ -35,16 +31,22 @@ func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 		return
 	}
 
-	ok := validate.Date(request.From, request.To, request.Date)
-	if !ok {
+	if request.Min == "" && request.Max == "" {
 		c.Log.Info("invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
 	}
 
-	resp, err := c.QuotesService.GetQuotes(values)
+	err := validate.Price(request.Min, request.Max)
 	if err != nil {
-		c.Log.Info("server error")
+		c.Log.Info("invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		return
+	}
+
+	resp, err := c.ChooseService.GetChoose(values)
+	if err != nil {
+		c.Log.Info("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}

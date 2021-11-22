@@ -13,11 +13,11 @@ type GrowthRepo struct {
 	Client *http.Client
 }
 
-func (r *GrowthRepo) GetQuote(db *mongo.Database, coll string, filter interface{}) (gmodels.Response, error) {
+func (r *GrowthRepo) GetGrowth(db *mongo.Database, coll string, filter interface{}) (gmodels.Response, error) {
 	var body gmodels.Response
 	cursor, err := db.Collection(coll).Aggregate(context.TODO(), filter)
 	if err != nil {
-		r.Log.Infof("growth_repo: GetQuote: %s", err)
+		r.Log.Infof("growth_repo :: GetGrowth :: %s", err)
 		return gmodels.Response{}, err
 	}
 

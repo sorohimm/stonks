@@ -40,18 +40,18 @@ func (s *QuotesService) IntradayQuotesRoutine(r *http.Request) (interface{}, err
 
 	switch r.URL.Query().Get("interval") {
 	case "1min":
-		res, err = s.QuotesRepo.GetIntraday1Quotes(r)
+		res, err = s.QuotesApiRepo.GetIntraday1Quotes(r)
 	case "5min":
-		res, err = s.QuotesRepo.GetIntraday5Quotes(r)
+		res, err = s.QuotesApiRepo.GetIntraday5Quotes(r)
 	case "15min":
-		res, err = s.QuotesRepo.GetIntraday15Quotes(r)
+		res, err = s.QuotesApiRepo.GetIntraday15Quotes(r)
 	case "30min":
-		res, err = s.QuotesRepo.GetIntraday30Quotes(r)
+		res, err = s.QuotesApiRepo.GetIntraday30Quotes(r)
 	case "60min":
-		res, err = s.QuotesRepo.GetIntraday60Quotes(r)
+		res, err = s.QuotesApiRepo.GetIntraday60Quotes(r)
 	}
 	if err != nil {
-		s.Log.Infof("quotes_service: IntradayQuotesRoutine: %s", err)
+		s.Log.Infof("quotes_service :: IntradayQuotesRoutine :: %s", err)
 		return nil, err
 	}
 	return res, nil
@@ -78,14 +78,14 @@ func (s *QuotesService) QuotesRoutine(request *http.Request) (interface{}, error
 	case "TIME_SERIES_INTRADAY":
 		res, err = s.IntradayQuotesRoutine(request)
 	case "TIME_SERIES_DAILY":
-		res, err = s.QuotesRepo.GetDailyQuotes(request)
+		res, err = s.QuotesApiRepo.GetDailyQuotes(request)
 	case "TIME_SERIES_WEEKLY":
-		res, err = s.QuotesRepo.GetWeeklyQuotes(request)
+		res, err = s.QuotesApiRepo.GetWeeklyQuotes(request)
 	case "TIME_SERIES_MONTHLY":
-		res, err = s.QuotesRepo.GetMonthlyQuotes(request)
+		res, err = s.QuotesApiRepo.GetMonthlyQuotes(request)
 	}
 	if err != nil {
-		s.Log.Infof("quotes_service: QuotesRoutine: %s", err)
+		s.Log.Infof("quotes_service :: QuotesRoutine :: %s", err)
 		return nil, err
 	}
 	return res, nil

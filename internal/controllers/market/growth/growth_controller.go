@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"stonks/internal/interfaces/growth_interfaces"
 	"stonks/internal/models/growth"
+	"stonks/internal/validate"
 )
 
 type GrowthControllers struct {
@@ -15,7 +16,7 @@ type GrowthControllers struct {
 	Validator     *validator.Validate
 }
 
-func (g *GrowthControllers) GetQuotes(ctx *gin.Context) {
+func (c *GrowthControllers) GetQuotes(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
 	request := growth_models.Request{
@@ -24,15 +25,22 @@ func (g *GrowthControllers) GetQuotes(ctx *gin.Context) {
 		To:         values.Get("to"),
 	}
 
-	if err := g.Validator.Struct(request); err != nil {
-		g.Log.Info("invalid request")
+	if err := c.Validator.Struct(request); err != nil {
+		c.Log.Info("invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
 	}
 
-	resp, err := g.GrowthService.GetGrowth(values)
+	ok := validate.Date(request.From, request.To)
+	if !ok {
+		c.Log.Info("invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		return
+	}
+
+	resp, err := c.GrowthService.GetGrowth(values)
 	if err != nil {
-		g.Log.Info("unknown error")
+		c.Log.Info("unknown error")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 		return
 	}

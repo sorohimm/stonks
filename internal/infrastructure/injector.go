@@ -5,13 +5,19 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
-	growth_controller "stonks/internal/controllers/market/growth"
+	choose_controller "stonks/internal/controllers/market/choose"
+	"stonks/internal/controllers/market/growth"
 	"stonks/internal/controllers/market/quotes"
 	"stonks/internal/interfaces/db_interfaces"
+	"stonks/internal/repos/api"
+	choose_repo "stonks/internal/repos/choose"
+	db_repo "stonks/internal/repos/db"
 	"stonks/internal/repos/details"
-	growth_repo "stonks/internal/repos/growth"
+	"stonks/internal/repos/growth"
+
+	"stonks/internal/services/choose"
 	"stonks/internal/services/details"
-	growth_services "stonks/internal/services/growth"
+	"stonks/internal/services/growth"
 	"stonks/internal/services/news"
 
 	"stonks/internal/config"
@@ -27,6 +33,7 @@ type IInjector interface {
 	InjectDetailsController() details_controller.CompanyDetailsControllers
 	InjectQuotesController() quotes_controller.QuotesControllers
 	InjectGrowthController() growth_controller.GrowthControllers
+	InjectChooseController() choose_controller.ChooseControllers
 }
 
 var env *environment
@@ -39,7 +46,6 @@ type environment struct {
 }
 
 func (e *environment) InjectNewsController() news_controller.NewsControllers {
-	e.logger.Info("inject news...")
 	return news_controller.NewsControllers{
 		Log: e.logger,
 		NewsService: &news_service.NewsService{
@@ -54,7 +60,6 @@ func (e *environment) InjectNewsController() news_controller.NewsControllers {
 }
 
 func (e *environment) InjectDetailsController() details_controller.CompanyDetailsControllers {
-	e.logger.Info("inject details...")
 	return details_controller.CompanyDetailsControllers{
 		Log: e.logger,
 		CompanyDetailsService: &details_service.CompanyDetailsService{
@@ -71,7 +76,6 @@ func (e *environment) InjectDetailsController() details_controller.CompanyDetail
 }
 
 func (e *environment) InjectQuotesController() quotes_controller.QuotesControllers {
-	e.logger.Info("inject quotes...")
 	return quotes_controller.QuotesControllers{
 		Log: e.logger,
 		QuotesService: &quotes_service.QuotesService{
@@ -82,13 +86,20 @@ func (e *environment) InjectQuotesController() quotes_controller.QuotesControlle
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
+			QuotesApiRepo: &api_repo.ApiRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
+			DbRepo: &db_repo.DbRepo{
+				Log: e.logger,
+				Client: e.client,
+			},
 		},
 		Validator: validator.New(),
 	}
 }
 
 func (e *environment) InjectGrowthController() growth_controller.GrowthControllers {
-	e.logger.Info("inject growth...")
 	return growth_controller.GrowthControllers{
 		Log: e.logger,
 		GrowthService: &growth_services.GrowthService{
@@ -99,6 +110,38 @@ func (e *environment) InjectGrowthController() growth_controller.GrowthControlle
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
+			QuotesApiRepo: &api_repo.ApiRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
+			DbRepo: &db_repo.DbRepo{
+				Log: e.logger,
+				Client: e.client,
+			},
+		},
+		Validator: validator.New(),
+	}
+}
+
+func (e *environment) InjectChooseController() choose_controller.ChooseControllers {
+	return choose_controller.ChooseControllers{
+		Log: e.logger,
+		ChooseService: &choose_service.ChooseService{
+			Log: e.logger,
+			Config:    e.cfg,
+			ChooseRepo: &choose_repo.ChooseRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
+			DbHandler: e.dbClient,
+			QuotesApiRepo: &api_repo.ApiRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
+			DbRepo: &db_repo.DbRepo{
+				Log: e.logger,
+				Client: e.client,
+			},
 		},
 		Validator: validator.New(),
 	}
@@ -106,7 +149,7 @@ func (e *environment) InjectGrowthController() growth_controller.GrowthControlle
 
 func Injector(log *zap.SugaredLogger, ctx context.Context, cfg *config.Config) (IInjector, error) {
 	log.Infof("injector starting...")
-	dbClient, err := InitDbClient(log, cfg, ctx)
+	client, err := InitDbClient(log, cfg, ctx)
 	if err != nil {
 		log.Fatal("db init error")
 		return nil, err
@@ -117,7 +160,7 @@ func Injector(log *zap.SugaredLogger, ctx context.Context, cfg *config.Config) (
 		logger:   log,
 		cfg:      cfg,
 		client:   http.DefaultClient,
-		dbClient: dbClient,
+		dbClient: client,
 	}
 
 	log.Info("injecting done")

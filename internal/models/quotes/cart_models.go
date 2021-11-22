@@ -55,18 +55,4 @@ type Meta struct {
 	TimeZone      string `json:"4. Time Zone,omitempty"`
 }
 
-type SessionMongo struct {
-	Date   string `json:"date,omitempty"`
-	Open   string `json:"open,omitempty"`
-	High   string `json:"high,omitempty"`
-	Low    string `json:"low,omitempty"`
-	Close  string `json:"close,omitempty"`
-	Volume string `json:"volume,omitempty"`
-}
 
-type MetaMongo struct {
-	Information   string `json:"information,omitempty"`
-	Symbol        string `json:"symbol,omitempty" bson:"symbol"`
-	LastRefreshed string `json:"last-refreshed,omitempty" `
-	TimeZone      string `json:"time-zone,omitempty" `
-}

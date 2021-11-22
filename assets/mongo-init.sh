@@ -1,3 +1,5 @@
+mongo
+
 use jupiter
 
 db.createUser(

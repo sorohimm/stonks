@@ -6,5 +6,5 @@ import (
 )
 
 type IGrowthRepo interface {
-	GetQuote(*mongo.Database, string, interface{}) (gmodels.Response, error)
+	GetGrowth(*mongo.Database, string, interface{}) (gmodels.Response, error)
 }

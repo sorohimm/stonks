@@ -7,16 +7,19 @@ import (
 	"stonks/internal/config"
 	"stonks/internal/db"
 	"stonks/internal/db/filter"
+	"stonks/internal/interfaces/api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/quotes_interfaces"
 	"stonks/internal/models"
 )
 
 type QuotesService struct {
-	Log        *zap.SugaredLogger
-	Config     *config.Config
-	QuotesRepo quotes_interfaces.IQuotesRepo
-	DbHandler  db_interfaces.IDBHandler
+	Log           *zap.SugaredLogger
+	Config        *config.Config
+	QuotesRepo    quotes_interfaces.IQuotesRepo
+	QuotesApiRepo api_interfaces.IQuotesApiRepo
+	DbRepo        db_interfaces.IDbRepo
+	DbHandler     db_interfaces.IDBHandler
 }
 
 func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
@@ -27,7 +30,7 @@ func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
 	var pipe = filter.QuotesPipeline(t)
 
 	if db.IsDocExist(database, coll, filter.Exist(values.Get("symbol"))) {
-		result, err := s.QuotesRepo.GetQuotesDB(database, coll, pipe)
+		result, err := s.QuotesRepo.GetQuotes(database, coll, pipe)
 		if err != nil {
 			s.Log.Infof("quotes_service :: dbroutine error")
 			return nil, err
@@ -41,7 +44,7 @@ func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
 			return nil, err
 		}
 
-		_, err = s.QuotesRepo.InsertQuotes(coll, database, response)
+		_, err = s.DbRepo.InsertOne(database, coll, response)
 		if err != nil {
 			s.Log.Infof("quotes_service :: database insert error")
 			return nil, errors.New("server error")
@@ -51,7 +54,7 @@ func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
 			return response, nil
 		}
 
-		result, err := s.QuotesRepo.GetQuotesDB(database, coll, pipe)
+		result, err := s.QuotesRepo.GetQuotes(database, coll, pipe)
 		if err != nil {
 			s.Log.Infof("quotes_service :: dbroutine error")
 			return nil, err

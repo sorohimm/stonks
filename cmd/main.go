@@ -34,11 +34,15 @@ func init() {
 }
 
 func main() {
-	injector, _ := infrastructure.Injector(log, ctx, cfg)
+	injector, err := infrastructure.Injector(log, ctx, cfg)
+	if err != nil {
+		log.Fatal("main :: inject failing")
+	}
 	newsController := injector.InjectNewsController()
 	overviewController := injector.InjectDetailsController()
 	quotesController := injector.InjectQuotesController()
 	growthController := injector.InjectGrowthController()
+	chooseController := injector.InjectChooseController()
 
 	router := gin.Default()
 
@@ -48,7 +52,11 @@ func main() {
 		v1.GET("/details", overviewController.GetCompanyDetails)
 		v1.GET("/quotes", quotesController.GetQuotes)
 		v1.GET("/growth", growthController.GetQuotes)
+		v1.GET("/choose", chooseController.GetChoose)
 	}
 
-	router.Run()
+	err = router.Run()
+	if err != nil {
+		log.Fatal("main :: router start error")
+	}
 }
