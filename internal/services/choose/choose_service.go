@@ -43,12 +43,10 @@ func (s *ChooseService) GetChoose(values url.Values) (interface{}, error) {
 	var pipe = filter.SymbolsByPrice(t)
 
 	//TODO add pe and forecast choose
-	//TODO choose by high low etc. when by==price
 	response, err := s.ChooseRepo.GetChooseByPrice(database, "DailySeries", pipe)
 	if err != nil {
 		s.Log.Infof("choose_service :: database error")
 		return nil, err
 	}
-	s.Log.Info(response)
 	return response, nil
 }
