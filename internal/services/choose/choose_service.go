@@ -34,6 +34,19 @@ func (s *ChooseService) BuildRequest(values url.Values) *http.Request {
 	return request
 }
 
+func getColl(values url.Values) string {
+	switch values.Get("interval") {
+	case "daily":
+		return "DailySeries"
+	case "weekly":
+		return "WeeklySeries"
+	case "monthly":
+		return "MonthlySeries"
+	default:
+		return ""
+	}
+}
+
 func (s *ChooseService) GetChoose(values url.Values) (interface{}, error) {
 	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
 
@@ -42,11 +55,18 @@ func (s *ChooseService) GetChoose(values url.Values) (interface{}, error) {
 
 	var pipe = filter.SymbolsByPrice(t)
 
+	var err error
+	var response interface{}
 	//TODO add pe and forecast choose
-	response, err := s.ChooseRepo.GetChooseByPrice(database, "DailySeries", pipe)
+	if values.Get("by") == "price" {
+		response, err = s.ChooseRepo.ChooseByPrice(database, getColl(values), pipe)
+	} else if values.Get("by") == "pe" {
+
+	}
 	if err != nil {
 		s.Log.Infof("choose_service :: database error")
 		return nil, err
 	}
+
 	return response, nil
 }

@@ -13,12 +13,12 @@ type ChooseRepo struct {
 	Client *http.Client
 }
 
-func (r *ChooseRepo) GetChooseByPrice(database *mongo.Database, coll string, filter interface{}) (interface{}, error) {
+func (r *ChooseRepo) ChooseByPrice(database *mongo.Database, coll string, filter interface{}) (interface{}, error) {
 	//var body choose_models.ByPrice
 	var things []choose_models.Price
 	cursor, err := database.Collection(coll).Aggregate(context.TODO(), filter)
 	if err != nil {
-		r.Log.Infof("choose_repo :: GetChooseByPrice :: %s", err)
+		r.Log.Infof("choose_repo :: ChooseByPrice :: %s", err)
 		return nil, err
 	}
 

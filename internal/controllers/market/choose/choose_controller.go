@@ -20,10 +20,11 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
 	request := choose_models.Request{
-		By:    values.Get("by"),
-		Min:   values.Get("min"),
-		Max:   values.Get("max"),
-		Point: values.Get("point"),
+		By:       values.Get("by"),
+		Min:      values.Get("min"),
+		Max:      values.Get("max"),
+		Point:    values.Get("point"),
+		Interval: values.Get("interval"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
@@ -43,6 +44,10 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 		c.Log.Info("invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
+	}
+
+	if request.Interval == "" {
+		values.Set("interval", "daily")
 	}
 
 	resp, err := c.ChooseService.GetChoose(values)
