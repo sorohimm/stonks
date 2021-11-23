@@ -53,16 +53,16 @@ func (s *ChooseService) GetChoose(values url.Values) (interface{}, error) {
 	var err error
 	var response interface{}
 
-	//TODO add pe and forecast choose
-	switch values.Get("by") {
-	case "price":
+	//TODO add forecast choose
+	switch values.Get("function") {
+	case "PRICE":
 		response, err = s.ChooseRepo.ChooseByPrice(database, getColl(values), pipe)
-	case "pe":
+	case "PE":
 		response, err = s.ChooseRepo.ChooseByPE(database, pipe)
 	}
 
 	if err != nil {
-		s.Log.Infof("choose_service :: database error")
+		s.Log.Infof("choose_service :: GetChoose :: %s", err)
 		return nil, err
 	}
 

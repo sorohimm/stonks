@@ -29,15 +29,15 @@ func (c *NewsControllers) GetNews(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Error("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		c.Log.Error("news_controller :: GetNews :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	resp, err := c.NewsService.GetNews(parameters)
 	if err != nil {
-		c.Log.Error("unknown error")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
+		c.Log.Error("news_controller :: GetNews :: unknown server error")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong :("})
 		return
 	}
 

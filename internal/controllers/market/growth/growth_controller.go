@@ -16,7 +16,7 @@ type GrowthControllers struct {
 	Validator     *validator.Validate
 }
 
-func (c *GrowthControllers) GetQuotes(ctx *gin.Context) {
+func (c *GrowthControllers) GetGrowth(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
 	request := growth_models.Request{
@@ -26,22 +26,22 @@ func (c *GrowthControllers) GetQuotes(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("growth_controller :: GetGrowth :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	ok := validate.Date(request.From, request.To)
 	if !ok {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("growth_controller :: GetGrowth :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	resp, err := c.GrowthService.GetGrowth(values)
 	if err != nil {
-		c.Log.Info("unknown error")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
+		c.Log.Info("growth_controller :: GetGrowth :: unknown server error")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong :("})
 		return
 	}
 

@@ -20,7 +20,7 @@ func (r *QuotesRepo) GetQuotes(db *mongo.Database, coll string, filter interface
 	var body qmodels.TSMongo
 	cursor, err := db.Collection(coll).Aggregate(context.TODO(), filter)
 	if err != nil {
-		r.Log.Infof("quotes repo: GetQuotes: %s", err)
+		r.Log.Infof("quotes repo: GetGrowth: %s", err)
 		return nil, err
 	}
 

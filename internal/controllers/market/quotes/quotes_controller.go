@@ -5,9 +5,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
-	"stonks/internal/validate"
 	"stonks/internal/interfaces/quotes_interfaces"
 	"stonks/internal/models/quotes"
+	"stonks/internal/validate"
 )
 
 type QuotesControllers struct {
@@ -30,22 +30,22 @@ func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("quotes_controller :: GetQuotes :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	ok := validate.Date(request.From, request.To, request.Date)
 	if !ok {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("quotes_controller :: GetQuotes :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	resp, err := c.QuotesService.GetQuotes(values)
 	if err != nil {
-		c.Log.Info("server error")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
+		c.Log.Info("quotes_controller :: GetQuotes :: unknown server error")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong :("})
 		return
 	}
 

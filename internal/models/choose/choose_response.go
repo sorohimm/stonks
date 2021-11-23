@@ -14,6 +14,6 @@ type Price struct {
 }
 
 type PE struct {
-	Symbol string `json:"symbol"`
+	Symbol string  `json:"symbol"`
 	PE     float64 `json:"pe"`
 }

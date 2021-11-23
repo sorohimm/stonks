@@ -28,22 +28,22 @@ func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		c.Log.Info("details_controller :: GetCompanyDetails :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	ok := validate.Date(request.From, request.To)
 	if !ok {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("details_controller :: GetCompanyDetails :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
 	resp, err := c.CompanyDetailsService.GetCompanyDetails(values)
 	if err != nil {
-		c.Log.Info("unknown server error")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
+		c.Log.Info("details_controller :: GetCompanyDetails :: unknown server error")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong :("})
 		return
 	}
 

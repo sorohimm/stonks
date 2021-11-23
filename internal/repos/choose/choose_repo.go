@@ -2,6 +2,7 @@ package choose_repo
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 	"net/http"
@@ -38,21 +39,17 @@ func (r *ChooseRepo) ChooseByPE(database *mongo.Database, filter interface{}) (i
 	cursor, err := database.Collection("Overview").Aggregate(context.TODO(), filter)
 	if err != nil {
 		r.Log.Infof("choose_repo :: ChooseByPrice :: %s", err)
-		return nil, err
+		return nil, errors.New("aggregate error")
 	}
 
 	for cursor.Next(context.TODO()) {
 		var this choose_models.PE
 		if err = cursor.Decode(&this); err != nil {
 			r.Log.Infof("choose_repo :: ChooseByPrice :: %s", err)
-			return nil, err
+			return nil, errors.New("decode error")
 		}
-		r.Log.Info(this)
 		things = append(things, this)
 	}
 
-	r.Log.Info(things)
-
 	return things, nil
 }
-

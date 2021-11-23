@@ -20,7 +20,7 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
 	request := choose_models.Request{
-		By:       values.Get("by"),
+		Function: values.Get("function"),
 		Min:      values.Get("min"),
 		Max:      values.Get("max"),
 		Point:    values.Get("point"),
@@ -28,30 +28,29 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Infof("invalid request: %s", err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Infof("choose_controller :: GetChoose :: validation :: %s", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
-	if request.By == "price" {
-		if request.Point != "open" || request.Point !=  "high" || request.Point != "low" || request.Point !=  "close" {
-			c.Log.Info("invalid request")
-			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+	if request.Function == "PRICE" {
+		if request.Point != "open" || request.Point != "high" || request.Point != "low" || request.Point != "close" {
+			c.Log.Info("choose_controller :: GetChoose :: validation :: invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 			return
 		}
 	}
 
 	if request.Min == "" && request.Max == "" {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("choose_controller :: GetChoose :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
-
 	err := validate.Price(request.Min, request.Max)
 	if err != nil {
-		c.Log.Info("invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+		c.Log.Info("choose_controller :: GetChoose :: validation :: invalid request")
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return
 	}
 
@@ -61,8 +60,8 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 
 	resp, err := c.ChooseService.GetChoose(values)
 	if err != nil {
-		c.Log.Info("unknown error")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
+		c.Log.Info("choose_controller :: GetChoose :: unknown server error")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong :("})
 		return
 	}
 

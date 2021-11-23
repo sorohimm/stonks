@@ -51,7 +51,7 @@ func main() {
 		v1.GET("/news", newsController.GetNews)
 		v1.GET("/details", overviewController.GetCompanyDetails)
 		v1.GET("/quotes", quotesController.GetQuotes)
-		v1.GET("/growth", growthController.GetQuotes)
+		v1.GET("/growth", growthController.GetGrowth)
 		v1.GET("/choose", chooseController.GetChoose)
 	}
 
