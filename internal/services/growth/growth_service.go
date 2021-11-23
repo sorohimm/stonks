@@ -57,7 +57,7 @@ func (s *GrowthService) GetGrowth(values url.Values) (interface{}, error) {
 	var t models.Timing
 	t.Set(values)
 
-	var pipe = filter.GrowthPipeline(t)
+	var pipe = filter.Growth(t)
 
 	if db.IsDocExist(database, "DailySeries", filter.Exist(t.Get("symbol"))) {
 		response, err := s.GrowthRepo.GetGrowth(database, "DailySeries", pipe)

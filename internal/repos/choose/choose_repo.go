@@ -33,3 +33,26 @@ func (r *ChooseRepo) ChooseByPrice(database *mongo.Database, coll string, filter
 	return things, nil
 }
 
+func (r *ChooseRepo) ChooseByPE(database *mongo.Database, filter interface{}) (interface{}, error) {
+	var things []choose_models.PE
+	cursor, err := database.Collection("Overview").Aggregate(context.TODO(), filter)
+	if err != nil {
+		r.Log.Infof("choose_repo :: ChooseByPrice :: %s", err)
+		return nil, err
+	}
+
+	for cursor.Next(context.TODO()) {
+		var this choose_models.PE
+		if err = cursor.Decode(&this); err != nil {
+			r.Log.Infof("choose_repo :: ChooseByPrice :: %s", err)
+			return nil, err
+		}
+		r.Log.Info(this)
+		things = append(things, this)
+	}
+
+	r.Log.Info(things)
+
+	return things, nil
+}
+

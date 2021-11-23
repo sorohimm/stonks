@@ -5,15 +5,15 @@ type ByPrice struct {
 }
 
 type ByPE struct {
-	Tickers []PE
+	Tickers []PE `json:"tickers"`
 }
 
 type Price struct {
-	Symbol string `json:"symbol"`
+	Symbol string  `json:"symbol"`
 	Price  float64 `json:"price"`
 }
 
 type PE struct {
 	Symbol string `json:"symbol"`
-	PE     string `json:"pe"`
+	PE     float64 `json:"pe"`
 }

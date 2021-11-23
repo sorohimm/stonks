@@ -5,13 +5,13 @@ import (
 	"strconv"
 )
 
-type PriceTag struct {
+type ChooseTag struct {
 	Min   float64
 	Max   float64
 	Point string
 }
 
-func (t *PriceTag) Set(v url.Values) {
+func (t *ChooseTag) Set(v url.Values) {
 	min, _ := strconv.ParseFloat(v.Get("min"), 32)
 	max, _ := strconv.ParseFloat(v.Get("max"), 32)
 	t.Min = min
@@ -19,7 +19,7 @@ func (t *PriceTag) Set(v url.Values) {
 	t.Point = v.Get("point")
 }
 
-func (t *PriceTag) Has(field string) bool {
+func (t *ChooseTag) Has(field string) bool {
 	switch field {
 	case "min":
 		return t.Min != 0
@@ -32,7 +32,7 @@ func (t *PriceTag) Has(field string) bool {
 	}
 }
 
-func (t *PriceTag) Get(field string) interface{} {
+func (t *ChooseTag) Get(field string) interface{} {
 	switch field {
 	case "min":
 		return t.Min

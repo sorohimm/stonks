@@ -2,6 +2,7 @@ package api_interfaces
 
 import (
 	"net/http"
+	details_models "stonks/internal/models/company_details"
 	qmodels "stonks/internal/models/quotes"
 )
 
@@ -14,4 +15,5 @@ type IQuotesApiRepo interface {
 	GetDailyQuotes(*http.Request) (qmodels.TSMongo, error)
 	GetWeeklyQuotes(*http.Request) (qmodels.TSMongo, error)
 	GetMonthlyQuotes(*http.Request) (qmodels.TSMongo, error)
+	GetOverview(*http.Request) (details_models.OverviewMongo, error)
 }

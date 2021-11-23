@@ -28,9 +28,17 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("invalid request")
+		c.Log.Infof("invalid request: %s", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
+	}
+
+	if request.By == "price" {
+		if request.Point != "open" || request.Point !=  "high" || request.Point != "low" || request.Point !=  "close" {
+			c.Log.Info("invalid request")
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+			return
+		}
 	}
 
 	if request.Min == "" && request.Max == "" {
@@ -38,6 +46,7 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
 	}
+
 
 	err := validate.Price(request.Min, request.Max)
 	if err != nil {

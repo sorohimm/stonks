@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"net/url"
 	"stonks/internal/models"
 )
 
-func dataPipeline(t models.Timing) interface{} {
+func dataPipeline(t models.Timing) mongo.Pipeline {
 	if t.Has("from") && t.Has("to") && t.Has("date") {
 		p := mongo.Pipeline{
 			{{"$match", bson.M{"_meta.symbol": t.Get("symbol")}}},
@@ -81,7 +82,7 @@ func dataPipeline(t models.Timing) interface{} {
 	return mongo.Pipeline{}
 }
 
-func GrowthPipeline(t models.Timing) interface{} {
+func Growth(t models.Timing) mongo.Pipeline {
 	if t.Has("to") {
 		p := mongo.Pipeline{
 			{{"$match", bson.M{"_meta.symbol": t.Get("symbol")}}},
@@ -168,8 +169,8 @@ func CurrentPrice(symbol string) mongo.Pipeline {
 	return p
 }
 
-// SymbolsByPrice Creates a filter that chooses symbols by price
-func SymbolsByPrice(t models.PriceTag) mongo.Pipeline {
+// symbolsByPrice Creates a filter that chooses symbols by price
+func symbolsByPrice(t models.ChooseTag) mongo.Pipeline {
 	if t.Has("min") && t.Has("max") {
 		p := mongo.Pipeline{
 			{{"$match", bson.M{fmt.Sprintf("series.0.%s", t.Get("point")): bson.M{"$gte": t.Get("min"), "$lte": t.Get("max")}}}},
@@ -215,16 +216,79 @@ func SymbolsByPrice(t models.PriceTag) mongo.Pipeline {
 	return mongo.Pipeline{}
 }
 
+func symbolsByPE(t models.ChooseTag) mongo.Pipeline {
+	if t.Has("min") && t.Has("max") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"trailingpe": bson.M{"$gte": t.Get("min"), "$lte": t.Get("max")}}}},
+			{{
+				"$project", bson.M{
+					"symbol": "$symbol",
+					"pe":  "$trailingpe",
+				},
+			}},
+		}
+
+		return p
+	}
+
+	if t.Has("min") && !t.Has("max") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"trailingpe": bson.M{"$gte": t.Get("min")}}}},
+			{{
+				"$project", bson.M{
+					"symbol": "$symbol",
+					"pe":  "$trailingpe",
+				},
+			}},
+		}
+
+		return p
+	}
+
+	if !t.Has("min") && t.Has("max") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"trailingpe": bson.M{"$lte": t.Get("max")}}}},
+			{{
+				"$project", bson.M{
+					"symbol": "$symbol",
+					"pe":  "$trailingpe",
+				},
+			}},
+		}
+
+		return p
+	}
+
+	return mongo.Pipeline{}
+}
+
 // Exist Creates a filter that checks if a document with this symbol exists
 func Exist(symbol string) interface{} {
 	return bson.M{"_meta.symbol": symbol}
 }
 
-// QuotesPipeline generates a pipeline for a quote request
-func QuotesPipeline(t models.Timing) interface{} {
+// Choose generates a pipeline for a choose request
+func Choose(values url.Values) interface{} {
+	var t models.ChooseTag
+	t.Set(values)
+
+	switch values.Get("by") {
+	case "price":
+		return symbolsByPrice(t)
+	case "pe":
+		return symbolsByPE(t)
+	default:
+		return nil
+	}
+}
+
+// Quotes generates a pipeline for a quote request
+func Quotes(t models.Timing) interface{} {
 	if t.Has("from") || t.Has("to") || t.Has("date") {
 		return dataPipeline(t)
 	} else {
 		return symbolPipeline(t)
 	}
 }
+
+

@@ -69,6 +69,10 @@ func (e *environment) InjectDetailsController() details_controller.CompanyDetail
 				Log: e.logger,
 				Client: http.DefaultClient,
 			},
+			StocksApiRepo: &api_repo.ApiRepo{
+				Log: e.logger,
+				Client: http.DefaultClient,
+			},
 			DbHandler: e.dbClient,
 		},
 		Validator: validator.New(),
@@ -134,7 +138,7 @@ func (e *environment) InjectChooseController() choose_controller.ChooseControlle
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
-			QuotesApiRepo: &api_repo.ApiRepo{
+			StocksApiRepo: &api_repo.ApiRepo{
 				Log: e.logger,
 				Client: http.DefaultClient,
 			},

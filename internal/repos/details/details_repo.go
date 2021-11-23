@@ -39,17 +39,17 @@ func (r *CompanyDetailsRepo) GetCompanyDetails(request *http.Request) (interface
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("details repo: GetCompanyDetails decode error: %s", err)
+		r.Log.Errorf("details_repo :: GetCompanyDetails :: %s", err)
 		return nil, err
 	}
 	return body, nil
 }
 
 func (r *CompanyDetailsRepo) GetOverview(db *mongo.Database, filter interface{}) (interface{}, error) {
-	body := details_models.Overview{}
+	body := details_models.OverviewMongo{}
 	err := db.Collection("Overview").FindOne(context.TODO(), filter).Decode(&body)
 	if err != nil {
-		r.Log.Errorf("details repo: GetOverview decode error: %s", err)
+		r.Log.Errorf("details_repo :: GetOverview :: %s", err)
 		return nil, err
 	}
 	return body, nil
@@ -59,7 +59,7 @@ func (r *CompanyDetailsRepo) GetEarnings(db *mongo.Database, filter interface{})
 	body := details_models.Earnings{}
 	err := db.Collection("Earnings").FindOne(context.TODO(), filter).Decode(&body)
 	if err != nil {
-		r.Log.Errorf("details repo: GetEarnings decode error: %s", err)
+		r.Log.Errorf("details_repo :: GetEarnings :: %s", err)
 		return details_models.Earnings{}, err
 	}
 	return body, nil
@@ -69,7 +69,7 @@ func (r *CompanyDetailsRepo) GetIncomeStatement(db *mongo.Database, filter inter
 	body := details_models.IncomeStatement{}
 	err := db.Collection("IncomeStatement").FindOne(context.TODO(), filter).Decode(&body)
 	if err != nil {
-		r.Log.Errorf("details repo: GetIncomeStatement decode error: %s", err)
+		r.Log.Errorf("details_repo :: GetIncomeStatement :: %s", err)
 		return details_models.IncomeStatement{}, err
 	}
 	return body, nil
@@ -79,7 +79,7 @@ func (r *CompanyDetailsRepo) GetBalanceSheet(db *mongo.Database, filter interfac
 	body := details_models.BalanceSheet{}
 	err := db.Collection("BalanceSheet").FindOne(context.TODO(), filter).Decode(&body)
 	if err != nil {
-		r.Log.Errorf("details repo: GetBalanceSheet decode error: %s", err)
+		r.Log.Errorf("details_repo :: GetBalanceSheet :: %s", err)
 		return details_models.BalanceSheet{}, err
 	}
 	return body, nil
@@ -89,7 +89,7 @@ func (r *CompanyDetailsRepo) GetCashFlow(db *mongo.Database, filter interface{})
 	body := details_models.CashFlow{}
 	err := db.Collection("CashFlow").FindOne(context.TODO(), filter).Decode(&body)
 	if err != nil {
-		r.Log.Errorf("details repo: GetCashFlow decode error: %s", err)
+		r.Log.Errorf("details_repo :: GetCashFlow :: %s", err)
 		return details_models.CashFlow{}, err
 	}
 	return body, nil
@@ -98,7 +98,7 @@ func (r *CompanyDetailsRepo) GetCashFlow(db *mongo.Database, filter interface{})
 func (r *CompanyDetailsRepo) InsertCompanyDetails(collection string, db *mongo.Database, body interface{}) (interface{}, error) {
 	id, err := db.Collection(collection).InsertOne(context.TODO(), body)
 	if err != nil {
-		r.Log.Errorf("details repo: InsertCompanyDetails insertion error: %s", err)
+		r.Log.Errorf("details_repo :: InsertCompanyDetails :: %s", err)
 		return nil, err
 	}
 

@@ -9,15 +9,17 @@ import (
 	"net/url"
 	"stonks/internal/config"
 	"stonks/internal/constants/market"
+	"stonks/internal/interfaces/api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/details_interfaces"
 )
 
 type CompanyDetailsService struct {
-	Log         *zap.SugaredLogger
-	Config      *config.Config
-	DetailsRepo details_interface.ICompanyDetailsRepo
-	DbHandler   db_interfaces.IDBHandler
+	Log           *zap.SugaredLogger
+	Config        *config.Config
+	StocksApiRepo api_interfaces.IQuotesApiRepo
+	DetailsRepo   details_interface.ICompanyDetailsRepo
+	DbHandler     db_interfaces.IDBHandler
 }
 
 var (
@@ -36,7 +38,7 @@ func init() {
 func MakeFilter(values url.Values) (interface{}, error) {
 	switch values.Get("function") {
 	case "OVERVIEW":
-		return bson.D{{"Symbol", values.Get("symbol")}}, nil
+		return bson.D{{"symbol", values.Get("symbol")}}, nil
 	case "EARNINGS":
 		return bson.D{{"symbol", values.Get("symbol")}}, nil
 	case "INCOME_STATEMENT":
@@ -145,6 +147,30 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 	result, err := s.DbGetDetailsRoutine(values, database)
 	if err != nil {
 		request := s.BuildRequest(values)
+		if values.Get("function") == "OVERVIEW" {
+			response, err := s.StocksApiRepo.GetOverview(request)
+			if err != nil {
+				s.Log.Error("api get error")
+				return nil, err
+			}
+
+			s.Log.Info(response)
+			_, err = s.DetailsRepo.InsertCompanyDetails(collections[values.Get("function")], database, response)
+			if err != nil {
+				s.Log.Error("database insert error")
+				return nil, err
+			}
+
+			res, err := s.DbGetDetailsRoutine(values, database)
+			if err != nil {
+				s.Log.Error("get error")
+				return nil, err
+			}
+
+
+			return res, err
+		}
+
 		response, err := s.DetailsRepo.GetCompanyDetails(request)
 		if err != nil {
 			s.Log.Error("api get error")

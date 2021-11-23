@@ -10,13 +10,12 @@ import (
 	"stonks/internal/interfaces/api_interfaces"
 	"stonks/internal/interfaces/choose_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
-	"stonks/internal/models"
 )
 
 type ChooseService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
-	QuotesApiRepo api_interfaces.IQuotesApiRepo
+	StocksApiRepo api_interfaces.IQuotesApiRepo
 	ChooseRepo    choose_interfaces.IChooseRepo
 	DbRepo        db_interfaces.IDbRepo
 	DbHandler     db_interfaces.IDBHandler
@@ -50,19 +49,18 @@ func getColl(values url.Values) string {
 func (s *ChooseService) GetChoose(values url.Values) (interface{}, error) {
 	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
 
-	var t models.PriceTag
-	t.Set(values)
-
-	var pipe = filter.SymbolsByPrice(t)
-
+	var pipe = filter.Choose(values)
 	var err error
 	var response interface{}
-	//TODO add pe and forecast choose
-	if values.Get("by") == "price" {
-		response, err = s.ChooseRepo.ChooseByPrice(database, getColl(values), pipe)
-	} else if values.Get("by") == "pe" {
 
+	//TODO add pe and forecast choose
+	switch values.Get("by") {
+	case "price":
+		response, err = s.ChooseRepo.ChooseByPrice(database, getColl(values), pipe)
+	case "pe":
+		response, err = s.ChooseRepo.ChooseByPE(database, pipe)
 	}
+
 	if err != nil {
 		s.Log.Infof("choose_service :: database error")
 		return nil, err
