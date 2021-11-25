@@ -10,6 +10,6 @@ type Request struct {
 }
 
 type Response struct {
-	Tickers   []Ticker `json:"tickers,omitempty"`
-	Aggregate float64   `json:"aggregate,omitempty"`
+	Tickers     []Ticker `json:"tickers,omitempty"`
+	Aggregation float64  `json:"aggregation,omitempty"`
 }

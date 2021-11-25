@@ -25,7 +25,7 @@ type AggregateService struct {
 }
 
 func (s *AggregateService) BuildRequest(symbol string) *http.Request {
-	var values url.Values
+	values := url.Values{}
 	values.Set("function", "TIME_SERIES_DAILY")
 	values.Set("symbol", symbol)
 	values.Set("outputsize", "full")
@@ -66,7 +66,7 @@ func (s *AggregateService) GetAggregate(request aggregate_models.Request) (inter
 
 	response := aggregate_models.Response{
 		Tickers:   request.Tickers,
-		Aggregate: aggregate,
+		Aggregation: aggregate,
 	}
 
 	return response, nil
