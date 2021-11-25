@@ -45,31 +45,31 @@ type IncomeStatementMongo struct {
 }
 
 type IncomeStatementReportsMongo struct {
-	FiscalDateEnding                  string  `json:"fiscalDateEnding,omitempty"`
-	ReportedCurrency                  string  `json:"reportedCurrency,omitempty"`
-	GrossProfit                       float64 `json:"grossProfit,omitempty"`
-	TotalRevenue                      float64 `json:"totalRevenue,omitempty"`
-	CostOfRevenue                     float64 `json:"costOfRevenue,omitempty"`
-	CostofGoodsAndServicesSold        float64 `json:"costofGoodsAndServicesSold,omitempty"`
-	OperatingIncome                   float64 `json:"operatingIncome,omitempty"`
-	SellingGeneralAndAdministrative   float64 `json:"sellingGeneralAndAdministrative,omitempty"`
-	ResearchAndDevelopment            float64 `json:"researchAndDevelopment,omitempty"`
-	OperatingExpenses                 float64 `json:"operatingExpenses,omitempty"`
-	InvestmentIncomeNet               float64 `json:"investmentIncomeNet,omitempty"`
-	NetInterestIncome                 float64 `json:"netInterestIncome,omitempty"`
-	InterestIncome                    float64 `json:"interestIncome,omitempty"`
-	InterestExpense                   float64 `json:"interestExpense,omitempty"`
-	NonInterestIncome                 float64 `json:"nonInterestIncome,omitempty"`
-	OtherNonOperatingIncome           float64 `json:"otherNonOperatingIncome,omitempty"`
-	DepreciationAndAmortization       float64 `json:"depreciationAndAmortization,omitempty"`
-	IncomeBeforeTax                   float64 `json:"incomeBeforeTax,omitempty"`
-	IncomeTaxExpense                  float64 `json:"incomeTaxExpense,omitempty"`
-	InterestAndDebtExpense            float64 `json:"interestAndDebtExpense,omitempty"`
-	NetIncomeFromContinuingOperations float64 `json:"netIncomeFromContinuingOperations,omitempty"`
-	ComprehensiveIncomeNetOfTax       float64 `json:"comprehensiveIncomeNetOfTax,omitempty"`
-	Ebit                              float64 `json:"ebit,omitempty"`
-	Ebitda                            float64 `json:"ebitda,omitempty"`
-	NetIncome                         float64 `json:"net_income,omitempty"`
+	FiscalDateEnding                  string  `json:"fiscalDateEnding,omitempty"                  bson:"fiscalDateEnding,omitempty"`
+	ReportedCurrency                  string  `json:"reportedCurrency,omitempty"                  bson:"reportedCurrency,omitempty"`
+	GrossProfit                       float64 `json:"grossProfit,omitempty"                       bson:"grossProfit,omitempty"`
+	TotalRevenue                      float64 `json:"totalRevenue,omitempty"                      bson:"totalRevenue,omitempty"`
+	CostOfRevenue                     float64 `json:"costOfRevenue,omitempty"                     bson:"costOfRevenue,omitempty"`
+	CostofGoodsAndServicesSold        float64 `json:"costofGoodsAndServicesSold,omitempty"        bson:"costofGoodsAndServicesSold,omitempty"`
+	OperatingIncome                   float64 `json:"operatingIncome,omitempty"                   bson:"operatingIncome,omitempty"`
+	SellingGeneralAndAdministrative   float64 `json:"sellingGeneralAndAdministrative,omitempty"   bson:"sellingGeneralAndAdministrative,omitempty"`
+	ResearchAndDevelopment            float64 `json:"researchAndDevelopment,omitempty"            bson:"researchAndDevelopment,omitempty"`
+	OperatingExpenses                 float64 `json:"operatingExpenses,omitempty"                 bson:"operatingExpenses,omitempty"`
+	InvestmentIncomeNet               float64 `json:"investmentIncomeNet,omitempty"               bson:"investmentIncomeNet,omitempty"`
+	NetInterestIncome                 float64 `json:"netInterestIncome,omitempty"                 bson:"netInterestIncome,omitempty"`
+	InterestIncome                    float64 `json:"interestIncome,omitempty"                    bson:"interestIncome,omitempty"`
+	InterestExpense                   float64 `json:"interestExpense,omitempty"                   bson:"interestExpense,omitempty"`
+	NonInterestIncome                 float64 `json:"nonInterestIncome,omitempty"                 bson:"nonInterestIncome,omitempty"`
+	OtherNonOperatingIncome           float64 `json:"otherNonOperatingIncome,omitempty"           bson:"otherNonOperatingIncome,omitempty"`
+	DepreciationAndAmortization       float64 `json:"depreciationAndAmortization,omitempty"       bson:"depreciationAndAmortization,omitempty"`
+	IncomeBeforeTax                   float64 `json:"incomeBeforeTax,omitempty"                   bson:"incomeBeforeTax,omitempty"`
+	IncomeTaxExpense                  float64 `json:"incomeTaxExpense,omitempty"                  bson:"incomeTaxExpense,omitempty"`
+	InterestAndDebtExpense            float64 `json:"interestAndDebtExpense,omitempty"            bson:"interestAndDebtExpense,omitempty"`
+	NetIncomeFromContinuingOperations float64 `json:"netIncomeFromContinuingOperations,omitempty" bson:"netIncomeFromContinuingOperations,omitempty"`
+	ComprehensiveIncomeNetOfTax       float64 `json:"comprehensiveIncomeNetOfTax,omitempty"       bson:"comprehensiveIncomeNetOfTax,omitempty"`
+	Ebit                              float64 `json:"ebit,omitempty"                              bson:"ebit,omitempty"`
+	Ebitda                            float64 `json:"ebitda,omitempty"                            bson:"ebitda,omitempty"`
+	NetIncome                         float64 `json:"net_income,omitempty"                        bson:"net_income,omitempty"`
 }
 
 func (s *IncomeStatementReportsMongo) Set(v IncomeStatementReports) {
@@ -144,14 +144,4 @@ func (s *IncomeStatementMongo) Set(v IncomeStatement) {
 	s.Symbol = v.Symbol
 	s.AnnualReports = annual
 	s.QuarterlyReports = quarterly
-}
-
-type DAnnualIncomeStatement struct {
-	Symbol         string                        `json:"symbol"`
-	AnnualEarnings []IncomeStatementReportsMongo `json:"annual"`
-}
-
-type DQuarterlyIncomeStatement struct {
-	Symbol            string                        `json:"symbol"`
-	QuarterlyEarnings []IncomeStatementReportsMongo `json:"quarterly"`
 }

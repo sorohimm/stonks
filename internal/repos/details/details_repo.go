@@ -49,7 +49,6 @@ func (r *CompanyDetailsRepo) GetEarnings(db *mongo.Database, filter interface{})
 			r.Log.Infof("details_repo :: GetEarnings :: %s", err)
 			return details_models.EarningsMongo{}, err
 		}
-		r.Log.Info(body)
 		break
 	}
 

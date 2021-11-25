@@ -17,7 +17,6 @@ type CompanyDetailsControllers struct {
 }
 
 func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
-	c.Log.Info("DO DETAILS CONTROLLER")
 	values := ctx.Request.URL.Query()
 
 	request := details_models.DetailsRequest{

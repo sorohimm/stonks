@@ -72,20 +72,15 @@ func (s *CompanyDetailsService) DbDetailsRoutine(database *mongo.Database, filte
 
 
 func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{}, error) {
-	s.Log.Info("DO DETAILS SERVICE")
 	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
-	s.Log.Info("Acquire Database!!!!!!!!!!!!!!!")
 	var err error
 	var res interface{}
 	f := filter.Details(values, values.Get("function"))
 	s.Log.Info(f)
 	if db.IsDocExist(database, collections[values.Get("function")], filter.ExistDetails(values.Get("symbol"))) {
-		s.Log.Info("EXIST!!!!!!!!!!!!!!!")
 		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
 		return res, nil
 	}
-
-		s.Log.Info("NE EXIST BLYAT!!!!!!!!!!!!")
 		request := s.BuildRequest(values)
 		switch values.Get("function") {
 		case "OVERVIEW":

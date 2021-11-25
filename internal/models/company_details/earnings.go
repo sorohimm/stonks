@@ -26,7 +26,7 @@ type Earnings struct {
 
 type AnnualEarningsMongo struct {
 	FiscalDateEnding string  `json:"fiscalDateEnding,omitempty" bson:"fiscalDateEnding,omitempty"`
-	ReportedEPS      float64 `json:"reportedEPS,omitempty" bson:"reportedEPS,omitempty"`
+	ReportedEPS      float64 `json:"reportedEPS,omitempty"      bson:"reportedEPS,omitempty"`
 }
 
 func (a *AnnualEarningsMongo) Set(v AnnualEarnings) {
@@ -36,12 +36,14 @@ func (a *AnnualEarningsMongo) Set(v AnnualEarnings) {
 	a.ReportedEPS = REPS
 }
 
+//TODO make a date type
+
 type QuarterlyEarningsMongo struct {
-	FiscalDateEnding   string  `json:"fiscalDateEnding,omitempty" bson:"fiscalDateEnding"`
-	ReportedDate       string  `json:"reportedDate,omitempty" bson:"reportedDate"`
-	ReportedEPS        float64 `json:"reportedEPS,omitempty" bson:"reportedEPS"`
-	EstimatedEPS       float64 `json:"estimatedEPS,omitempty" bson:"estimatedEPS"`
-	Surprise           float64 `json:"surprise,omitempty" bson:"surprise"`
+	FiscalDateEnding   string  `json:"fiscalDateEnding,omitempty"   bson:"fiscalDateEnding"`
+	ReportedDate       string  `json:"reportedDate,omitempty"       bson:"reportedDate"`
+	ReportedEPS        float64 `json:"reportedEPS,omitempty"        bson:"reportedEPS"`
+	EstimatedEPS       float64 `json:"estimatedEPS,omitempty"       bson:"estimatedEPS"`
+	Surprise           float64 `json:"surprise,omitempty"           bson:"surprise"`
 	SurprisePercentage float64 `json:"surprisePercentage,omitempty" bson:"surprisePercentage"`
 }
 
@@ -60,8 +62,8 @@ func (q *QuarterlyEarningsMongo) Set(v QuarterlyEarnings) {
 }
 
 type EarningsMongo struct {
-	Symbol            string                   `json:"symbol" bson:"symbol"`
-	AnnualEarnings    []AnnualEarningsMongo    `json:"annual,omitempty" bson:"annual,omitempty"`
+	Symbol            string                   `json:"symbol"              bson:"symbol"`
+	AnnualEarnings    []AnnualEarningsMongo    `json:"annual,omitempty"    bson:"annual,omitempty"`
 	QuarterlyEarnings []QuarterlyEarningsMongo `json:"quarterly,omitempty" bson:"quarterly,omitempty"`
 }
 
@@ -85,14 +87,4 @@ func (e *EarningsMongo) Set(v Earnings) {
 	e.Symbol = v.Symbol
 	e.AnnualEarnings = annual
 	e.QuarterlyEarnings = quarterly
-}
-
-type DAnnualEarnings struct {
-	Symbol         string                `json:"symbol"`
-	AnnualEarnings []AnnualEarningsMongo `json:"annual"`
-}
-
-type DQuarterlyEarnings struct {
-	Symbol            string                   `json:"symbol"`
-	QuarterlyEarnings []QuarterlyEarningsMongo `json:"quarterly"`
 }
