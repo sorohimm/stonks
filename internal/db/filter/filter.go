@@ -28,6 +28,11 @@ func Exist(symbol string) interface{} {
 	return bson.M{"_meta.symbol": symbol}
 }
 
+func ExistDetails(symbol string) interface{} {
+	return bson.M{"symbol": symbol}
+}
+
+
 // Choose generates a pipeline for a choose request
 func Choose(values url.Values) interface{} {
 	var t models.ChooseTag
@@ -202,6 +207,32 @@ func date(t models.Timing) mongo.Pipeline {
 		return p
 	}
 
+	if t.Has("from") && t.Has("to") && !t.Has("date") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"_meta.symbol": t.Get("symbol")}}},
+			{{"$project", bson.M{
+				"series": bson.M{
+					"$filter": bson.M{
+						"input": "$series",
+						"as":    "a",
+						"cond": bson.M{
+							"$and": bson.A{
+								bson.M{"$gte": bson.A{
+									"$$a.date", t.Get("from"),
+								}},
+								bson.M{"$lte": bson.A{
+									"$$a.date", t.Get("to"),
+								}},
+							},
+						},
+					},
+				}, "_meta": "$_meta",
+			},
+			}},
+		}
+		return p
+	}
+
 	if !t.Has("from") && !t.Has("to") && t.Has("date") {
 		p := mongo.Pipeline{
 			{{"$match", bson.M{"_meta.symbol": t.Get("symbol")}}},
@@ -294,4 +325,112 @@ func Growth(t models.Timing) mongo.Pipeline {
 	}
 
 	return p
+}
+
+func matchBySymbol(t models.Timing) mongo.Pipeline {
+	return mongo.Pipeline{{{"$match", bson.M{"symbol": t.Get("symbol")}}}}
+}
+// Details generates a pipeline for a details request
+func Details(values url.Values, function string) mongo.Pipeline {
+	var t models.Timing
+	t.Set(values)
+
+	if function == "OVERVIEW" {
+		return matchBySymbol(t)
+	}
+
+	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
+		return matchBySymbol(t)
+	}
+
+	if t.Has("from") && !t.Has("to") && !t.Has("date") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"symbol": t.Get("symbol")}}},
+			{{"$project", bson.M{
+				fmt.Sprintf("%s", t.Get("interval")) : bson.M{
+					"$filter": bson.M{
+						"input": fmt.Sprintf("$%s", t.Get("interval")),
+						"as":    "a",
+						"cond": bson.M{
+							"$gte": bson.A{
+								"$$a.fiscalDateEnding", t.Get("from"),
+							},
+						},
+					},
+				}, "symbol": "$symbol",
+			},
+			}},
+		}
+		return p
+	}
+
+	if !t.Has("from") && t.Has("to") && !t.Has("date") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"symbol": t.Get("symbol")}}},
+			{{"$project", bson.M{
+				fmt.Sprintf("%s", t.Get("interval")): bson.M{
+					"$filter": bson.M{
+						"input": fmt.Sprintf("$%s", t.Get("interval")),
+						"as":    "a",
+						"cond": bson.M{
+							"$lte": bson.A{
+								"$$a.fiscalDateEnding", t.Get("from"),
+							},
+						},
+					},
+				}, "symbol": "$symbol",
+			},
+			}},
+		}
+		return p
+	}
+
+	if t.Has("from") && t.Has("to") && !t.Has("date") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"symbol": t.Get("symbol")}}},
+			{{"$project", bson.M{
+				fmt.Sprintf("%s", t.Get("interval")): bson.M{
+					"$filter": bson.M{
+						"input": fmt.Sprintf("$%s", t.Get("interval")),
+						"as":    "a",
+						"cond": bson.M{
+							"$and": bson.A{
+								bson.M{"$gte": bson.A{
+									"$$a.fiscalDateEnding", t.Get("from"),
+								}},
+								bson.M{"$lte": bson.A{
+									"$$a.fiscalDateEnding", t.Get("to"),
+								}},
+							},
+						},
+					},
+				}, "symbol": "$symbol",
+			},
+			}},
+		}
+		return p
+	}
+
+	if !t.Has("from") && !t.Has("to") && t.Has("date") {
+		p := mongo.Pipeline{
+			{{"$match", bson.M{"symbol": t.Get("symbol")}}},
+			{{"$project", bson.M{
+				fmt.Sprintf("%s", t.Get("interval")): bson.M{
+					"$filter": bson.M{
+						"input": fmt.Sprintf("$%s", t.Get("interval")),
+						"as":    "a",
+						"cond": bson.M{
+							"$eq": bson.A{
+								"$$a.fiscalDateEnding", t.Get("from"),
+							},
+						},
+					},
+				}, "symbol": "$symbol",
+			},
+			}},
+		}
+		return p
+	}
+
+	return mongo.Pipeline{}
 }

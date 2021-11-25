@@ -16,7 +16,7 @@ type ApiRepo struct {
 func (r *ApiRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetIntraday1Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday1Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -25,7 +25,7 @@ func (r *ApiRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, er
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetIntraday1Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday1Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -38,7 +38,7 @@ func (r *ApiRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, er
 func (r *ApiRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetIntraday5Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday5Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -47,7 +47,7 @@ func (r *ApiRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, er
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetIntraday5Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday5Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -60,7 +60,7 @@ func (r *ApiRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, er
 func (r *ApiRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetIntraday15Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday15Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -69,7 +69,7 @@ func (r *ApiRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, e
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetIntraday15Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday15Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -82,7 +82,7 @@ func (r *ApiRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, e
 func (r *ApiRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetIntraday30Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday30Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -91,7 +91,7 @@ func (r *ApiRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, e
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetIntraday30Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday30Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -104,7 +104,7 @@ func (r *ApiRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, e
 func (r *ApiRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetIntraday60Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday60Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -113,7 +113,7 @@ func (r *ApiRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, e
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetIntraday60Quotes :: %s", err)
+		r.Log.Infof("api_repo :: GetIntraday60Quotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -126,7 +126,7 @@ func (r *ApiRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, e
 func (r *ApiRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetDailyQuotes :: %s", err)
+		r.Log.Infof("api_repo :: GetDailyQuotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -135,7 +135,7 @@ func (r *ApiRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error)
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetDailyQuotes :: %s", err)
+		r.Log.Infof("api_repo :: GetDailyQuotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -148,7 +148,7 @@ func (r *ApiRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error)
 func (r *ApiRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetWeeklyQuotes :: %s", err)
+		r.Log.Infof("api_repo :: GetWeeklyQuotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -157,7 +157,7 @@ func (r *ApiRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetWeeklyQuotes :: %s", err)
+		r.Log.Infof("api_repo :: GetWeeklyQuotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -170,7 +170,7 @@ func (r *ApiRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error
 func (r *ApiRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetMonthlyQuotes :: %s", err)
+		r.Log.Infof("api_repo :: GetMonthlyQuotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -179,7 +179,7 @@ func (r *ApiRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, erro
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetMonthlyQuotes :: %s", err)
+		r.Log.Infof("api_repo :: GetMonthlyQuotes :: %s", err)
 		return qmodels.TSMongo{}, err
 	}
 
@@ -192,7 +192,7 @@ func (r *ApiRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, erro
 func (r *ApiRepo) GetOverview(request *http.Request) (details_models.OverviewMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("api_repo :: GetOverview :: %s", err)
+		r.Log.Infof("api_repo :: GetOverview :: %s", err)
 		return details_models.OverviewMongo{}, err
 	}
 
@@ -201,11 +201,99 @@ func (r *ApiRepo) GetOverview(request *http.Request) (details_models.OverviewMon
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&body)
 	if err != nil {
-		r.Log.Errorf("api_repo :: GetOverview :: %s", err)
+		r.Log.Infof("api_repo :: GetOverview :: %s", err)
 		return details_models.OverviewMongo{}, err
 	}
 
 	var res details_models.OverviewMongo
+	res.Set(body)
+
+	return res, nil
+}
+
+func (r *ApiRepo) GetEarnings(request *http.Request) (details_models.EarningsMongo, error) {
+	resp, err := r.Client.Do(request)
+	if err != nil || resp.StatusCode != 200 {
+		r.Log.Infof("api_repo :: GetEarnings :: %s", err)
+		return details_models.EarningsMongo{}, err
+	}
+
+	var body details_models.Earnings
+
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&body)
+	if err != nil {
+		r.Log.Infof("api_repo :: GetEarnings :: %s", err)
+		return details_models.EarningsMongo{}, err
+	}
+
+	var res details_models.EarningsMongo
+	res.Set(body)
+
+	return res, nil
+}
+
+func (r *ApiRepo) GetCashFlow(request *http.Request) (details_models.CashFlowMongo, error) {
+	resp, err := r.Client.Do(request)
+	if err != nil || resp.StatusCode != 200 {
+		r.Log.Infof("api_repo :: GetCashFlow :: %s", err)
+		return details_models.CashFlowMongo{}, err
+	}
+
+	var body details_models.CashFlow
+
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&body)
+	if err != nil {
+		r.Log.Infof("api_repo :: GetCashFlow :: %s", err)
+		return details_models.CashFlowMongo{}, err
+	}
+
+	var res details_models.CashFlowMongo
+	res.Set(body)
+
+	return res, nil
+}
+
+func (r *ApiRepo) GetIncomeStatement(request *http.Request) (details_models.IncomeStatementMongo, error) {
+	resp, err := r.Client.Do(request)
+	if err != nil || resp.StatusCode != 200 {
+		r.Log.Infof("api_repo :: GetIncomeStatement :: %s", err)
+		return details_models.IncomeStatementMongo{}, err
+	}
+
+	var body details_models.IncomeStatement
+
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&body)
+	if err != nil {
+		r.Log.Infof("api_repo :: GetIncomeStatement :: %s", err)
+		return details_models.IncomeStatementMongo{}, err
+	}
+
+	var res details_models.IncomeStatementMongo
+	res.Set(body)
+
+	return res, nil
+}
+
+func (r *ApiRepo) GetBalanceSheet(request *http.Request) (details_models.BalanceSheetMongo, error) {
+	resp, err := r.Client.Do(request)
+	if err != nil || resp.StatusCode != 200 {
+		r.Log.Infof("api_repo :: GetIncomeStatement :: %s", err)
+		return details_models.BalanceSheetMongo{}, err
+	}
+
+	var body details_models.BalanceSheet
+
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&body)
+	if err != nil {
+		r.Log.Infof("api_repo :: GetIncomeStatement :: %s", err)
+		return details_models.BalanceSheetMongo{}, err
+	}
+
+	var res details_models.BalanceSheetMongo
 	res.Set(body)
 
 	return res, nil

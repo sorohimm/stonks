@@ -17,6 +17,7 @@ type CompanyDetailsControllers struct {
 }
 
 func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
+	c.Log.Info("DO DETAILS CONTROLLER")
 	values := ctx.Request.URL.Query()
 
 	request := details_models.DetailsRequest{
@@ -24,7 +25,9 @@ func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
 		Function: values.Get("function"),
 		From:     values.Get("from"),
 		To:       values.Get("to"),
-		Timing:   values.Get("timing"),
+		Min:      values.Get("min"),
+		Max:      values.Get("max"),
+		Interval: values.Get("timing"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {

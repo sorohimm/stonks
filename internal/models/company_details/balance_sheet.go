@@ -1,10 +1,6 @@
 package details_models
 
-import (
-	"errors"
-	"net/url"
-	"stonks/internal/models"
-)
+import "strconv"
 
 type BalanceSheetReports struct {
 	FiscalDateEnding                       string `json:"fiscalDateEnding,omitempty"`
@@ -47,178 +43,165 @@ type BalanceSheetReports struct {
 	CommonStockSharesOutstanding           string `json:"commonStockSharesOutstanding,omitempty"`
 }
 
-type DAnnualBalanceSheetReports struct {
-	Symbol         string                `json:"symbol"`
-	AnnualEarnings []BalanceSheetReports `json:"annualReports"`
-}
-
-type DQuarterlyBalanceSheetReports struct {
-	Symbol            string                `json:"symbol"`
-	QuarterlyEarnings []BalanceSheetReports `json:"quarterlyReports"`
-}
-
 type BalanceSheet struct {
 	Symbol           string                `json:"symbol"`
 	AnnualReports    []BalanceSheetReports `json:"annualReports"`
 	QuarterlyReports []BalanceSheetReports `json:"quarterlyReports"`
 }
 
-func (b *BalanceSheet) Annual(t models.Timing) ([]BalanceSheetReports, error) {
-	if t.Has("from") && t.Has("to") && t.Has("date") {
-		return nil, errors.New("invalid data parameters")
-	}
-
-	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
-		return b.AnnualReports, nil
-	}
-
-	var res []BalanceSheetReports
-	if t.Has("from") && t.Has("to") && !t.Has("date") {
-		for _, el := range b.AnnualReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-5]
-
-			if fde >= t.From && fde <= t.To {
-				res = append(res, el)
-			}
-		}
-
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-		return res, nil
-	}
-
-	if t.Has("from") && !t.Has("to") && !t.Has("date") {
-		for _, el := range b.AnnualReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-			if fde >= t.From {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if !t.Has("from") && t.Has("to") && !t.Has("date") {
-		for _, el := range b.AnnualReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-			if fde <= t.To {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
-		for _, el := range b.AnnualReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-			if fde == t.Date {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	return res, errors.New("bad timing")
+type BalanceSheetReportsMongo struct {
+	FiscalDateEnding                       string  `json:"fiscalDateEnding,omitempty"`
+	ReportedCurrency                       string  `json:"reportedCurrency,omitempty"`
+	TotalAssets                            float64 `json:"totalAssets,omitempty"`
+	TotalCurrentAssets                     float64 `json:"totalCurrentAssets,omitempty"`
+	CashAndCashEquivalentsAtCarryingValue  float64 `json:"cashAndCashEquivalentsAtCarryingValue,omitempty"`
+	CashAndShortTermInvestments            float64 `json:"cashAndShortTermInvestments,omitempty"`
+	Inventory                              float64 `json:"inventory,omitempty"`
+	CurrentNetReceivables                  float64 `json:"currentNetReceivables,omitempty"`
+	TotalNonCurrentAssets                  float64 `json:"totalNonCurrentAssets,omitempty"`
+	PropertyPlantEquipment                 float64 `json:"propertyPlantEquipment,omitempty"`
+	AccumulatedDepreciationAmortizationPPE float64 `json:"accumulatedDepreciationAmortizationPPE,omitempty"`
+	IntangibleAssets                       float64 `json:"intangibleAssets,omitempty"`
+	IntangibleAssetsExcludingGoodwill      float64 `json:"intangibleAssetsExcludingGoodwill,omitempty"`
+	Goodwill                               float64 `json:"goodwill,omitempty"`
+	Investments                            float64 `json:"investments,omitempty"`
+	LongTermInvestments                    float64 `json:"longTermInvestments,omitempty"`
+	ShortTermInvestments                   float64 `json:"shortTermInvestments,omitempty"`
+	OtherCurrentAssets                     float64 `json:"otherCurrentAssets,omitempty"`
+	OtherNonCurrrentAssets                 float64 `json:"otherNonCurrrentAssets,omitempty"`
+	TotalLiabilities                       float64 `json:"totalLiabilities,omitempty"`
+	TotalCurrentLiabilities                float64 `json:"totalCurrentLiabilities,omitempty"`
+	CurrentAccountsPayable                 float64 `json:"currentAccountsPayable,omitempty"`
+	DeferredRevenue                        float64 `json:"deferredRevenue,omitempty"`
+	CurrentDebt                            float64 `json:"currentDebt,omitempty"`
+	ShortTermDebt                          float64 `json:"shortTermDebt,omitempty"`
+	TotalNonCurrentLiabilities             float64 `json:"totalNonCurrentLiabilities,omitempty"`
+	CapitalLeaseObligations                float64 `json:"capitalLeaseObligations,omitempty"`
+	LongTermDebt                           float64 `json:"longTermDebt,omitempty"`
+	CurrentLongTermDebt                    float64 `json:"currentLongTermDebt,omitempty"`
+	LongTermDebtNoncurrent                 float64 `json:"longTermDebtNoncurrent,omitempty"`
+	ShortLongTermDebtTotal                 float64 `json:"shortLongTermDebtTotal,omitempty"`
+	OtherCurrentLiabilities                float64 `json:"otherCurrentLiabilities,omitempty"`
+	OtherNonCurrentLiabilities             float64 `json:"otherNonCurrentLiabilities,omitempty"`
+	TotalShareholderEquity                 float64 `json:"totalShareholderEquity,omitempty"`
+	TreasuryStock                          float64 `json:"treasuryStock,omitempty"`
+	RetainedEarnings                       float64 `json:"retainedEarnings,omitempty"`
+	CommonStock                            float64 `json:"commonStock,omitempty"`
+	CommonStockSharesOutstanding           float64 `json:"commonStockSharesOutstanding,omitempty"`
 }
 
-func (b *BalanceSheet) Quarterly(t models.Timing) ([]BalanceSheetReports, error) {
-	if t.Has("from") && t.Has("to") && t.Has("date") {
-		return nil, errors.New("invalid data parameters")
-	}
+func (r *BalanceSheetReportsMongo) Set(v BalanceSheetReports) {
+	TotalAssets, _ := strconv.ParseFloat(v.TotalAssets, 64)
+	TotalCurrentAssets, _ := strconv.ParseFloat(v.TotalCurrentAssets, 64)
+	CashAndCashEquivalentsAtCarryingValue, _ := strconv.ParseFloat(v.CashAndCashEquivalentsAtCarryingValue, 64)
+	CashAndShortTermInvestments, _ := strconv.ParseFloat(v.CashAndShortTermInvestments, 64)
+	Inventory, _ := strconv.ParseFloat(v.Inventory, 64)
+	CurrentNetReceivables, _ := strconv.ParseFloat(v.CurrentNetReceivables, 64)
+	TotalNonCurrentAssets, _ := strconv.ParseFloat(v.TotalNonCurrentAssets, 64)
+	PropertyPlantEquipment, _ := strconv.ParseFloat(v.PropertyPlantEquipment, 64)
+	AccumulatedDepreciationAmortizationPPE, _ := strconv.ParseFloat(v.AccumulatedDepreciationAmortizationPPE, 64)
+	IntangibleAssets, _ := strconv.ParseFloat(v.IntangibleAssets, 64)
+	IntangibleAssetsExcludingGoodwill, _ := strconv.ParseFloat(v.IntangibleAssetsExcludingGoodwill, 64)
+	Goodwill, _ := strconv.ParseFloat(v.Goodwill, 64)
+	Investments, _ := strconv.ParseFloat(v.Investments, 64)
+	LongTermInvestments, _ := strconv.ParseFloat(v.LongTermInvestments, 64)
+	ShortTermInvestments, _ := strconv.ParseFloat(v.ShortTermInvestments, 64)
+	OtherCurrentAssets, _ := strconv.ParseFloat(v.OtherCurrentAssets, 64)
+	OtherNonCurrrentAssets, _ := strconv.ParseFloat(v.OtherNonCurrrentAssets, 64)
+	TotalLiabilities, _ := strconv.ParseFloat(v.TotalLiabilities, 64)
+	TotalCurrentLiabilities, _ := strconv.ParseFloat(v.TotalCurrentLiabilities, 64)
+	CurrentAccountsPayable, _ := strconv.ParseFloat(v.CurrentAccountsPayable, 64)
+	DeferredRevenue, _ := strconv.ParseFloat(v.DeferredRevenue, 64)
+	CurrentDebt, _ := strconv.ParseFloat(v.CurrentDebt, 64)
+	ShortTermDebt, _ := strconv.ParseFloat(v.ShortTermDebt, 64)
+	TotalNonCurrentLiabilities, _ := strconv.ParseFloat(v.TotalNonCurrentLiabilities, 64)
+	CapitalLeaseObligations, _ := strconv.ParseFloat(v.CapitalLeaseObligations, 64)
+	LongTermDebt, _ := strconv.ParseFloat(v.LongTermDebt, 64)
+	CurrentLongTermDebt, _ := strconv.ParseFloat(v.CurrentLongTermDebt, 64)
+	LongTermDebtNoncurrent, _ := strconv.ParseFloat(v.LongTermDebtNoncurrent, 64)
+	ShortLongTermDebtTotal, _ := strconv.ParseFloat(v.ShortLongTermDebtTotal, 64)
+	OtherCurrentLiabilities, _ := strconv.ParseFloat(v.OtherCurrentLiabilities, 64)
+	OtherNonCurrentLiabilities, _ := strconv.ParseFloat(v.OtherNonCurrentLiabilities, 64)
+	TotalShareholderEquity, _ := strconv.ParseFloat(v.TotalShareholderEquity, 64)
+	TreasuryStock, _ := strconv.ParseFloat(v.TreasuryStock, 64)
+	RetainedEarnings, _ := strconv.ParseFloat(v.RetainedEarnings, 64)
+	CommonStock, _ := strconv.ParseFloat(v.CommonStock, 64)
+	CommonStockSharesOutstanding, _ := strconv.ParseFloat(v.CommonStockSharesOutstanding, 64)
 
-	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
-		return b.QuarterlyReports, nil
-	}
-
-	var res []BalanceSheetReports
-	if t.Has("from") && t.Has("to") && !t.Has("date") {
-		for _, el := range b.QuarterlyReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde >= t.From && fde <= t.To {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if t.Has("from") && !t.Has("to") && !t.Has("date") {
-		for _, el := range b.QuarterlyReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde >= t.From {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if !t.Has("from") && t.Has("to") && !t.Has("date") {
-		for _, el := range b.QuarterlyReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde <= t.To {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if t.Has("date") && !t.Has("from") && !t.Has("to") {
-		for _, el := range b.QuarterlyReports {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde == t.Date {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	return res, errors.New("bad timing")
+	r.FiscalDateEnding = v.FiscalDateEnding
+	r.ReportedCurrency = v.ReportedCurrency
+	r.TotalAssets = TotalAssets
+	r.TotalCurrentAssets = TotalCurrentAssets
+	r.CashAndCashEquivalentsAtCarryingValue = CashAndCashEquivalentsAtCarryingValue
+	r.CashAndShortTermInvestments = CashAndShortTermInvestments
+	r.Inventory = Inventory
+	r.CurrentNetReceivables = CurrentNetReceivables
+	r.TotalNonCurrentAssets = TotalNonCurrentAssets
+	r.PropertyPlantEquipment = PropertyPlantEquipment
+	r.AccumulatedDepreciationAmortizationPPE = AccumulatedDepreciationAmortizationPPE
+	r.IntangibleAssets = IntangibleAssets
+	r.IntangibleAssetsExcludingGoodwill = IntangibleAssetsExcludingGoodwill
+	r.Goodwill = Goodwill
+	r.Investments = Investments
+	r.LongTermInvestments = LongTermInvestments
+	r.ShortTermInvestments = ShortTermInvestments
+	r.OtherCurrentAssets = OtherCurrentAssets
+	r.OtherNonCurrrentAssets = OtherNonCurrrentAssets
+	r.TotalLiabilities = TotalLiabilities
+	r.TotalCurrentLiabilities = TotalCurrentLiabilities
+	r.CurrentAccountsPayable = CurrentAccountsPayable
+	r.DeferredRevenue = DeferredRevenue
+	r.CurrentDebt = CurrentDebt
+	r.ShortTermDebt = ShortTermDebt
+	r.TotalNonCurrentLiabilities = TotalNonCurrentLiabilities
+	r.CapitalLeaseObligations = CapitalLeaseObligations
+	r.LongTermDebt = LongTermDebt
+	r.CurrentLongTermDebt = CurrentLongTermDebt
+	r.LongTermDebtNoncurrent = LongTermDebtNoncurrent
+	r.ShortLongTermDebtTotal = ShortLongTermDebtTotal
+	r.OtherCurrentLiabilities = OtherCurrentLiabilities
+	r.OtherNonCurrentLiabilities = OtherNonCurrentLiabilities
+	r.TotalShareholderEquity = TotalShareholderEquity
+	r.TreasuryStock = TreasuryStock
+	r.RetainedEarnings = RetainedEarnings
+	r.CommonStock = CommonStock
+	r.CommonStockSharesOutstanding = CommonStockSharesOutstanding
 }
 
-func (b *BalanceSheet) ByTiming(values url.Values) (interface{}, error) {
-	var timings models.Timing
-	timings.Set(values)
-	if values.Get("timing") == "annual" {
-		res, err := b.Annual(timings)
-		if err != nil {
-			return DAnnualBalanceSheetReports{Symbol: values.Get("symbol"),
-				AnnualEarnings: b.AnnualReports}, nil
-		}
-		return DAnnualBalanceSheetReports{Symbol: values.Get("symbol"), AnnualEarnings: res}, nil
-	} else if values.Get("timing") == "quarterly" {
-		res, err := b.Quarterly(timings)
-		if err != nil {
-			return DQuarterlyBalanceSheetReports{Symbol: values.Get("symbol"),
-				QuarterlyEarnings: b.QuarterlyReports}, nil
-		}
-		return DQuarterlyBalanceSheetReports{Symbol: values.Get("symbol"), QuarterlyEarnings: res}, nil
+type BalanceSheetMongo struct {
+	Symbol           string                     `json:"symbol"`
+	AnnualReports    []BalanceSheetReportsMongo `json:"annualReports"`
+	QuarterlyReports []BalanceSheetReportsMongo `json:"quarterlyReports"`
+}
+
+func (e *BalanceSheetMongo) Set(v BalanceSheet) {
+	var annual []BalanceSheetReportsMongo
+	for _, cell := range v.AnnualReports {
+		var NewEM BalanceSheetReportsMongo
+		NewEM.Set(cell)
+
+		annual = append(annual, NewEM)
 	}
-	return nil, errors.New("unresolved error")
+
+	var quarterly []BalanceSheetReportsMongo
+	for _, cell := range v.QuarterlyReports {
+		var NewQM BalanceSheetReportsMongo
+		NewQM.Set(cell)
+
+		quarterly = append(quarterly, NewQM)
+	}
+
+	e.Symbol = v.Symbol
+	e.AnnualReports = annual
+	e.QuarterlyReports = quarterly
+}
+
+type DAnnualBalanceSheetReports struct {
+	Symbol         string                     `json:"symbol"`
+	AnnualEarnings []BalanceSheetReportsMongo `json:"annual"`
+}
+
+type DQuarterlyBalanceSheetReports struct {
+	Symbol            string                     `json:"symbol"`
+	QuarterlyEarnings []BalanceSheetReportsMongo `json:"quarterly"`
 }

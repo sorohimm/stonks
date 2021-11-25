@@ -2,7 +2,6 @@ package details_repo
 
 import (
 	"context"
-	"encoding/json"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 	"net/http"
@@ -14,91 +13,137 @@ type CompanyDetailsRepo struct {
 	Client *http.Client
 }
 
-var (
-	models map[string]interface{}
-)
-
-func init() {
-	models = make(map[string]interface{})
-	models["Overview"] = &details_models.Overview{}
-	models["Earnings"] = &details_models.Earnings{}
-	models["IncomeStatement"] = &details_models.IncomeStatement{}
-	models["BalanceSheet"] = &details_models.BalanceSheet{}
-	models["CashFlow"] = &details_models.CashFlow{}
-}
-
-func (r *CompanyDetailsRepo) GetCompanyDetails(request *http.Request) (interface{}, error) {
-	resp, err := r.Client.Do(request)
-	if err != nil || resp.StatusCode != 200 {
-		r.Log.Errorf("details repo: GetCompanyDetails request error: %s", err)
-		return nil, err
-	}
-
-	body := models[request.URL.Query().Get("function")]
-
-	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(&body)
-	if err != nil {
-		r.Log.Errorf("details_repo :: GetCompanyDetails :: %s", err)
-		return nil, err
-	}
-	return body, nil
-}
-
-func (r *CompanyDetailsRepo) GetOverview(db *mongo.Database, filter interface{}) (interface{}, error) {
+func (r *CompanyDetailsRepo) GetOverview(db *mongo.Database, filter interface{}) (details_models.OverviewMongo, error) {
 	body := details_models.OverviewMongo{}
-	err := db.Collection("Overview").FindOne(context.TODO(), filter).Decode(&body)
+
+	cursor, err := db.Collection("Overview").Aggregate(context.TODO(), filter)
+
+	ok := cursor.TryNext(context.TODO())
+	if !ok {
+		r.Log.Infof("details_repo :: GetOverview :: empty doc")
+		return details_models.OverviewMongo{}, err
+	}
+
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&body); err != nil {
+			r.Log.Infof("details_repo :: GetOverview :: %s", err)
+			return details_models.OverviewMongo{}, err
+		}
+		break
+	}
+
 	if err != nil {
-		r.Log.Errorf("details_repo :: GetOverview :: %s", err)
-		return nil, err
+		r.Log.Infof("details_repo :: GetOverview :: %s", err)
+		return details_models.OverviewMongo{}, err
 	}
 	return body, nil
 }
 
-func (r *CompanyDetailsRepo) GetEarnings(db *mongo.Database, filter interface{}) (details_models.Earnings, error) {
-	body := details_models.Earnings{}
-	err := db.Collection("Earnings").FindOne(context.TODO(), filter).Decode(&body)
+func (r *CompanyDetailsRepo) GetEarnings(db *mongo.Database, filter interface{}) (details_models.EarningsMongo, error) {
+	body := details_models.EarningsMongo{}
+
+	cursor, err := db.Collection("Earnings").Aggregate(context.TODO(), filter)
+
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&body); err != nil {
+			r.Log.Infof("details_repo :: GetEarnings :: %s", err)
+			return details_models.EarningsMongo{}, err
+		}
+		r.Log.Info(body)
+		break
+	}
+
 	if err != nil {
-		r.Log.Errorf("details_repo :: GetEarnings :: %s", err)
-		return details_models.Earnings{}, err
+		r.Log.Infof("details_repo :: GetEarnings :: %s", err)
+		return details_models.EarningsMongo{}, err
 	}
 	return body, nil
 }
 
-func (r *CompanyDetailsRepo) GetIncomeStatement(db *mongo.Database, filter interface{}) (details_models.IncomeStatement, error) {
-	body := details_models.IncomeStatement{}
-	err := db.Collection("IncomeStatement").FindOne(context.TODO(), filter).Decode(&body)
+func (r *CompanyDetailsRepo) GetIncomeStatement(db *mongo.Database, filter interface{}) (details_models.IncomeStatementMongo, error) {
+	body := details_models.IncomeStatementMongo{}
+
+	cursor, err := db.Collection("IncomeStatement").Aggregate(context.TODO(), filter)
+
+	ok := cursor.TryNext(context.TODO())
+	if !ok {
+		r.Log.Infof("details_repo :: GetOverview :: empty doc")
+		return details_models.IncomeStatementMongo{}, err
+	}
+
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&body); err != nil {
+			r.Log.Infof("details_repo :: GetIncomeStatement :: %s", err)
+			return details_models.IncomeStatementMongo{}, err
+		}
+		break
+	}
+
 	if err != nil {
-		r.Log.Errorf("details_repo :: GetIncomeStatement :: %s", err)
-		return details_models.IncomeStatement{}, err
+		r.Log.Infof("details_repo :: GetIncomeStatement :: %s", err)
+		return details_models.IncomeStatementMongo{}, err
+	}
+
+	return body, nil
+}
+
+func (r *CompanyDetailsRepo) GetBalanceSheet(db *mongo.Database, filter interface{}) (details_models.BalanceSheetMongo, error) {
+	body := details_models.BalanceSheetMongo{}
+
+	cursor, err := db.Collection("BalanceSheet").Aggregate(context.TODO(), filter)
+
+	ok := cursor.TryNext(context.TODO())
+	if !ok {
+		r.Log.Infof("details_repo :: GetOverview :: empty doc")
+		return details_models.BalanceSheetMongo{}, err
+	}
+
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&body); err != nil {
+			r.Log.Infof("details_repo :: GetBalanceSheet :: %s", err)
+			return details_models.BalanceSheetMongo{}, err
+		}
+		break
+	}
+
+	if err != nil {
+		r.Log.Infof("details_repo :: GetBalanceSheet :: %s", err)
+		return details_models.BalanceSheetMongo{}, err
 	}
 	return body, nil
 }
 
-func (r *CompanyDetailsRepo) GetBalanceSheet(db *mongo.Database, filter interface{}) (details_models.BalanceSheet, error) {
-	body := details_models.BalanceSheet{}
-	err := db.Collection("BalanceSheet").FindOne(context.TODO(), filter).Decode(&body)
-	if err != nil {
-		r.Log.Errorf("details_repo :: GetBalanceSheet :: %s", err)
-		return details_models.BalanceSheet{}, err
-	}
-	return body, nil
-}
+func (r *CompanyDetailsRepo) GetCashFlow(db *mongo.Database, filter interface{}) (details_models.CashFlowMongo, error) {
+	body := details_models.CashFlowMongo{}
 
-func (r *CompanyDetailsRepo) GetCashFlow(db *mongo.Database, filter interface{}) (details_models.CashFlow, error) {
-	body := details_models.CashFlow{}
-	err := db.Collection("CashFlow").FindOne(context.TODO(), filter).Decode(&body)
-	if err != nil {
-		r.Log.Errorf("details_repo :: GetCashFlow :: %s", err)
-		return details_models.CashFlow{}, err
+	cursor, err := db.Collection("CashFlow").Aggregate(context.TODO(), filter)
+
+	ok := cursor.TryNext(context.TODO())
+	if !ok {
+		r.Log.Infof("details_repo :: GetOverview :: empty doc")
+		return details_models.CashFlowMongo{}, err
 	}
+
+	for cursor.Next(context.TODO()) {
+		if err = cursor.Decode(&body); err != nil {
+			r.Log.Infof("details_repo :: GetCashFlow :: %s", err)
+			return details_models.CashFlowMongo{}, err
+		}
+		break
+	}
+
+	if err != nil {
+		r.Log.Infof("details_repo :: GetCashFlow :: %s", err)
+		return details_models.CashFlowMongo{}, err
+	}
+
 	return body, nil
 }
 
 func (r *CompanyDetailsRepo) InsertCompanyDetails(collection string, db *mongo.Database, body interface{}) (interface{}, error) {
 	id, err := db.Collection(collection).InsertOne(context.TODO(), body)
 	if err != nil {
-		r.Log.Errorf("details_repo :: InsertCompanyDetails :: %s", err)
+		r.Log.Infof("details_repo :: InsertCompanyDetails :: %s", err)
 		return nil, err
 	}
 

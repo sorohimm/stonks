@@ -3,10 +3,11 @@ package models
 import "net/url"
 
 type Timing struct {
-	Symbol string
-	From   string
-	To     string
-	Date   string
+	Symbol   string
+	From     string
+	To       string
+	Date     string
+	Interval string
 }
 
 func (t *Timing) Set(v url.Values) {
@@ -14,6 +15,7 @@ func (t *Timing) Set(v url.Values) {
 	t.From = v.Get("from")
 	t.To = v.Get("to")
 	t.Date = v.Get("date")
+	t.Interval = v.Get("interval")
 }
 
 func (t *Timing) Has(field string) bool {
@@ -26,22 +28,11 @@ func (t *Timing) Has(field string) bool {
 		return t.To != ""
 	case "date":
 		return t.Date != ""
+	case "interval":
+		return t.Interval != ""
 	default:
 		return false
 	}
-}
-
-
-func (t *Timing) HasFrom() bool {
-	return t.From != ""
-}
-
-func (t *Timing) HasTo() bool {
-	return t.To != ""
-}
-
-func (t *Timing) HasDate() bool {
-	return t.Date != ""
 }
 
 func (t *Timing) HasInterval() bool {
@@ -58,6 +49,8 @@ func (t *Timing) Get(field string) string {
 		return t.To
 	case "date":
 		return t.Date
+	case "interval":
+		return t.Interval
 	default:
 		return ""
 	}

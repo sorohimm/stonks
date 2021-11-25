@@ -1,9 +1,7 @@
 package details_models
 
 import (
-	"errors"
-	"net/url"
-	"stonks/internal/models"
+	"strconv"
 )
 
 type AnnualEarnings struct {
@@ -20,178 +18,81 @@ type QuarterlyEarnings struct {
 	SurprisePercentage string `json:"surprisePercentage,omitempty"`
 }
 
+type Earnings struct {
+	Symbol            string              `json:"symbol"`
+	AnnualEarnings    []AnnualEarnings    `json:"annualEarnings" bson:"annualEarnings"`
+	QuarterlyEarnings []QuarterlyEarnings `json:"quarterlyEarnings" bson:"quarterlyEarnings" `
+}
+
+type AnnualEarningsMongo struct {
+	FiscalDateEnding string  `json:"fiscalDateEnding,omitempty" bson:"fiscalDateEnding,omitempty"`
+	ReportedEPS      float64 `json:"reportedEPS,omitempty" bson:"reportedEPS,omitempty"`
+}
+
+func (a *AnnualEarningsMongo) Set(v AnnualEarnings) {
+	REPS, _ := strconv.ParseFloat(v.ReportedEPS, 64)
+
+	a.FiscalDateEnding = v.FiscalDateEnding
+	a.ReportedEPS = REPS
+}
+
+type QuarterlyEarningsMongo struct {
+	FiscalDateEnding   string  `json:"fiscalDateEnding,omitempty" bson:"fiscalDateEnding"`
+	ReportedDate       string  `json:"reportedDate,omitempty" bson:"reportedDate"`
+	ReportedEPS        float64 `json:"reportedEPS,omitempty" bson:"reportedEPS"`
+	EstimatedEPS       float64 `json:"estimatedEPS,omitempty" bson:"estimatedEPS"`
+	Surprise           float64 `json:"surprise,omitempty" bson:"surprise"`
+	SurprisePercentage float64 `json:"surprisePercentage,omitempty" bson:"surprisePercentage"`
+}
+
+func (q *QuarterlyEarningsMongo) Set(v QuarterlyEarnings) {
+	REPS, _ := strconv.ParseFloat(v.ReportedEPS, 64)
+	EEPS, _ := strconv.ParseFloat(v.EstimatedEPS, 64)
+	Surprise, _ := strconv.ParseFloat(v.Surprise, 64)
+	SurpriseP, _ := strconv.ParseFloat(v.SurprisePercentage, 64)
+
+	q.FiscalDateEnding = v.FiscalDateEnding
+	q.ReportedDate = v.ReportedDate
+	q.ReportedEPS = REPS
+	q.EstimatedEPS = EEPS
+	q.Surprise = Surprise
+	q.SurprisePercentage = SurpriseP
+}
+
+type EarningsMongo struct {
+	Symbol            string                   `json:"symbol" bson:"symbol"`
+	AnnualEarnings    []AnnualEarningsMongo    `json:"annual,omitempty" bson:"annual,omitempty"`
+	QuarterlyEarnings []QuarterlyEarningsMongo `json:"quarterly,omitempty" bson:"quarterly,omitempty"`
+}
+
+func (e *EarningsMongo) Set(v Earnings) {
+	var annual []AnnualEarningsMongo
+	for _, cell := range v.AnnualEarnings {
+		var NewEM AnnualEarningsMongo
+		NewEM.Set(cell)
+
+		annual = append(annual, NewEM)
+	}
+
+	var quarterly []QuarterlyEarningsMongo
+	for _, cell := range v.QuarterlyEarnings {
+		var NewQM QuarterlyEarningsMongo
+		NewQM.Set(cell)
+
+		quarterly = append(quarterly, NewQM)
+	}
+
+	e.Symbol = v.Symbol
+	e.AnnualEarnings = annual
+	e.QuarterlyEarnings = quarterly
+}
+
 type DAnnualEarnings struct {
-	Symbol         string           `json:"symbol"`
-	AnnualEarnings []AnnualEarnings `json:"annualEarnings"`
+	Symbol         string                `json:"symbol"`
+	AnnualEarnings []AnnualEarningsMongo `json:"annual"`
 }
 
 type DQuarterlyEarnings struct {
-	Symbol            string              `json:"symbol"`
-	QuarterlyEarnings []QuarterlyEarnings `json:"quarterlyEarnings"`
-}
-
-type Earnings struct {
-	Symbol            string              `json:"symbol"`
-	AnnualEarnings    []AnnualEarnings    `json:"annualEarnings"`
-	QuarterlyEarnings []QuarterlyEarnings `json:"quarterlyEarnings"`
-}
-
-func (e *Earnings) Annual(t models.Timing) ([]AnnualEarnings, error) {
-	if t.HasFrom() && t.HasTo() && t.HasDate() {
-		return nil, errors.New("invalid data parameters")
-	}
-
-	if !t.HasFrom() && !t.HasTo() && !t.HasDate() {
-		return e.AnnualEarnings, nil
-	}
-
-	var res []AnnualEarnings
-	if t.HasFrom() && t.HasTo() && !t.HasDate() {
-		for _, el := range e.AnnualEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-
-			if fde >= t.From && fde <= t.To {
-				res = append(res, el)
-			}
-		}
-
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-		return res, nil
-	}
-
-	if t.HasFrom() && !t.HasTo() && !t.HasDate() {
-		for _, el := range e.AnnualEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-			if fde >= t.From {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if !t.HasFrom() && t.HasTo() && !t.HasDate() {
-		for _, el := range e.AnnualEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-			if fde <= t.To {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if t.HasDate() && !t.HasFrom() && !t.HasTo() {
-		for _, el := range e.AnnualEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-6]
-			if fde == t.Date {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	return res, errors.New("bad timing")
-}
-
-func (e *Earnings) Quarterly(t models.Timing) ([]QuarterlyEarnings, error) {
-	if t.HasFrom() && t.HasTo() && t.HasDate() {
-		return nil, errors.New("invalid data parameters")
-	}
-
-	if !t.HasFrom() && !t.HasTo() && !t.HasDate() {
-		return e.QuarterlyEarnings, nil
-	}
-
-	var res []QuarterlyEarnings
-	if t.HasFrom() && t.HasTo() && !t.HasDate() {
-		for _, el := range e.QuarterlyEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde >= t.From && fde <= t.To {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if t.HasFrom() && !t.HasTo() && !t.HasDate() {
-		for _, el := range e.QuarterlyEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde >= t.From {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if !t.HasFrom() && t.HasTo() && !t.HasDate() {
-		for _, el := range e.QuarterlyEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde <= t.To {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	if t.HasDate() && !t.HasFrom() && !t.HasTo() {
-		for _, el := range e.QuarterlyEarnings {
-			fde := el.FiscalDateEnding[:len(el.FiscalDateEnding)-3]
-			if fde == t.Date {
-				res = append(res, el)
-			}
-		}
-		if len(res) == 0 {
-			return nil, errors.New("no suitable data")
-		}
-
-		return res, nil
-	}
-
-	return res, errors.New("bad timing")
-}
-
-func (e *Earnings) ByTiming(values url.Values) (interface{}, error) {
-	var timings models.Timing
-	timings.Set(values)
-	if values.Get("timing") == "annual" {
-		res, err := e.Annual(timings)
-		if err != nil {
-			return DAnnualEarnings{Symbol: values.Get("symbol"),
-				AnnualEarnings: e.AnnualEarnings}, nil
-		}
-		return DAnnualEarnings{Symbol: values.Get("symbol"), AnnualEarnings: res}, nil
-	} else if values.Get("timing") == "quarterly" {
-		res, err := e.Quarterly(timings)
-		if err != nil {
-			return DQuarterlyEarnings{Symbol: values.Get("symbol"),
-				QuarterlyEarnings: e.QuarterlyEarnings}, nil
-		}
-		return DQuarterlyEarnings{Symbol: values.Get("symbol"), QuarterlyEarnings: res}, nil
-	}
-	return nil, errors.New("unresolved error")
+	Symbol            string                   `json:"symbol"`
+	QuarterlyEarnings []QuarterlyEarningsMongo `json:"quarterly"`
 }
