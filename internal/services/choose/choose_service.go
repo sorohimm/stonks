@@ -7,7 +7,7 @@ import (
 	"stonks/internal/config"
 	m_const "stonks/internal/constants/market"
 	"stonks/internal/db/filter"
-	"stonks/internal/interfaces/api_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/interfaces/choose_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 )
@@ -15,7 +15,7 @@ import (
 type ChooseService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
-	StocksApiRepo api_interfaces.IStockApiRepo
+	StocksApiRepo stocks_api_interfaces.IStocksApiRepo
 	ChooseRepo    choose_interfaces.IChooseRepo
 	DbRepo        db_interfaces.IDbRepo
 	DbHandler     db_interfaces.IDBHandler

@@ -10,8 +10,8 @@ import (
 	"stonks/internal/db"
 	"stonks/internal/db/filter"
 	"stonks/internal/interfaces/aggregate_interfaces"
-	"stonks/internal/interfaces/api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/models/aggregate"
 )
 
@@ -19,7 +19,7 @@ type AggregateService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
 	AggregateRepo aggregate_interfaces.IAggregateRepo
-	StockApiRepo  api_interfaces.IStockApiRepo
+	StockApiRepo  stocks_api_interfaces.IStocksApiRepo
 	DbRepo        db_interfaces.IDbRepo
 	DbHandler     db_interfaces.IDBHandler
 }
@@ -58,16 +58,33 @@ func (s *AggregateService) GetAggregate(request aggregate_models.Request) (inter
 		}
 	}
 
-	var aggregate float64
+	var tickers []aggregate_models.Flow
 	for _, ticker := range request.Tickers {
-		currentValue, _ := s.DbRepo.GetCurrentDailyPrice(database, ticker.Symbol)
-		aggregate += currentValue.Price * ticker.Coefficient
+		price, _ := s.DbRepo.GetCurrentDailyPrice(database, ticker.Symbol)
+		newTicker := aggregate_models.Flow{
+			Price: price.Price,
+			Coeff: ticker.Coefficient,
+		}
+		tickers = append(tickers, newTicker)
 	}
 
 	response := aggregate_models.Response{
 		Tickers:   request.Tickers,
-		Aggregation: aggregate,
+		Aggregation: s.AggregateRepo.GetAggregate(tickers),
 	}
 
 	return response, nil
 }
+
+
+
+
+
+
+
+
+
+
+
+// coroutines
+

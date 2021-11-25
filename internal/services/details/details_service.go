@@ -9,7 +9,7 @@ import (
 	"stonks/internal/constants/market"
 	"stonks/internal/db"
 	"stonks/internal/db/filter"
-	"stonks/internal/interfaces/api_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/details_interfaces"
 )
@@ -17,25 +17,12 @@ import (
 type CompanyDetailsService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
-	StocksApiRepo api_interfaces.IStockApiRepo
+	StocksApiRepo stocks_api_interfaces.IStocksApiRepo
 	DetailsRepo   details_interface.ICompanyDetailsRepo
 	DbHandler     db_interfaces.IDBHandler
 }
 
-var (
-	collections map[string]string
-)
-
-func init() {
-	collections = make(map[string]string)
-	collections["OVERVIEW"] = "Overview"
-	collections["EARNINGS"] = "Earnings"
-	collections["INCOME_STATEMENT"] = "IncomeStatement"
-	collections["BALANCE_SHEET"] = "BalanceSheet"
-	collections["CASH_FLOW"] = "CashFlow"
-}
-
-func (s *CompanyDetailsService) BuildRequest(values url.Values) *http.Request {
+func (s *CompanyDetailsService) buildRequest(values url.Values) *http.Request {
 	values.Set("apikey", s.Config.MarketKey)
 
 	request, _ := http.NewRequest(http.MethodGet, market_constants.URL, nil)
@@ -70,6 +57,22 @@ func (s *CompanyDetailsService) DbDetailsRoutine(database *mongo.Database, filte
 	return res, nil
 }
 
+func (s *CompanyDetailsService) getColl(function string) string {
+	switch function {
+	case "OVERVIEW":
+		return s.Config.DetailsCollections.Overview
+	case "EARNINGS":
+		return s.Config.DetailsCollections.Earnings
+	case "INCOME_STATEMENT":
+		return s.Config.DetailsCollections.IncomeStatement
+	case "BALANCE_SHEET":
+		return s.Config.DetailsCollections.BalanceSheet
+	case "CASH_FLOW":
+		return s.Config.DetailsCollections.CashFlow
+	default:
+		return ""
+	}
+}
 
 func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{}, error) {
 	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
@@ -77,11 +80,11 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 	var res interface{}
 	f := filter.Details(values, values.Get("function"))
 	s.Log.Info(f)
-	if db.IsDocExist(database, collections[values.Get("function")], filter.ExistDetails(values.Get("symbol"))) {
+	if db.IsDocExist(database, s.getColl(values.Get("function")), filter.ExistDetails(values.Get("symbol"))) {
 		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
 		return res, nil
 	}
-		request := s.BuildRequest(values)
+		request := s.buildRequest(values)
 		switch values.Get("function") {
 		case "OVERVIEW":
 			res, err = s.StocksApiRepo.GetOverview(request)
@@ -99,7 +102,7 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 			return nil, err
 		}
 
-		_, err = s.DetailsRepo.InsertCompanyDetails(collections[values.Get("function")], database, res)
+		_, err = s.DetailsRepo.InsertCompanyDetails(s.getColl(values.Get("function")), database, res)
 
 		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
 		if err != nil {
@@ -108,6 +111,4 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 		}
 
 		return res, nil
-
-
 }

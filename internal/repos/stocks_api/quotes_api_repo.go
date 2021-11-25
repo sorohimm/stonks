@@ -8,12 +8,12 @@ import (
 	qmodels "stonks/internal/models/quotes"
 )
 
-type ApiRepo struct {
+type StocksApiRepo struct {
 	Log    *zap.SugaredLogger
 	Client *http.Client
 }
 
-func (r *ApiRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIntraday1Quotes :: %s", err)
@@ -35,7 +35,7 @@ func (r *ApiRepo) GetIntraday1Quotes(request *http.Request) (qmodels.TSMongo, er
 	return res, nil
 }
 
-func (r *ApiRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIntraday5Quotes :: %s", err)
@@ -57,7 +57,7 @@ func (r *ApiRepo) GetIntraday5Quotes(request *http.Request) (qmodels.TSMongo, er
 	return res, nil
 }
 
-func (r *ApiRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIntraday15Quotes :: %s", err)
@@ -79,7 +79,7 @@ func (r *ApiRepo) GetIntraday15Quotes(request *http.Request) (qmodels.TSMongo, e
 	return res, nil
 }
 
-func (r *ApiRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIntraday30Quotes :: %s", err)
@@ -101,7 +101,7 @@ func (r *ApiRepo) GetIntraday30Quotes(request *http.Request) (qmodels.TSMongo, e
 	return res, nil
 }
 
-func (r *ApiRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIntraday60Quotes :: %s", err)
@@ -123,7 +123,7 @@ func (r *ApiRepo) GetIntraday60Quotes(request *http.Request) (qmodels.TSMongo, e
 	return res, nil
 }
 
-func (r *ApiRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetDailyQuotes :: %s", err)
@@ -145,7 +145,7 @@ func (r *ApiRepo) GetDailyQuotes(request *http.Request) (qmodels.TSMongo, error)
 	return res, nil
 }
 
-func (r *ApiRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetWeeklyQuotes :: %s", err)
@@ -167,7 +167,7 @@ func (r *ApiRepo) GetWeeklyQuotes(request *http.Request) (qmodels.TSMongo, error
 	return res, nil
 }
 
-func (r *ApiRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, error) {
+func (r *StocksApiRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetMonthlyQuotes :: %s", err)
@@ -189,7 +189,7 @@ func (r *ApiRepo) GetMonthlyQuotes(request *http.Request) (qmodels.TSMongo, erro
 	return res, nil
 }
 
-func (r *ApiRepo) GetOverview(request *http.Request) (details_models.OverviewMongo, error) {
+func (r *StocksApiRepo) GetOverview(request *http.Request) (details_models.OverviewMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetOverview :: %s", err)
@@ -211,7 +211,7 @@ func (r *ApiRepo) GetOverview(request *http.Request) (details_models.OverviewMon
 	return res, nil
 }
 
-func (r *ApiRepo) GetEarnings(request *http.Request) (details_models.EarningsMongo, error) {
+func (r *StocksApiRepo) GetEarnings(request *http.Request) (details_models.EarningsMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetEarnings :: %s", err)
@@ -233,7 +233,7 @@ func (r *ApiRepo) GetEarnings(request *http.Request) (details_models.EarningsMon
 	return res, nil
 }
 
-func (r *ApiRepo) GetCashFlow(request *http.Request) (details_models.CashFlowMongo, error) {
+func (r *StocksApiRepo) GetCashFlow(request *http.Request) (details_models.CashFlowMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetCashFlow :: %s", err)
@@ -258,7 +258,7 @@ func (r *ApiRepo) GetCashFlow(request *http.Request) (details_models.CashFlowMon
 	return res, nil
 }
 
-func (r *ApiRepo) GetIncomeStatement(request *http.Request) (details_models.IncomeStatementMongo, error) {
+func (r *StocksApiRepo) GetIncomeStatement(request *http.Request) (details_models.IncomeStatementMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIncomeStatement :: %s", err)
@@ -281,7 +281,7 @@ func (r *ApiRepo) GetIncomeStatement(request *http.Request) (details_models.Inco
 	return res, nil
 }
 
-func (r *ApiRepo) GetBalanceSheet(request *http.Request) (details_models.BalanceSheetMongo, error) {
+func (r *StocksApiRepo) GetBalanceSheet(request *http.Request) (details_models.BalanceSheetMongo, error) {
 	resp, err := r.Client.Do(request)
 	if err != nil || resp.StatusCode != 200 {
 		r.Log.Infof("api_repo :: GetIncomeStatement :: %s", err)

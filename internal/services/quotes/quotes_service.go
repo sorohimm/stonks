@@ -7,7 +7,7 @@ import (
 	"stonks/internal/config"
 	"stonks/internal/db"
 	"stonks/internal/db/filter"
-	"stonks/internal/interfaces/api_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/quotes_interfaces"
 	"stonks/internal/models"
@@ -17,7 +17,7 @@ type QuotesService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
 	QuotesRepo    quotes_interfaces.IQuotesRepo
-	QuotesApiRepo api_interfaces.IStockApiRepo
+	QuotesApiRepo stocks_api_interfaces.IStocksApiRepo
 	DbRepo        db_interfaces.IDbRepo
 	DbHandler     db_interfaces.IDBHandler
 }

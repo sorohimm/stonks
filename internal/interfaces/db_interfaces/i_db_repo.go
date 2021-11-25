@@ -2,7 +2,7 @@ package db_interfaces
 
 import (
 	"go.mongodb.org/mongo-driver/mongo"
-	choose_models "stonks/internal/models/choose"
+	"stonks/internal/models/choose"
 )
 
 type IDbRepo interface {

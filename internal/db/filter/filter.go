@@ -22,7 +22,6 @@ func CurrentPrice(symbol string) mongo.Pipeline {
 	return p
 }
 
-
 // Exist creates a filter that checks if a document with this symbol exists
 func Exist(symbol string) interface{} {
 	return bson.M{"_meta.symbol": symbol}
@@ -31,7 +30,6 @@ func Exist(symbol string) interface{} {
 func ExistDetails(symbol string) interface{} {
 	return bson.M{"symbol": symbol}
 }
-
 
 // Choose generates a pipeline for a choose request
 func Choose(values url.Values) interface{} {
@@ -330,6 +328,7 @@ func Growth(t models.Timing) mongo.Pipeline {
 func matchBySymbol(t models.Timing) mongo.Pipeline {
 	return mongo.Pipeline{{{"$match", bson.M{"symbol": t.Get("symbol")}}}}
 }
+
 // Details generates a pipeline for a details request
 func Details(values url.Values, function string) mongo.Pipeline {
 	var t models.Timing
@@ -345,7 +344,7 @@ func Details(values url.Values, function string) mongo.Pipeline {
 				{{"$match", bson.M{"symbol": t.Get("symbol")}}},
 				{{"$project", bson.M{
 					fmt.Sprintf("%s", t.Get("interval")): fmt.Sprintf("$%s", t.Get("interval")),
-					"symbol": "$symbol",
+					"symbol":                             "$symbol",
 				},
 				}},
 			}
@@ -358,7 +357,7 @@ func Details(values url.Values, function string) mongo.Pipeline {
 		p := mongo.Pipeline{
 			{{"$match", bson.M{"symbol": t.Get("symbol")}}},
 			{{"$project", bson.M{
-				fmt.Sprintf("%s", t.Get("interval")) : bson.M{
+				fmt.Sprintf("%s", t.Get("interval")): bson.M{
 					"$filter": bson.M{
 						"input": fmt.Sprintf("$%s", t.Get("interval")),
 						"as":    "a",

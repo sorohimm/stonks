@@ -16,7 +16,7 @@ COPY --from=build-env stonks/cmd/uran /stonks/cmd/uran
 #COPY --from=build-env /go/bin/dlv /
 
 #WORKDIR /stonks/cmd
-#CMD ["/dlv", "--listen=:40000", "--headless=true", "--api-version=2", "exec", "/uran"]
+#CMD ["/dlv", "--listen=:40000", "--headless=true", "--stocks_api-version=2", "exec", "/uran"]
 #WORKDIR /
 ENTRYPOINT ["stonks/cmd/uran"]
 

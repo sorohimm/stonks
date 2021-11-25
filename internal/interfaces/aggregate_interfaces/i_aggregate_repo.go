@@ -1,5 +1,9 @@
 package aggregate_interfaces
 
+import (
+	aggregate_models "stonks/internal/models/aggregate"
+)
+
 type IAggregateRepo interface {
-	GetAggregate() (interface{}, error)
+	GetAggregate([]aggregate_models.Flow) float64
 }

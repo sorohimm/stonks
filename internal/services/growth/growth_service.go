@@ -9,7 +9,7 @@ import (
 	m_const "stonks/internal/constants/market"
 	"stonks/internal/db"
 	"stonks/internal/db/filter"
-	"stonks/internal/interfaces/api_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/growth_interfaces"
 	"stonks/internal/models"
@@ -21,7 +21,7 @@ type GrowthService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
 	GrowthRepo    growth_interfaces.IGrowthRepo
-	QuotesApiRepo api_interfaces.IStockApiRepo
+	QuotesApiRepo stocks_api_interfaces.IStocksApiRepo
 	DbHandler     db_interfaces.IDBHandler
 	DbRepo        db_interfaces.IDbRepo
 }

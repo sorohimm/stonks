@@ -11,7 +11,7 @@ import (
 	"stonks/internal/controllers/market/quotes"
 	"stonks/internal/interfaces/db_interfaces"
 	aggregate_repo "stonks/internal/repos/aggregate"
-	"stonks/internal/repos/api"
+	"stonks/internal/repos/stocks_api"
 	choose_repo "stonks/internal/repos/choose"
 	db_repo "stonks/internal/repos/db"
 	"stonks/internal/repos/details"
@@ -74,7 +74,7 @@ func (e *environment) InjectDetailsController() details_controller.CompanyDetail
 				Client: http.DefaultClient,
 				Config: e.cfg,
 			},
-			StocksApiRepo: &api_repo.ApiRepo{
+			StocksApiRepo: &api_repo.StocksApiRepo{
 				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
@@ -95,7 +95,7 @@ func (e *environment) InjectQuotesController() quotes_controller.QuotesControlle
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
-			QuotesApiRepo: &api_repo.ApiRepo{
+			QuotesApiRepo: &api_repo.StocksApiRepo{
 				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
@@ -119,7 +119,7 @@ func (e *environment) InjectGrowthController() growth_controller.GrowthControlle
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
-			QuotesApiRepo: &api_repo.ApiRepo{
+			QuotesApiRepo: &api_repo.StocksApiRepo{
 				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
@@ -143,7 +143,7 @@ func (e *environment) InjectChooseController() choose_controller.ChooseControlle
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
-			StocksApiRepo: &api_repo.ApiRepo{
+			StocksApiRepo: &api_repo.StocksApiRepo{
 				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
@@ -167,7 +167,7 @@ func (e *environment) InjectAggregateController() aggregate_controller.Aggregate
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
-			StockApiRepo: &api_repo.ApiRepo{
+			StockApiRepo: &api_repo.StocksApiRepo{
 				Log:    e.logger,
 				Client: http.DefaultClient,
 			},

@@ -1,4 +1,4 @@
-package api_interfaces
+package stocks_api_interfaces
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	qmodels "stonks/internal/models/quotes"
 )
 
-type IStockApiRepo interface {
+type IStocksApiRepo interface {
 	GetIntraday1Quotes(*http.Request) (qmodels.TSMongo, error)
 	GetIntraday5Quotes(*http.Request) (qmodels.TSMongo, error)
 	GetIntraday15Quotes(*http.Request) (qmodels.TSMongo, error)
