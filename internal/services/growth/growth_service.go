@@ -21,7 +21,7 @@ type GrowthService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
 	GrowthRepo    growth_interfaces.IGrowthRepo
-	QuotesApiRepo api_interfaces.IQuotesApiRepo
+	QuotesApiRepo api_interfaces.IStockApiRepo
 	DbHandler     db_interfaces.IDBHandler
 	DbRepo        db_interfaces.IDbRepo
 }

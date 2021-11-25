@@ -340,6 +340,17 @@ func Details(values url.Values, function string) mongo.Pipeline {
 	}
 
 	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
+		if t.Has("interval") {
+			p := mongo.Pipeline{
+				{{"$match", bson.M{"symbol": t.Get("symbol")}}},
+				{{"$project", bson.M{
+					fmt.Sprintf("%s", t.Get("interval")): fmt.Sprintf("$%s", t.Get("interval")),
+					"symbol": "$symbol",
+				},
+				}},
+			}
+			return p
+		}
 		return matchBySymbol(t)
 	}
 

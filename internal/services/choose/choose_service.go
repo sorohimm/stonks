@@ -15,7 +15,7 @@ import (
 type ChooseService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
-	StocksApiRepo api_interfaces.IQuotesApiRepo
+	StocksApiRepo api_interfaces.IStockApiRepo
 	ChooseRepo    choose_interfaces.IChooseRepo
 	DbRepo        db_interfaces.IDbRepo
 	DbHandler     db_interfaces.IDBHandler

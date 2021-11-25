@@ -39,15 +39,15 @@ type IncomeStatement struct {
 }
 
 type IncomeStatementMongo struct {
-	Symbol           string                        `json:"symbol"`
-	AnnualReports    []IncomeStatementReportsMongo `json:"annualReports"`
-	QuarterlyReports []IncomeStatementReportsMongo `json:"quarterlyReports"`
+	Symbol           string                        `json:"symbol,omitempty" bson:"symbol"`
+	AnnualReports    []IncomeStatementReportsMongo `json:"annual,omitempty" bson:"annual,omitempty"`
+	QuarterlyReports []IncomeStatementReportsMongo `json:"quarterly,omitempty" bson:"quarterly,omitempty"`
 }
 
 type IncomeStatementReportsMongo struct {
 	FiscalDateEnding                  string  `json:"fiscalDateEnding,omitempty"                  bson:"fiscalDateEnding,omitempty"`
 	ReportedCurrency                  string  `json:"reportedCurrency,omitempty"                  bson:"reportedCurrency,omitempty"`
-	GrossProfit                       float64 `json:"grossProfit,omitempty"                       bson:"grossProfit,omitempty"`
+	GrossProfit                       float64 `json:"grossProfit"                       bson:"grossProfit,omitempty"`
 	TotalRevenue                      float64 `json:"totalRevenue,omitempty"                      bson:"totalRevenue,omitempty"`
 	CostOfRevenue                     float64 `json:"costOfRevenue,omitempty"                     bson:"costOfRevenue,omitempty"`
 	CostofGoodsAndServicesSold        float64 `json:"costofGoodsAndServicesSold,omitempty"        bson:"costofGoodsAndServicesSold,omitempty"`
@@ -73,29 +73,29 @@ type IncomeStatementReportsMongo struct {
 }
 
 func (s *IncomeStatementReportsMongo) Set(v IncomeStatementReports) {
-	GrossProfit, _ := strconv.ParseFloat(v.GrossProfit, 64)
-	TotalRevenue, _ := strconv.ParseFloat(v.TotalRevenue, 64)
-	CostOfRevenue, _ := strconv.ParseFloat(v.CostOfRevenue, 64)
-	CostofGoodsAndServicesSold, _ := strconv.ParseFloat(v.CostofGoodsAndServicesSold, 64)
-	OperatingIncome, _ := strconv.ParseFloat(v.OperatingIncome, 64)
-	SellingGeneralAndAdministrative, _ := strconv.ParseFloat(v.SellingGeneralAndAdministrative, 64)
-	ResearchAndDevelopment, _ := strconv.ParseFloat(v.ResearchAndDevelopment, 64)
-	OperatingExpenses, _ := strconv.ParseFloat(v.OperatingExpenses, 64)
-	InvestmentIncomeNet, _ := strconv.ParseFloat(v.InvestmentIncomeNet, 64)
-	NetInterestIncome, _ := strconv.ParseFloat(v.NetInterestIncome, 64)
-	InterestIncome, _ := strconv.ParseFloat(v.InterestIncome, 64)
-	InterestExpense, _ := strconv.ParseFloat(v.InterestExpense, 64)
-	NonInterestIncome, _ := strconv.ParseFloat(v.NonInterestIncome, 64)
-	OtherNonOperatingIncome, _ := strconv.ParseFloat(v.OtherNonOperatingIncome, 64)
-	DepreciationAndAmortization, _ := strconv.ParseFloat(v.DepreciationAndAmortization, 64)
-	IncomeBeforeTax, _ := strconv.ParseFloat(v.IncomeBeforeTax, 64)
-	IncomeTaxExpense, _ := strconv.ParseFloat(v.IncomeTaxExpense, 64)
-	InterestAndDebtExpense, _ := strconv.ParseFloat(v.InterestAndDebtExpense, 64)
-	NetIncomeFromContinuingOperations, _ := strconv.ParseFloat(v.NetIncomeFromContinuingOperations, 64)
-	ComprehensiveIncomeNetOfTax, _ := strconv.ParseFloat(v.ComprehensiveIncomeNetOfTax, 64)
-	Ebit, _ := strconv.ParseFloat(v.Ebit, 64)
-	Ebitda, _ := strconv.ParseFloat(v.Ebitda, 64)
-	NetIncome, _ := strconv.ParseFloat(v.NetIncome, 64)
+	GrossProfit, _ := strconv.ParseFloat(v.GrossProfit, 32)
+	TotalRevenue, _ := strconv.ParseFloat(v.TotalRevenue, 32)
+	CostOfRevenue, _ := strconv.ParseFloat(v.CostOfRevenue, 32)
+	CostofGoodsAndServicesSold, _ := strconv.ParseFloat(v.CostofGoodsAndServicesSold, 32)
+	OperatingIncome, _ := strconv.ParseFloat(v.OperatingIncome, 32)
+	SellingGeneralAndAdministrative, _ := strconv.ParseFloat(v.SellingGeneralAndAdministrative, 32)
+	ResearchAndDevelopment, _ := strconv.ParseFloat(v.ResearchAndDevelopment, 32)
+	OperatingExpenses, _ := strconv.ParseFloat(v.OperatingExpenses, 32)
+	InvestmentIncomeNet, _ := strconv.ParseFloat(v.InvestmentIncomeNet, 32)
+	NetInterestIncome, _ := strconv.ParseFloat(v.NetInterestIncome, 32)
+	InterestIncome, _ := strconv.ParseFloat(v.InterestIncome, 32)
+	InterestExpense, _ := strconv.ParseFloat(v.InterestExpense, 32)
+	NonInterestIncome, _ := strconv.ParseFloat(v.NonInterestIncome, 32)
+	OtherNonOperatingIncome, _ := strconv.ParseFloat(v.OtherNonOperatingIncome, 32)
+	DepreciationAndAmortization, _ := strconv.ParseFloat(v.DepreciationAndAmortization, 32)
+	IncomeBeforeTax, _ := strconv.ParseFloat(v.IncomeBeforeTax, 32)
+	IncomeTaxExpense, _ := strconv.ParseFloat(v.IncomeTaxExpense, 32)
+	InterestAndDebtExpense, _ := strconv.ParseFloat(v.InterestAndDebtExpense, 32)
+	NetIncomeFromContinuingOperations, _ := strconv.ParseFloat(v.NetIncomeFromContinuingOperations, 32)
+	ComprehensiveIncomeNetOfTax, _ := strconv.ParseFloat(v.ComprehensiveIncomeNetOfTax, 32)
+	Ebit, _ := strconv.ParseFloat(v.Ebit, 32)
+	Ebitda, _ := strconv.ParseFloat(v.Ebitda, 32)
+	NetIncome, _ := strconv.ParseFloat(v.NetIncome, 32)
 
 	s.FiscalDateEnding = v.FiscalDateEnding
 	s.ReportedCurrency = v.ReportedCurrency

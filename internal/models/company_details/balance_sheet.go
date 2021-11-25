@@ -52,42 +52,42 @@ type BalanceSheet struct {
 type BalanceSheetReportsMongo struct {
 	FiscalDateEnding                       string  `json:"fiscalDateEnding,omitempty"                       bson:"fiscalDateEnding,omitempty"`
 	ReportedCurrency                       string  `json:"reportedCurrency,omitempty"                       bson:"reportedCurrency,omitempty"`
-	TotalAssets                            float64 `json:"totalAssets,omitempty"                            bson:"totalAssets,omitempty"`
-	TotalCurrentAssets                     float64 `json:"totalCurrentAssets,omitempty"                     bson:"totalCurrentAssets,omitempty"`
-	CashAndCashEquivalentsAtCarryingValue  float64 `json:"cashAndCashEquivalentsAtCarryingValue,omitempty"  bson:"cashAndCashEquivalentsAtCarryingValue,omitempty"`
-	CashAndShortTermInvestments            float64 `json:"cashAndShortTermInvestments,omitempty"            bson:"cashAndShortTermInvestments,omitempty"`
-	Inventory                              float64 `json:"inventory,omitempty"                              bson:"inventory,omitempty"`
-	CurrentNetReceivables                  float64 `json:"currentNetReceivables,omitempty"                  bson:"currentNetReceivables,omitempty"`
-	TotalNonCurrentAssets                  float64 `json:"totalNonCurrentAssets,omitempty"                  bson:"totalNonCurrentAssets,omitempty"`
-	PropertyPlantEquipment                 float64 `json:"propertyPlantEquipment,omitempty"                 bson:"propertyPlantEquipment,omitempty"`
-	AccumulatedDepreciationAmortizationPPE float64 `json:"accumulatedDepreciationAmortizationPPE,omitempty" bson:"accumulatedDepreciationAmortizationPPE,omitempty"`
-	IntangibleAssets                       float64 `json:"intangibleAssets,omitempty"                       bson:"intangibleAssets,omitempty"`
-	IntangibleAssetsExcludingGoodwill      float64 `json:"intangibleAssetsExcludingGoodwill,omitempty"      bson:"intangibleAssetsExcludingGoodwill,omitempty"`
-	Goodwill                               float64 `json:"goodwill,omitempty"                               bson:"goodwill,omitempty"`
-	Investments                            float64 `json:"investments,omitempty"                            bson:"investments,omitempty"`
-	LongTermInvestments                    float64 `json:"longTermInvestments,omitempty"                    bson:"longTermInvestments,omitempty"`
-	ShortTermInvestments                   float64 `json:"shortTermInvestments,omitempty"                   bson:"shortTermInvestments,omitempty"`
-	OtherCurrentAssets                     float64 `json:"otherCurrentAssets,omitempty"                     bson:"otherCurrentAssets,omitempty"`
-	OtherNonCurrrentAssets                 float64 `json:"otherNonCurrrentAssets,omitempty"                 bson:"otherNonCurrrentAssets,omitempty"`
-	TotalLiabilities                       float64 `json:"totalLiabilities,omitempty"                       bson:"totalLiabilities,omitempty"`
-	TotalCurrentLiabilities                float64 `json:"totalCurrentLiabilities,omitempty"                bson:"totalCurrentLiabilities,omitempty"`
-	CurrentAccountsPayable                 float64 `json:"currentAccountsPayable,omitempty"                 bson:"currentAccountsPayable,omitempty"`
-	DeferredRevenue                        float64 `json:"deferredRevenue,omitempty"                        bson:"deferredRevenue,omitempty"`
-	CurrentDebt                            float64 `json:"currentDebt,omitempty"                            bson:"currentDebt,omitempty"`
-	ShortTermDebt                          float64 `json:"shortTermDebt,omitempty"                          bson:"shortTermDebt,omitempty"`
-	TotalNonCurrentLiabilities             float64 `json:"totalNonCurrentLiabilities,omitempty"             bson:"totalNonCurrentLiabilities,omitempty"`
-	CapitalLeaseObligations                float64 `json:"capitalLeaseObligations,omitempty"                bson:"capitalLeaseObligations,omitempty"`
-	LongTermDebt                           float64 `json:"longTermDebt,omitempty"                           bson:"longTermDebt,omitempty"`
-	CurrentLongTermDebt                    float64 `json:"currentLongTermDebt,omitempty"                    bson:"currentLongTermDebt,omitempty"`
-	LongTermDebtNoncurrent                 float64 `json:"longTermDebtNoncurrent,omitempty"                 bson:"longTermDebtNoncurrent,omitempty"`
-	ShortLongTermDebtTotal                 float64 `json:"shortLongTermDebtTotal,omitempty"                 bson:"shortLongTermDebtTotal,omitempty"`
-	OtherCurrentLiabilities                float64 `json:"otherCurrentLiabilities,omitempty"                bson:"otherCurrentLiabilities,omitempty"`
-	OtherNonCurrentLiabilities             float64 `json:"otherNonCurrentLiabilities,omitempty"             bson:"otherNonCurrentLiabilities,omitempty"`
-	TotalShareholderEquity                 float64 `json:"totalShareholderEquity,omitempty"                 bson:"totalShareholderEquity,omitempty"`
-	TreasuryStock                          float64 `json:"treasuryStock,omitempty"                          bson:"treasuryStock,omitempty"`
-	RetainedEarnings                       float64 `json:"retainedEarnings,omitempty"                       bson:"retainedEarnings,omitempty"`
-	CommonStock                            float64 `json:"commonStock,omitempty"                            bson:"commonStock,omitempty"`
-	CommonStockSharesOutstanding           float64 `json:"commonStockSharesOutstanding,omitempty"           bson:"commonStockSharesOutstanding,omitempty"`
+	TotalAssets                            float64 `json:"totalAssets,omitempty"                            bson:"totalAssets"`
+	TotalCurrentAssets                     float64 `json:"totalCurrentAssets,omitempty"                     bson:"totalCurrentAssets"`
+	CashAndCashEquivalentsAtCarryingValue  float64 `json:"cashAndCashEquivalentsAtCarryingValue,omitempty"  bson:"cashAndCashEquivalentsAtCarryingValue"`
+	CashAndShortTermInvestments            float64 `json:"cashAndShortTermInvestments,omitempty"            bson:"cashAndShortTermInvestments"`
+	Inventory                              float64 `json:"inventory,omitempty"                              bson:"inventory"`
+	CurrentNetReceivables                  float64 `json:"currentNetReceivables,omitempty"                  bson:"currentNetReceivables"`
+	TotalNonCurrentAssets                  float64 `json:"totalNonCurrentAssets,omitempty"                  bson:"totalNonCurrentAssets"`
+	PropertyPlantEquipment                 float64 `json:"propertyPlantEquipment,omitempty"                 bson:"propertyPlantEquipment"`
+	AccumulatedDepreciationAmortizationPPE float64 `json:"accumulatedDepreciationAmortizationPPE,omitempty" bson:"accumulatedDepreciationAmortizationPPE"`
+	IntangibleAssets                       float64 `json:"intangibleAssets,omitempty"                       bson:"intangibleAssets"`
+	IntangibleAssetsExcludingGoodwill      float64 `json:"intangibleAssetsExcludingGoodwill,omitempty"      bson:"intangibleAssetsExcludingGoodwill"`
+	Goodwill                               float64 `json:"goodwill,omitempty"                               bson:"goodwill"`
+	Investments                            float64 `json:"investments,omitempty"                            bson:"investments"`
+	LongTermInvestments                    float64 `json:"longTermInvestments,omitempty"                    bson:"longTermInvestments"`
+	ShortTermInvestments                   float64 `json:"shortTermInvestments,omitempty"                   bson:"shortTermInvestments"`
+	OtherCurrentAssets                     float64 `json:"otherCurrentAssets,omitempty"                     bson:"otherCurrentAssets"`
+	OtherNonCurrrentAssets                 float64 `json:"otherNonCurrrentAssets,omitempty"                 bson:"otherNonCurrrentAssets"`
+	TotalLiabilities                       float64 `json:"totalLiabilities,omitempty"                       bson:"totalLiabilities"`
+	TotalCurrentLiabilities                float64 `json:"totalCurrentLiabilities,omitempty"                bson:"totalCurrentLiabilities"`
+	CurrentAccountsPayable                 float64 `json:"currentAccountsPayable,omitempty"                 bson:"currentAccountsPayable"`
+	DeferredRevenue                        float64 `json:"deferredRevenue,omitempty"                        bson:"deferredRevenue"`
+	CurrentDebt                            float64 `json:"currentDebt,omitempty"                            bson:"currentDebt"`
+	ShortTermDebt                          float64 `json:"shortTermDebt,omitempty"                          bson:"shortTermDebt"`
+	TotalNonCurrentLiabilities             float64 `json:"totalNonCurrentLiabilities,omitempty"             bson:"totalNonCurrentLiabilities"`
+	CapitalLeaseObligations                float64 `json:"capitalLeaseObligations,omitempty"                bson:"capitalLeaseObligations"`
+	LongTermDebt                           float64 `json:"longTermDebt,omitempty"                           bson:"longTermDebt"`
+	CurrentLongTermDebt                    float64 `json:"currentLongTermDebt,omitempty"                    bson:"currentLongTermDebt"`
+	LongTermDebtNoncurrent                 float64 `json:"longTermDebtNoncurrent,omitempty"                 bson:"longTermDebtNoncurrent"`
+	ShortLongTermDebtTotal                 float64 `json:"shortLongTermDebtTotal,omitempty"                 bson:"shortLongTermDebtTotal"`
+	OtherCurrentLiabilities                float64 `json:"otherCurrentLiabilities,omitempty"                bson:"otherCurrentLiabilities"`
+	OtherNonCurrentLiabilities             float64 `json:"otherNonCurrentLiabilities,omitempty"             bson:"otherNonCurrentLiabilities"`
+	TotalShareholderEquity                 float64 `json:"totalShareholderEquity,omitempty"                 bson:"totalShareholderEquity"`
+	TreasuryStock                          float64 `json:"treasuryStock,omitempty"                          bson:"treasuryStock"`
+	RetainedEarnings                       float64 `json:"retainedEarnings,omitempty"                       bson:"retainedEarnings"`
+	CommonStock                            float64 `json:"commonStock,omitempty"                            bson:"commonStock"`
+	CommonStockSharesOutstanding           float64 `json:"commonStockSharesOutstanding,omitempty"           bson:"commonStockSharesOutstanding"`
 }
 
 func (r *BalanceSheetReportsMongo) Set(v BalanceSheetReports) {
@@ -130,6 +130,7 @@ func (r *BalanceSheetReportsMongo) Set(v BalanceSheetReports) {
 
 	r.FiscalDateEnding = v.FiscalDateEnding
 	r.ReportedCurrency = v.ReportedCurrency
+
 	r.TotalAssets = TotalAssets
 	r.TotalCurrentAssets = TotalCurrentAssets
 	r.CashAndCashEquivalentsAtCarryingValue = CashAndCashEquivalentsAtCarryingValue
@@ -170,8 +171,8 @@ func (r *BalanceSheetReportsMongo) Set(v BalanceSheetReports) {
 
 type BalanceSheetMongo struct {
 	Symbol           string                     `json:"symbol"    bson:"symbol"`
-	AnnualReports    []BalanceSheetReportsMongo `json:"annual"    bson:"annual"`
-	QuarterlyReports []BalanceSheetReportsMongo `json:"quarterly" bson:"quarterly"`
+	AnnualReports    []BalanceSheetReportsMongo `json:"annual,omitempty"    bson:"annual,omitempty"`
+	QuarterlyReports []BalanceSheetReportsMongo `json:"quarterly,omitempty" bson:"quarterly,omitempty"`
 }
 
 func (e *BalanceSheetMongo) Set(v BalanceSheet) {

@@ -5,15 +5,18 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"net/http"
+	aggregate_controller "stonks/internal/controllers/market/aggregate"
 	choose_controller "stonks/internal/controllers/market/choose"
 	"stonks/internal/controllers/market/growth"
 	"stonks/internal/controllers/market/quotes"
 	"stonks/internal/interfaces/db_interfaces"
+	aggregate_repo "stonks/internal/repos/aggregate"
 	"stonks/internal/repos/api"
 	choose_repo "stonks/internal/repos/choose"
 	db_repo "stonks/internal/repos/db"
 	"stonks/internal/repos/details"
 	"stonks/internal/repos/growth"
+	aggregate_services "stonks/internal/services/aggregate"
 
 	"stonks/internal/services/choose"
 	"stonks/internal/services/details"
@@ -34,6 +37,7 @@ type IInjector interface {
 	InjectQuotesController() quotes_controller.QuotesControllers
 	InjectGrowthController() growth_controller.GrowthControllers
 	InjectChooseController() choose_controller.ChooseControllers
+	InjectAggregateController() aggregate_controller.AggregateControllers
 }
 
 var env *environment
@@ -41,7 +45,7 @@ var env *environment
 type environment struct {
 	logger   *zap.SugaredLogger
 	cfg      *config.Config
-	client *http.Client
+	client   *http.Client
 	dbClient db_interfaces.IDBHandler
 }
 
@@ -53,7 +57,7 @@ func (e *environment) InjectNewsController() news_controller.NewsControllers {
 			NewsRepo: &news_repo.NewsRepo{
 				Client: http.DefaultClient,
 			},
-			Config:   e.cfg,
+			Config: e.cfg,
 		},
 		Validator: validator.New(),
 	}
@@ -63,14 +67,15 @@ func (e *environment) InjectDetailsController() details_controller.CompanyDetail
 	return details_controller.CompanyDetailsControllers{
 		Log: e.logger,
 		CompanyDetailsService: &details_service.CompanyDetailsService{
-			Log: e.logger,
-			Config:      e.cfg,
+			Log:    e.logger,
+			Config: e.cfg,
 			DetailsRepo: &details_repo.CompanyDetailsRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
+				Config: e.cfg,
 			},
 			StocksApiRepo: &api_repo.ApiRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
@@ -83,19 +88,19 @@ func (e *environment) InjectQuotesController() quotes_controller.QuotesControlle
 	return quotes_controller.QuotesControllers{
 		Log: e.logger,
 		QuotesService: &quotes_service.QuotesService{
-			Log: e.logger,
-			Config:    e.cfg,
+			Log:    e.logger,
+			Config: e.cfg,
 			QuotesRepo: &quotes_repo.QuotesRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
 			QuotesApiRepo: &api_repo.ApiRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbRepo: &db_repo.DbRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: e.client,
 			},
 		},
@@ -107,19 +112,19 @@ func (e *environment) InjectGrowthController() growth_controller.GrowthControlle
 	return growth_controller.GrowthControllers{
 		Log: e.logger,
 		GrowthService: &growth_services.GrowthService{
-			Log: e.logger,
-			Config:    e.cfg,
+			Log:    e.logger,
+			Config: e.cfg,
 			GrowthRepo: &growth_repo.GrowthRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
 			QuotesApiRepo: &api_repo.ApiRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbRepo: &db_repo.DbRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: e.client,
 			},
 		},
@@ -131,19 +136,43 @@ func (e *environment) InjectChooseController() choose_controller.ChooseControlle
 	return choose_controller.ChooseControllers{
 		Log: e.logger,
 		ChooseService: &choose_service.ChooseService{
-			Log: e.logger,
-			Config:    e.cfg,
+			Log:    e.logger,
+			Config: e.cfg,
 			ChooseRepo: &choose_repo.ChooseRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbHandler: e.dbClient,
 			StocksApiRepo: &api_repo.ApiRepo{
-				Log: e.logger,
+				Log:    e.logger,
 				Client: http.DefaultClient,
 			},
 			DbRepo: &db_repo.DbRepo{
-				Log: e.logger,
+				Log:    e.logger,
+				Client: e.client,
+			},
+		},
+		Validator: validator.New(),
+	}
+}
+
+func (e *environment) InjectAggregateController() aggregate_controller.AggregateControllers {
+	return aggregate_controller.AggregateControllers{
+		Log: e.logger,
+		AggregateService: &aggregate_services.AggregateService{
+			Log:    e.logger,
+			Config: e.cfg,
+			AggregateRepo: &aggregate_repo.AggregateRepo{
+				Log:    e.logger,
+				Client: http.DefaultClient,
+			},
+			DbHandler: e.dbClient,
+			StockApiRepo: &api_repo.ApiRepo{
+				Log:    e.logger,
+				Client: http.DefaultClient,
+			},
+			DbRepo: &db_repo.DbRepo{
+				Log:    e.logger,
 				Client: e.client,
 			},
 		},

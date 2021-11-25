@@ -9,6 +9,7 @@ services:
     env_file:
       - ../configs/config.env
       - ../configs/keys.env
+      - ../configs/collections.env
     ports:
       - ${APPLICATION_PORT}:8080
     networks:

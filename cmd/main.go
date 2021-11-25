@@ -43,6 +43,7 @@ func main() {
 	quotesController := injector.InjectQuotesController()
 	growthController := injector.InjectGrowthController()
 	chooseController := injector.InjectChooseController()
+	aggregateRepo := injector.InjectAggregateController()
 
 	router := gin.Default()
 
@@ -53,6 +54,7 @@ func main() {
 		v1.GET("/quotes", quotesController.GetQuotes)
 		v1.GET("/growth", growthController.GetGrowth)
 		v1.GET("/choose", chooseController.GetChoose)
+		v1.GET("/aggregate", aggregateRepo.GetAggregate)
 	}
 
 	err = router.Run()

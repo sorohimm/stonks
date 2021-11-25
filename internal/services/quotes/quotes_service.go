@@ -17,7 +17,7 @@ type QuotesService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
 	QuotesRepo    quotes_interfaces.IQuotesRepo
-	QuotesApiRepo api_interfaces.IQuotesApiRepo
+	QuotesApiRepo api_interfaces.IStockApiRepo
 	DbRepo        db_interfaces.IDbRepo
 	DbHandler     db_interfaces.IDBHandler
 }

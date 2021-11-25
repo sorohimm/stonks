@@ -25,13 +25,13 @@ func (r *DbRepo) InsertOne(database *mongo.Database, coll string, v interface{})
 }
 
 // GetCurrentDailyPrice returns the current symbol price
-func (r *DbRepo) GetCurrentDailyPrice(database *mongo.Database, symbol string) (interface{}, error) {
+func (r *DbRepo) GetCurrentDailyPrice(database *mongo.Database, symbol string) (choose_models.Price, error) {
 	f := filter.CurrentPrice(symbol)
-	res := choose_models.Price{}
+	var res choose_models.Price
 	cursor, err := database.Collection("DailySeries").Aggregate(context.TODO(), f)
 	if err != nil {
 		r.Log.Errorf("db_repo :: GetCurrentDailyPrice :: %s", err)
-		return nil, err
+		return choose_models.Price{}, err
 	}
 
 	for cursor.Next(context.TODO()) {

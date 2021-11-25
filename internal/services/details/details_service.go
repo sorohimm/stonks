@@ -17,7 +17,7 @@ import (
 type CompanyDetailsService struct {
 	Log           *zap.SugaredLogger
 	Config        *config.Config
-	StocksApiRepo api_interfaces.IQuotesApiRepo
+	StocksApiRepo api_interfaces.IStockApiRepo
 	DetailsRepo   details_interface.ICompanyDetailsRepo
 	DbHandler     db_interfaces.IDBHandler
 }
@@ -94,12 +94,11 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 		case "CASH_FLOW":
 			res, err = s.StocksApiRepo.GetCashFlow(request)
 		}
-
 		if err != nil {
 			s.Log.Error("details_service :: GetCompanyDetails :: cart error")
 			return nil, err
 		}
-		s.Log.Info(res)
+
 		_, err = s.DetailsRepo.InsertCompanyDetails(collections[values.Get("function")], database, res)
 
 		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))

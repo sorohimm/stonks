@@ -6,7 +6,7 @@ import (
 	qmodels "stonks/internal/models/quotes"
 )
 
-type IQuotesApiRepo interface {
+type IStockApiRepo interface {
 	GetIntraday1Quotes(*http.Request) (qmodels.TSMongo, error)
 	GetIntraday5Quotes(*http.Request) (qmodels.TSMongo, error)
 	GetIntraday15Quotes(*http.Request) (qmodels.TSMongo, error)

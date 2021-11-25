@@ -252,6 +252,9 @@ func (r *ApiRepo) GetCashFlow(request *http.Request) (details_models.CashFlowMon
 	var res details_models.CashFlowMongo
 	res.Set(body)
 
+	r.Log.Info(body)
+	r.Log.Info(res)
+
 	return res, nil
 }
 
@@ -273,7 +276,8 @@ func (r *ApiRepo) GetIncomeStatement(request *http.Request) (details_models.Inco
 
 	var res details_models.IncomeStatementMongo
 	res.Set(body)
-
+	r.Log.Info(body)
+	r.Log.Info(res)
 	return res, nil
 }
 
@@ -295,6 +299,9 @@ func (r *ApiRepo) GetBalanceSheet(request *http.Request) (details_models.Balance
 
 	var res details_models.BalanceSheetMongo
 	res.Set(body)
+
+	r.Log.Info(body)
+	r.Log.Info(res)
 
 	return res, nil
 }
