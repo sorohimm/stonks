@@ -34,10 +34,10 @@ func (r *QuotesRepo) GetQuotes(db *mongo.Database, coll string, filter interface
 	return body, nil
 }
 
-func (r *QuotesRepo) Update(db *mongo.Database, coll string, filter interface{}, update interface{}) error {
+func (r *QuotesRepo) UpdateQuotes(db *mongo.Database, coll string, filter interface{}, update interface{}) error {
 	_ ,err := db.Collection(coll).UpdateMany(context.TODO(), filter, update)
 	if err != nil {
-		r.Log.Infof("quotes repo :: Update :: %s", err)
+		r.Log.Infof("quotes repo :: UpdateQuotes :: %s", err)
 		return err
 	}
 

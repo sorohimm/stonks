@@ -43,7 +43,7 @@ func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
 			update := filter.UpdQuote(response.MetaData.LastRefreshed, series)
 			match := filter.Match(values.Get("symbol"))
 
-			err = s.QuotesRepo.Update(database, coll, match, update)
+			err = s.QuotesRepo.UpdateQuotes(database, coll, match, update)
 			if err != nil {
 				return nil, err
 			}
