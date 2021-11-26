@@ -9,17 +9,6 @@ import (
 
 func (s *QuotesService) GetCll(values url.Values) string {
 	if values.Get("function") == "TIME_SERIES_INTRADAY" {
-		switch values.Get("function") {
-		case "TIME_SERIES_DAILY":
-			return s.Config.QuotesCollection.Daily
-		case "TIME_SERIES_WEEKLY":
-			return s.Config.QuotesCollection.Weekly
-		case "TIME_SERIES_MONTHL":
-			return s.Config.QuotesCollection.Monthly
-		default:
-			return ""
-		}
-	} else {
 		switch values.Get("interval") {
 		case "1min":
 			return s.Config.QuotesCollection.Intraday1
@@ -31,6 +20,17 @@ func (s *QuotesService) GetCll(values url.Values) string {
 			return s.Config.QuotesCollection.Intraday30
 		case "60min":
 			return s.Config.QuotesCollection.Intraday60
+		default:
+			return ""
+		}
+	} else {
+		switch values.Get("function") {
+		case "TIME_SERIES_DAILY":
+			return s.Config.QuotesCollection.Daily
+		case "TIME_SERIES_WEEKLY":
+			return s.Config.QuotesCollection.Weekly
+		case "TIME_SERIES_MONTHL":
+			return s.Config.QuotesCollection.Monthly
 		default:
 			return ""
 		}
