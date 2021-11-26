@@ -9,9 +9,9 @@ import (
 	"stonks/internal/constants/market"
 	"stonks/internal/db"
 	"stonks/internal/db/filter"
-	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
 	"stonks/internal/interfaces/details_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 )
 
 type CompanyDetailsService struct {
@@ -22,7 +22,7 @@ type CompanyDetailsService struct {
 	DbHandler     db_interfaces.IDBHandler
 }
 
-func (s *CompanyDetailsService) buildRequest(values url.Values) *http.Request {
+func (s *CompanyDetailsService) BuildRequest(values url.Values) *http.Request {
 	values.Set("apikey", s.Config.MarketKey)
 
 	request, _ := http.NewRequest(http.MethodGet, market_constants.URL, nil)
@@ -57,7 +57,11 @@ func (s *CompanyDetailsService) DbDetailsRoutine(database *mongo.Database, filte
 	return res, nil
 }
 
-func (s *CompanyDetailsService) getColl(function string) string {
+func (s *CompanyDetailsService) GetCll(function string) string {
+	//похуй на экосистему
+	//сообщество какое-то
+	//функциональное целое
+	//связи между отдельными ... похуй
 	switch function {
 	case "OVERVIEW":
 		return s.Config.DetailsCollections.Overview
@@ -80,11 +84,11 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 	var res interface{}
 	f := filter.Details(values, values.Get("function"))
 	s.Log.Info(f)
-	if db.IsDocExist(database, s.getColl(values.Get("function")), filter.ExistDetails(values.Get("symbol"))) {
+	if db.IsDocExist(database, s.GetCll(values.Get("function")), filter.ExistDetails(values.Get("symbol"))) {
 		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
 		return res, nil
 	}
-		request := s.buildRequest(values)
+		request := s.BuildRequest(values)
 		switch values.Get("function") {
 		case "OVERVIEW":
 			res, err = s.StocksApiRepo.GetOverview(request)
@@ -102,7 +106,7 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 			return nil, err
 		}
 
-		_, err = s.DetailsRepo.InsertCompanyDetails(s.getColl(values.Get("function")), database, res)
+		_, err = s.DetailsRepo.InsertCompanyDetails(s.GetCll(values.Get("function")), database, res)
 
 		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
 		if err != nil {

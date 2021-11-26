@@ -25,6 +25,7 @@ type QuotesService struct {
 func (s *QuotesService) GetQuotes(values url.Values) (interface{}, error) {
 	database := s.DbHandler.AcquireDatabase(s.Config.DbName)
 	var coll = s.GetCll(values)
+	s.Log.Info(coll)
 	var t models.Timing
 	t.Set(values)
 	var pipe = filter.Quotes(t)

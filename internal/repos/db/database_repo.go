@@ -18,7 +18,7 @@ type DbRepo struct {
 func (r *DbRepo) InsertOne(database *mongo.Database, coll string, v interface{}) (interface{}, error) {
 	res, err := database.Collection(coll).InsertOne(context.TODO(), v)
 	if err != nil {
-		r.Log.Errorf("db_repo :: InsertQuotes :: %s", err)
+		r.Log.Errorf("db_repo :: InsertOne :: %s", err)
 		return nil, err
 	}
 	return res.InsertedID, nil
