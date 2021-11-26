@@ -19,9 +19,7 @@ func (r *CompanyDetailsRepo) GetOverview(db *mongo.Database, filter interface{})
 	body := details_models.OverviewMongo{}
 
 	cursor, err := db.Collection(r.Config.DetailsCollections.Overview).Aggregate(context.TODO(), filter)
-
-	ok := cursor.TryNext(context.TODO())
-	if !ok {
+	if err != nil {
 		r.Log.Infof("details_repo :: GetOverview :: %s", err)
 		return details_models.OverviewMongo{}, err
 	}
@@ -31,13 +29,8 @@ func (r *CompanyDetailsRepo) GetOverview(db *mongo.Database, filter interface{})
 			r.Log.Infof("details_repo :: GetOverview :: %s", err)
 			return details_models.OverviewMongo{}, err
 		}
-		break
 	}
 
-	if err != nil {
-		r.Log.Infof("details_repo :: GetOverview :: %s", err)
-		return details_models.OverviewMongo{}, err
-	}
 	return body, nil
 }
 
@@ -45,19 +38,18 @@ func (r *CompanyDetailsRepo) GetEarnings(db *mongo.Database, filter interface{})
 	body := details_models.EarningsMongo{}
 
 	cursor, err := db.Collection(r.Config.DetailsCollections.Earnings).Aggregate(context.TODO(), filter)
+	if err != nil {
+		r.Log.Infof("details_repo :: GetEarnings :: %s", err)
+		return details_models.EarningsMongo{}, err
+	}
 
 	for cursor.Next(context.TODO()) {
 		if err = cursor.Decode(&body); err != nil {
 			r.Log.Infof("details_repo :: GetEarnings :: %s", err)
 			return details_models.EarningsMongo{}, err
 		}
-		break
 	}
 
-	if err != nil {
-		r.Log.Infof("details_repo :: GetEarnings :: %s", err)
-		return details_models.EarningsMongo{}, err
-	}
 	return body, nil
 }
 
@@ -65,20 +57,18 @@ func (r *CompanyDetailsRepo) GetIncomeStatement(db *mongo.Database, filter inter
 	body := details_models.IncomeStatementMongo{}
 
 	cursor, err := db.Collection(r.Config.DetailsCollections.IncomeStatement).Aggregate(context.TODO(), filter)
+	if err != nil {
+		r.Log.Infof("details_repo :: GetIncomeStatement :: %s", err)
+		return details_models.IncomeStatementMongo{}, err
+	}
 
 	for cursor.Next(context.TODO()) {
 		if err = cursor.Decode(&body); err != nil {
 			r.Log.Infof("details_repo :: GetIncomeStatement :: %s", err)
 			return details_models.IncomeStatementMongo{}, err
 		}
-		break
 	}
 
-	if err != nil {
-		r.Log.Infof("details_repo :: GetIncomeStatement :: %s", err)
-		return details_models.IncomeStatementMongo{}, err
-	}
-	r.Log.Info(body)
 	return body, nil
 }
 
@@ -86,17 +76,16 @@ func (r *CompanyDetailsRepo) GetBalanceSheet(db *mongo.Database, filter interfac
 	body := details_models.BalanceSheetMongo{}
 
 	cursor, err := db.Collection(r.Config.DetailsCollections.BalanceSheet).Aggregate(context.TODO(), filter)
+	if err != nil {
+		r.Log.Infof("details_repo :: GetBalanceSheet :: %s", err)
+		return details_models.BalanceSheetMongo{}, err
+	}
 
 	for cursor.Next(context.TODO()) {
 		if err = cursor.Decode(&body); err != nil {
 			r.Log.Infof("details_repo :: GetBalanceSheet :: %s", err)
 			return details_models.BalanceSheetMongo{}, err
 		}
-		break
-	}
-	if err != nil {
-		r.Log.Infof("details_repo :: GetBalanceSheet :: %s", err)
-		return details_models.BalanceSheetMongo{}, err
 	}
 
 	return body, nil
@@ -105,19 +94,17 @@ func (r *CompanyDetailsRepo) GetBalanceSheet(db *mongo.Database, filter interfac
 func (r *CompanyDetailsRepo) GetCashFlow(db *mongo.Database, filter interface{}) (details_models.CashFlowMongo, error) {
 	body := details_models.CashFlowMongo{}
 
-	cursor, err := db.Collection(r.Config.DetailsCollections.BalanceSheet).Aggregate(context.TODO(), filter)
+	cursor, err := db.Collection(r.Config.DetailsCollections.CashFlow).Aggregate(context.TODO(), filter)
+	if err != nil {
+		r.Log.Infof("details_repo :: GetCashFlow :: %s", err)
+		return details_models.CashFlowMongo{}, err
+	}
 
 	for cursor.Next(context.TODO()) {
 		if err = cursor.Decode(&body); err != nil {
 			r.Log.Infof("details_repo :: GetCashFlow :: %s", err)
 			return details_models.CashFlowMongo{}, err
 		}
-		break
-	}
-
-	if err != nil {
-		r.Log.Infof("details_repo :: GetCashFlow :: %s", err)
-		return details_models.CashFlowMongo{}, err
 	}
 
 	return body, nil

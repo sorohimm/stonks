@@ -28,9 +28,8 @@ func Exist(symbol string) interface{} {
 	return bson.M{"_meta.symbol": symbol}
 }
 
-
 func UpdQuote(updDate string, series []qmodels.SessionMongo) interface{} {
-	return bson.M{"_meta.lastRefreshed": updDate, "$push":bson.M{"series":bson.M{"$each": series}}}
+	return bson.M{"_meta.lastRefreshed": updDate, "$push": bson.M{"series": bson.M{"$each": series}}}
 }
 
 func Relevance(symbol string) mongo.Pipeline {
@@ -349,7 +348,7 @@ func Match(symbol string) mongo.Pipeline {
 }
 
 func MatchDetails(symbol string) mongo.Pipeline {
-	return mongo.Pipeline{{{"$match", bson.M{"_meta.symbol": symbol}}}}
+	return mongo.Pipeline{{{"$match", bson.M{"symbol": symbol}}}}
 }
 
 // Details generates a pipeline for a details request

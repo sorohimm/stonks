@@ -52,52 +52,52 @@ type Overview struct {
 }
 
 type OverviewMongo struct {
-	Symbol                     string  `json:"symbol,omitempty"`
-	AssetType                  string  `json:"AssetType,omitempty"`
-	Name                       string  `json:"Name,omitempty"`
-	Description                string  `json:"Description,omitempty"`
-	CIK                        string  `json:"CIK,omitempty"`
-	Exchange                   string  `json:"Exchange,omitempty"`
-	Currency                   string  `json:"Currency,omitempty"`
-	Country                    string  `json:"Country,omitempty"`
-	Sector                     string  `json:"Sector,omitempty"`
-	Industry                   string  `json:"Industry,omitempty"`
-	Address                    string  `json:"Address,omitempty"`
-	FiscalYearEnd              string  `json:"FiscalYearEnd,omitempty"`
-	LatestQuarter              string  `json:"LatestQuarter,omitempty"`
-	MarketCapitalization       float64 `json:"MarketCapitalization,omitempty"`
-	EBITDA                     float64 `json:"EBITDA,omitempty"`
-	PERatio                    float64 `json:"PERatio,omitempty"`
-	PEGRatio                   float64 `json:"PEGRatio,omitempty"`
-	BookValue                  float64 `json:"BookValue,omitempty"`
-	DividendPerShare           float64 `json:"DividendPerShare,omitempty"`
-	DividendYield              float64 `json:"DividendYield,omitempty"`
-	EPS                        float64 `json:"EPS,omitempty"`
-	RevenuePerShareTTM         float64 `json:"RevenuePerShareTTM,omitempty"`
-	ProfitMargin               float64 `json:"ProfitMargin,omitempty"`
-	OperatingMarginTTM         float64 `json:"OperatingMarginTTM,omitempty"`
-	ReturnOnAssetsTTM          float64 `json:"ReturnOnAssetsTTM,omitempty"`
-	ReturnOnEquityTTM          float64 `json:"ReturnOnEquityTTM,omitempty"`
-	RevenueTTM                 float64 `json:"RevenueTTM,omitempty"`
-	GrossProfitTTM             float64 `json:"GrossProfitTTM,omitempty"`
-	DilutedEPSTTM              float64 `json:"DilutedEPSTTM,omitempty"`
-	QuarterlyEarningsGrowthYOY float64 `json:"QuarterlyEarningsGrowthYOY,omitempty"`
-	QuarterlyRevenueGrowthYOY  float64 `json:"QuarterlyRevenueGrowthYOY,omitempty"`
-	AnalystTargetPrice         float64 `json:"AnalystTargetPrice,omitempty"`
-	TrailingPE                 float64 `json:"TrailingPE,omitempty"`
-	ForwardPE                  float64 `json:"ForwardPE,omitempty"`
-	PriceToSalesRatioTTM       float64 `json:"PriceToSalesRatioTTM,omitempty"`
-	PriceToBookRatio           float64 `json:"PriceToBookRatio,omitempty"`
-	EVToRevenue                float64 `json:"EVToRevenue,omitempty"`
-	EVToEBITDA                 float64 `json:"EVToEBITDA,omitempty"`
-	Beta                       float64 `json:"Beta,omitempty"`
-	WeekHigh                   float64 `json:"52WeekHigh,omitempty"`
-	WeekLow                    float64 `json:"52WeekLow,omitempty"`
-	DayMovingAverage           float64 `json:"50DayMovingAverage,omitempty"`
-	DayMovingAverage1          float64 `json:"200DayMovingAverage,omitempty"`
-	SharesOutstanding          float64 `json:"SharesOutstanding,omitempty"`
-	DividendDate               string  `json:"DividendDate,omitempty"`
-	ExDividendDate             string  `json:"ExDividendDate,omitempty"`
+	Symbol                     string  `json:"symbol,omitempty" bson:"symbol,omitempty"`
+	AssetType                  string  `json:"AssetType,omitempty" bson:"AssetType,omitempty"`
+	Name                       string  `json:"Name,omitempty" bson:"Name,omitempty"`
+	Description                string  `json:"Description,omitempty" bson:"Description,omitempty"`
+	CIK                        string  `json:"CIK,omitempty" bson:"CIK,omitempty"`
+	Exchange                   string  `json:"Exchange,omitempty" bson:"Exchange,omitempty"`
+	Currency                   string  `json:"Currency,omitempty" bson:"Currency,omitempty"`
+	Country                    string  `json:"Country,omitempty" bson:"Country,omitempty"`
+	Sector                     string  `json:"Sector,omitempty" bson:"Sector,omitempty"`
+	Industry                   string  `json:"Industry,omitempty" bson:"Industry,omitempty"`
+	Address                    string  `json:"Address,omitempty" bson:"Address,omitempty"`
+	FiscalYearEnd              string  `json:"FiscalYearEnd,omitempty" bson:"FiscalYearEnd,omitempty"`
+	LatestQuarter              string  `json:"LatestQuarter,omitempty" bson:"LatestQuarter,omitempty"`
+	MarketCapitalization       float64 `json:"MarketCapitalization,omitempty" bson:"MarketCapitalization,omitempty"`
+	EBITDA                     float64 `json:"EBITDA,omitempty" bson:"EBITDA,omitempty"`
+	PERatio                    float64 `json:"PERatio,omitempty" bson:"PERatio,omitempty"`
+	PEGRatio                   float64 `json:"PEGRatio,omitempty" bson:"PEGRatio,omitempty"`
+	BookValue                  float64 `json:"BookValue,omitempty" bson:"BookValue,omitempty"`
+	DividendPerShare           float64 `json:"DividendPerShare,omitempty" bson:"DividendPerShare,omitempty"`
+	DividendYield              float64 `json:"DividendYield,omitempty" bson:"DividendYield,omitempty"`
+	EPS                        float64 `json:"EPS,omitempty" bson:"EPS,omitempty"`
+	RevenuePerShareTTM         float64 `json:"RevenuePerShareTTM,omitempty" bson:"RevenuePerShareTTM,omitempty"`
+	ProfitMargin               float64 `json:"ProfitMargin,omitempty" bson:"ProfitMargin,omitempty"`
+	OperatingMarginTTM         float64 `json:"OperatingMarginTTM,omitempty" bson:"OperatingMarginTTM,omitempty"`
+	ReturnOnAssetsTTM          float64 `json:"ReturnOnAssetsTTM,omitempty" bson:"ReturnOnAssetsTTM,omitempty"`
+	ReturnOnEquityTTM          float64 `json:"ReturnOnEquityTTM,omitempty" bson:"ReturnOnEquityTTM,omitempty"`
+	RevenueTTM                 float64 `json:"RevenueTTM,omitempty" bson:"RevenueTTM,omitempty"`
+	GrossProfitTTM             float64 `json:"GrossProfitTTM,omitempty" bson:"GrossProfitTTM,omitempty"`
+	DilutedEPSTTM              float64 `json:"DilutedEPSTTM,omitempty" bson:"DilutedEPSTTM,omitempty"`
+	QuarterlyEarningsGrowthYOY float64 `json:"QuarterlyEarningsGrowthYOY,omitempty" bson:"QuarterlyEarningsGrowthYOY,omitempty"`
+	QuarterlyRevenueGrowthYOY  float64 `json:"QuarterlyRevenueGrowthYOY,omitempty" bson:"QuarterlyRevenueGrowthYOY,omitempty"`
+	AnalystTargetPrice         float64 `json:"AnalystTargetPrice,omitempty" bson:"AnalystTargetPrice,omitempty"`
+	TrailingPE                 float64 `json:"TrailingPE,omitempty" bson:"TrailingPE,omitempty"`
+	ForwardPE                  float64 `json:"ForwardPE,omitempty" bson:"ForwardPE,omitempty"`
+	PriceToSalesRatioTTM       float64 `json:"PriceToSalesRatioTTM,omitempty" bson:"PriceToSalesRatioTTM,omitempty"`
+	PriceToBookRatio           float64 `json:"PriceToBookRatio,omitempty" bson:"PriceToBookRatio,omitempty"`
+	EVToRevenue                float64 `json:"EVToRevenue,omitempty" bson:"EVToRevenue,omitempty"`
+	EVToEBITDA                 float64 `json:"EVToEBITDA,omitempty" bson:"EVToEBITDA,omitempty"`
+	Beta                       float64 `json:"Beta,omitempty" bson:"Beta,omitempty"`
+	WeekHigh                   float64 `json:"52WeekHigh,omitempty" bson:"52WeekHigh,omitempty"`
+	WeekLow                    float64 `json:"52WeekLow,omitempty" bson:"52WeekLow,omitempty"`
+	DayMovingAverage           float64 `json:"50DayMovingAverage,omitempty" bson:"50DayMovingAverage,omitempty"`
+	DayMovingAverage1          float64 `json:"200DayMovingAverage,omitempty" bson:"200DayMovingAverage,omitempty"`
+	SharesOutstanding          float64 `json:"SharesOutstanding,omitempty" bson:"SharesOutstanding,omitempty"`
+	DividendDate               string  `json:"DividendDate,omitempty" bson:"DividendDate,omitempty"`
+	ExDividendDate             string  `json:"ExDividendDate,omitempty" bson:"ExDividendDate,omitempty"`
 }
 
 func (m *OverviewMongo) Set(v Overview) {

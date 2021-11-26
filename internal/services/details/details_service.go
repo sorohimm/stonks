@@ -58,10 +58,6 @@ func (s *CompanyDetailsService) DbDetailsRoutine(database *mongo.Database, filte
 }
 
 func (s *CompanyDetailsService) GetCll(function string) string {
-	//похуй на экосистему
-	//сообщество какое-то
-	//функциональное целое
-	//связи между отдельными ... похуй
 	switch function {
 	case "OVERVIEW":
 		return s.Config.DetailsCollections.Overview

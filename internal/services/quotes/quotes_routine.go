@@ -29,7 +29,7 @@ func (s *QuotesService) GetCll(values url.Values) string {
 			return s.Config.QuotesCollection.Daily
 		case "TIME_SERIES_WEEKLY":
 			return s.Config.QuotesCollection.Weekly
-		case "TIME_SERIES_MONTHL":
+		case "TIME_SERIES_MONTHLY":
 			return s.Config.QuotesCollection.Monthly
 		default:
 			return ""

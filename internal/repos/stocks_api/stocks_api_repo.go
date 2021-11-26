@@ -250,10 +250,7 @@ func (r *StocksApiRepo) GetCashFlow(request *http.Request) (details_models.CashF
 	}
 
 	var res details_models.CashFlowMongo
-	res.Set(body)
-
-	r.Log.Info(body)
-	r.Log.Info(res)
+	res.Set(&body)
 
 	return res, nil
 }

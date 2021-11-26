@@ -72,8 +72,7 @@ type CashFlowReportMongo struct {
 	NetIncome                                                 float64 `json:"netIncome,omitempty" bson:"netIncome"`
 }
 
-func (c *CashFlowReportMongo) Set(v CashFlowReport) {
-
+func (c *CashFlowReportMongo) Set(v *CashFlowReport) {
 	OperatingCashflow, _ := strconv.ParseFloat(v.OperatingCashflow, 64)
 	PaymentsForOperatingActivities, _ := strconv.ParseFloat(v.PaymentsForOperatingActivities, 64)
 	ProceedsFromOperatingActivities, _ := strconv.ParseFloat(v.ProceedsFromOperatingActivities, 64)
@@ -141,11 +140,11 @@ type CashFlowMongo struct {
 	QuarterlyReports []CashFlowReportMongo `json:"quarterly,omitempty" bson:"quarterly,omitempty"`
 }
 
-func (c *CashFlowMongo) Set(v CashFlow) {
+func (c *CashFlowMongo) Set(v *CashFlow) {
 	var annual []CashFlowReportMongo
 	for _, cell := range v.AnnualReports {
 		var NewCFRM CashFlowReportMongo
-		NewCFRM.Set(cell)
+		NewCFRM.Set(&cell)
 
 		annual = append(annual, NewCFRM)
 	}
@@ -153,7 +152,7 @@ func (c *CashFlowMongo) Set(v CashFlow) {
 	var quarterly []CashFlowReportMongo
 	for _, cell := range v.QuarterlyReports {
 		var NewCFRM CashFlowReportMongo
-		NewCFRM.Set(cell)
+		NewCFRM.Set(&cell)
 
 		quarterly = append(quarterly, NewCFRM)
 	}
