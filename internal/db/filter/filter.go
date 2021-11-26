@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/url"
 	"stonks/internal/models"
+	qmodels "stonks/internal/models/quotes"
 )
 
 // CurrentPrice gives the current price for the symbol
@@ -25,6 +26,24 @@ func CurrentPrice(symbol string) mongo.Pipeline {
 // Exist creates a filter that checks if a document with this symbol exists
 func Exist(symbol string) interface{} {
 	return bson.M{"_meta.symbol": symbol}
+}
+
+
+func UpdQuote(updDate string, series []qmodels.SessionMongo) interface{} {
+	return bson.M{"_meta.lastRefreshed": updDate, "$push":bson.M{"series":bson.M{"$each": series}}}
+}
+
+func Relevance(symbol string) mongo.Pipeline {
+	p := mongo.Pipeline{
+		{{"$match", bson.M{"_meta.symbol": symbol}}},
+		{{
+			"$project", bson.M{
+				"lastRefreshed": "$_meta.lastRefreshed",
+			},
+		}},
+	}
+
+	return p
 }
 
 func ExistDetails(symbol string) interface{} {
@@ -325,8 +344,12 @@ func Growth(t models.Timing) mongo.Pipeline {
 	return p
 }
 
-func matchBySymbol(t models.Timing) mongo.Pipeline {
-	return mongo.Pipeline{{{"$match", bson.M{"symbol": t.Get("symbol")}}}}
+func Match(symbol string) mongo.Pipeline {
+	return mongo.Pipeline{{{"$match", bson.M{"_meta.symbol": symbol}}}}
+}
+
+func MatchDetails(symbol string) mongo.Pipeline {
+	return mongo.Pipeline{{{"$match", bson.M{"_meta.symbol": symbol}}}}
 }
 
 // Details generates a pipeline for a details request
@@ -335,7 +358,7 @@ func Details(values url.Values, function string) mongo.Pipeline {
 	t.Set(values)
 
 	if function == "OVERVIEW" {
-		return matchBySymbol(t)
+		return MatchDetails(t.Symbol)
 	}
 
 	if !t.Has("from") && !t.Has("to") && !t.Has("date") {
@@ -350,7 +373,7 @@ func Details(values url.Values, function string) mongo.Pipeline {
 			}
 			return p
 		}
-		return matchBySymbol(t)
+		return MatchDetails(t.Symbol)
 	}
 
 	if t.Has("from") && !t.Has("to") && !t.Has("date") {

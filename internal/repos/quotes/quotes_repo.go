@@ -20,7 +20,7 @@ func (r *QuotesRepo) GetQuotes(db *mongo.Database, coll string, filter interface
 	var body qmodels.TSMongo
 	cursor, err := db.Collection(coll).Aggregate(context.TODO(), filter)
 	if err != nil {
-		r.Log.Infof("quotes repo: GetGrowth: %s", err)
+		r.Log.Infof("quotes repo :: GetGrowth :: %s", err)
 		return nil, err
 	}
 
@@ -32,4 +32,14 @@ func (r *QuotesRepo) GetQuotes(db *mongo.Database, coll string, filter interface
 	}
 
 	return body, nil
+}
+
+func (r *QuotesRepo) Update(db *mongo.Database, coll string, filter interface{}, update interface{}) error {
+	_ ,err := db.Collection(coll).UpdateMany(context.TODO(), filter, update)
+	if err != nil {
+		r.Log.Infof("quotes repo :: Update :: %s", err)
+		return err
+	}
+
+	return nil
 }

@@ -2,7 +2,6 @@ package validate
 
 import (
 	"regexp"
-	"strconv"
 )
 
 func Date(flow ...string) bool {
@@ -16,18 +15,4 @@ func Date(flow ...string) bool {
 	}
 
 	return ok
-}
-
-func Price(flow  ...string) error {
-	var err error
-	for _, s := range flow {
-		if s != "" {
-			_, err = strconv.ParseFloat(s, 32)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
 }

@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"stonks/internal/interfaces/choose_interfaces"
 	choose_models "stonks/internal/models/choose"
-	"stonks/internal/validate"
 )
 
 type ChooseControllers struct {
@@ -42,13 +41,6 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	}
 
 	if request.Min == "" && request.Max == "" {
-		c.Log.Info("choose_controller :: GetChoose :: validation :: invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
-		return
-	}
-
-	err := validate.Price(request.Min, request.Max)
-	if err != nil {
 		c.Log.Info("choose_controller :: GetChoose :: validation :: invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return

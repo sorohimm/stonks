@@ -6,7 +6,7 @@ import (
 )
 
 type SessionMongo struct {
-	Date   string `json:"date,omitempty"`
+	Date   string  `json:"date,omitempty"`
 	Open   float64 `json:"open,omitempty"`
 	High   float64 `json:"high,omitempty"`
 	Low    float64 `json:"low,omitempty"`
@@ -15,10 +15,10 @@ type SessionMongo struct {
 }
 
 type MetaMongo struct {
-	Information   string `json:"information,omitempty"`
-	Symbol        string `json:"symbol,omitempty" bson:"symbol"`
-	LastRefreshed string `json:"last-refreshed,omitempty" `
-	TimeZone      string `json:"time-zone,omitempty" `
+	Information   string `json:"information,omitempty" bson:"information,omitempty"`
+	Symbol        string `json:"symbol,omitempty" bson:"symbol,omitempty"`
+	LastRefreshed string `json:"lastRefreshed,omitempty" bson:"lastRefreshed,omitempty"`
+	TimeZone      string `json:"timeZone,omitempty" bson:"timeZone,omitempty"`
 }
 
 type TSMongo struct {
