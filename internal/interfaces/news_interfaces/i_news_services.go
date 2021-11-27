@@ -8,4 +8,3 @@ import (
 type INewsService interface {
 	GetNews(url.Values) (nm.News, error)
 }
-

@@ -11,11 +11,11 @@ import (
 	"stonks/internal/controllers/market/quotes"
 	"stonks/internal/interfaces/db_interfaces"
 	aggregate_repo "stonks/internal/repos/aggregate"
-	"stonks/internal/repos/stocks_api"
 	choose_repo "stonks/internal/repos/choose"
 	db_repo "stonks/internal/repos/db"
 	"stonks/internal/repos/details"
 	"stonks/internal/repos/growth"
+	"stonks/internal/repos/stocks_api"
 	aggregate_services "stonks/internal/services/aggregate"
 
 	"stonks/internal/services/choose"

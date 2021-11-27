@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"stonks/internal/interfaces/details_interfaces"
 	"stonks/internal/models/company_details"
-	"stonks/internal/validate"
 )
 
 type CompanyDetailsControllers struct {
@@ -24,19 +23,10 @@ func (c *CompanyDetailsControllers) GetCompanyDetails(ctx *gin.Context) {
 		Function: values.Get("function"),
 		From:     values.Get("from"),
 		To:       values.Get("to"),
-		Min:      values.Get("min"),
-		Max:      values.Get("max"),
 		Interval: values.Get("timing"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("details_controller :: GetCompanyDetails :: validation :: invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
-		return
-	}
-
-	ok := validate.Date(request.From, request.To)
-	if !ok {
 		c.Log.Info("details_controller :: GetCompanyDetails :: validation :: invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return

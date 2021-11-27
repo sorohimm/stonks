@@ -81,34 +81,34 @@ func (s *CompanyDetailsService) GetCompanyDetails(values url.Values) (interface{
 	f := filter.Details(values, values.Get("function"))
 	s.Log.Info(f)
 	if db.IsDocExist(database, s.GetCll(values.Get("function")), filter.ExistDetails(values.Get("symbol"))) {
-		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
+		res, err = s.DbDetailsRoutine(database, f, values.Get("function"))
 		return res, nil
 	}
-		request := s.BuildRequest(values)
-		switch values.Get("function") {
-		case "OVERVIEW":
-			res, err = s.StocksApiRepo.GetOverview(request)
-		case "EARNINGS":
-			res, err = s.StocksApiRepo.GetEarnings(request)
-		case "INCOME_STATEMENT":
-			res, err = s.StocksApiRepo.GetIncomeStatement(request)
-		case "BALANCE_SHEET":
-			res, err = s.StocksApiRepo.GetBalanceSheet(request)
-		case "CASH_FLOW":
-			res, err = s.StocksApiRepo.GetCashFlow(request)
-		}
-		if err != nil {
-			s.Log.Error("details_service :: GetCompanyDetails :: cart error")
-			return nil, err
-		}
+	request := s.BuildRequest(values)
+	switch values.Get("function") {
+	case "OVERVIEW":
+		res, err = s.StocksApiRepo.GetOverview(request)
+	case "EARNINGS":
+		res, err = s.StocksApiRepo.GetEarnings(request)
+	case "INCOME_STATEMENT":
+		res, err = s.StocksApiRepo.GetIncomeStatement(request)
+	case "BALANCE_SHEET":
+		res, err = s.StocksApiRepo.GetBalanceSheet(request)
+	case "CASH_FLOW":
+		res, err = s.StocksApiRepo.GetCashFlow(request)
+	}
+	if err != nil {
+		s.Log.Error("details_service :: GetCompanyDetails :: cart error")
+		return nil, err
+	}
 
-		_, err = s.DetailsRepo.InsertCompanyDetails(s.GetCll(values.Get("function")), database, res)
+	_, err = s.DetailsRepo.InsertCompanyDetails(s.GetCll(values.Get("function")), database, res)
 
-		res, err =  s.DbDetailsRoutine(database, f, values.Get("function"))
-		if err != nil {
-			s.Log.Error("details_service :: GetCompanyDetails :: cart error")
-			return nil, err
-		}
+	res, err = s.DbDetailsRoutine(database, f, values.Get("function"))
+	if err != nil {
+		s.Log.Error("details_service :: GetCompanyDetails :: cart error")
+		return nil, err
+	}
 
-		return res, nil
+	return res, nil
 }

@@ -12,9 +12,9 @@ import (
 )
 
 type NewsService struct {
-	Log         *zap.SugaredLogger
-	NewsRepo    news_interface.INewsRepo
-	Config      *config.Config
+	Log      *zap.SugaredLogger
+	NewsRepo news_interface.INewsRepo
+	Config   *config.Config
 }
 
 func (s *NewsService) GetNews(queryParams url.Values) (news_models.News, error) {
