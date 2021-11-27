@@ -50,14 +50,14 @@ func ExistDetails(symbol string) interface{} {
 }
 
 // Choose generates a pipeline for a choose request
-func Choose(values url.Values) interface{} {
+func Choose(values url.Values) mongo.Pipeline {
 	var t models.ChooseTag
 	t.Set(values)
 
-	switch values.Get("by") {
-	case "price":
+	switch values.Get("function") {
+	case "PRICE":
 		return price(t)
-	case "pe":
+	case "PE":
 		return pe(t)
 	default:
 		return nil
@@ -115,11 +115,11 @@ func price(t models.ChooseTag) mongo.Pipeline {
 func pe(t models.ChooseTag) mongo.Pipeline {
 	if t.Has("min") && t.Has("max") {
 		p := mongo.Pipeline{
-			{{"$match", bson.M{"trailingpe": bson.M{"$gte": t.Get("min"), "$lte": t.Get("max")}}}},
+			{{"$match", bson.M{"TrailingPE": bson.M{"$gte": t.Get("min"), "$lte": t.Get("max")}}}},
 			{{
 				"$project", bson.M{
 					"symbol": "$symbol",
-					"pe":     "$trailingpe",
+					"pe":     "$TrailingPE",
 				},
 			}},
 		}
@@ -129,11 +129,11 @@ func pe(t models.ChooseTag) mongo.Pipeline {
 
 	if t.Has("min") && !t.Has("max") {
 		p := mongo.Pipeline{
-			{{"$match", bson.M{"trailingpe": bson.M{"$gte": t.Get("min")}}}},
+			{{"$match", bson.M{"TrailingPE": bson.M{"$gte": t.Get("min")}}}},
 			{{
 				"$project", bson.M{
 					"symbol": "$symbol",
-					"pe":     "$trailingpe",
+					"pe":     "$TrailingPE",
 				},
 			}},
 		}

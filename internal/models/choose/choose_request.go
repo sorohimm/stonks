@@ -5,5 +5,5 @@ type Request struct {
 	Min      string `json:"min" validate:"omitempty,numeric"`
 	Max      string `json:"max" validate:"omitempty,numeric"`
 	Point    string `json:"point" validate:"required_if=Function PRICE"`
-	Interval string `json:"interval" validate:"omitempty,oneof= daily weekly monthly"`
+	Interval string `json:"interval" validate:"omitempty,oneof=daily weekly monthly"`
 }

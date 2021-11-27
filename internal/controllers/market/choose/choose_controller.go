@@ -33,7 +33,7 @@ func (c *ChooseControllers) GetChoose(ctx *gin.Context) {
 	}
 
 	if request.Function == "PRICE" {
-		if request.Point != "open" || request.Point != "high" || request.Point != "low" || request.Point != "close" {
+		if request.Point != "open" && request.Point != "high" && request.Point != "low" && request.Point != "close" {
 			c.Log.Info("choose_controller :: GetChoose :: validation :: invalid request")
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 			return

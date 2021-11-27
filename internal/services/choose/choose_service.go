@@ -7,9 +7,9 @@ import (
 	"stonks/internal/config"
 	m_const "stonks/internal/constants/market"
 	"stonks/internal/db/filter"
-	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/interfaces/choose_interfaces"
 	"stonks/internal/interfaces/db_interfaces"
+	"stonks/internal/interfaces/stocks_api_interfaces"
 )
 
 type ChooseService struct {
@@ -33,7 +33,7 @@ func (s *ChooseService) BuildRequest(values url.Values) *http.Request {
 	return request
 }
 
-func getColl(values url.Values) string {
+func GetCll(values url.Values) string {
 	switch values.Get("interval") {
 	case "daily":
 		return "DailySeries"
@@ -56,7 +56,7 @@ func (s *ChooseService) GetChoose(values url.Values) (interface{}, error) {
 	//TODO add forecast choose
 	switch values.Get("function") {
 	case "PRICE":
-		response, err = s.ChooseRepo.ChooseByPrice(database, getColl(values), pipe)
+		response, err = s.ChooseRepo.ChooseByPrice(database, GetCll(values), pipe)
 	case "PE":
 		response, err = s.ChooseRepo.ChooseByPE(database, pipe)
 	}
