@@ -1,34 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"os"
-	"regexp"
 	"stonks/internal/config"
 	"stonks/internal/infrastructure"
 )
 
 var (
 	cfg *config.Config
+	ctx context.Context
 	log *zap.SugaredLogger
 )
-
-const projectDirName = "stonks"
-
-func loadEnv() {
-	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)
-	currentWorkDirectory, _ := os.Getwd()
-	rootPath := projectName.Find([]byte(currentWorkDirectory))
-
-	err := godotenv.Load(string(rootPath) + `/configs/config.env`)
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-}
 
 func init() {
 	logger, err := zap.NewDevelopment()
@@ -40,23 +26,45 @@ func init() {
 
 	log = logger.Sugar()
 
-	loadEnv()
-
 	cfg = config.New()
-
+	if err != nil {
+		log.Fatalf("config init error: %s", err)
+	}
 	log.Infof("Config loaded:\n%+v", cfg)
 }
 
 func main() {
-	injector, _ := infrastructure.Injector(log, cfg)
+	injector, err := infrastructure.Injector(log, ctx, cfg)
+	if err != nil {
+		log.Fatal("main :: inject failing")
+	}
 	newsController := injector.InjectNewsController()
+	detailsController := injector.InjectDetailsController()
+	quotesController := injector.InjectQuotesController()
+	growthController := injector.InjectGrowthController()
+	chooseController := injector.InjectChooseController()
+	aggregateRepo := injector.InjectAggregateController()
 
 	router := gin.Default()
 
+	//and financial statements in various temporal dimensions covering key financial metrics, earnings,
+	//income statements, balance sheets, cash flow.
 	v1 := router.Group("/stonks/v1")
 	{
 		v1.GET("/news", newsController.GetNews)
+		v1.GET("/details/earnings", detailsController.GetEarnings)
+		v1.GET("/details/cash_flow", detailsController.GetCashFlow)
+		v1.GET("/details/overview", detailsController.GetOverview)
+		v1.GET("/details/income_statement", detailsController.GetIncomeStatement)
+		v1.GET("/details/balance_sheet", detailsController.GetBalanceSheet)
+		v1.GET("/quotes", quotesController.GetQuotes)
+		v1.GET("/growth", growthController.GetGrowth)
+		v1.GET("/choose", chooseController.GetChoose)
+		v1.GET("/aggregate", aggregateRepo.GetAggregate)
 	}
 
-	router.Run()
+	err = router.Run()
+	if err != nil {
+		log.Fatal("main :: router start error")
+	}
 }
