@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"stonks/internal/interfaces/growth_interfaces"
 	"stonks/internal/models/growth"
-	"stonks/internal/validate"
 )
 
 type GrowthControllers struct {
@@ -26,13 +25,6 @@ func (c *GrowthControllers) GetGrowth(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("growth_controller :: GetGrowth :: validation :: invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
-		return
-	}
-
-	ok := validate.Date(request.From, request.To)
-	if !ok {
 		c.Log.Info("growth_controller :: GetGrowth :: validation :: invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return

@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"stonks/internal/interfaces/quotes_interfaces"
 	"stonks/internal/models/quotes"
-	"stonks/internal/validate"
 )
 
 type QuotesControllers struct {
@@ -16,6 +15,10 @@ type QuotesControllers struct {
 	Validator     *validator.Validate
 }
 
+// GetQuotes provide global equity data in 4 different temporal resolutions: daily, weekly, monthly, and intraday.
+//
+//TIME_SERIES_DAILY function returns raw(as-traded) daily time series (date, daily open, daily high, daily low,
+//daily close, daily volume) of the global equity specified, covering 20+ years of historical data.
 func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
@@ -30,13 +33,6 @@ func (c *QuotesControllers) GetQuotes(ctx *gin.Context) {
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
-		c.Log.Info("quotes_controller :: GetQuotes :: validation :: invalid request")
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
-		return
-	}
-
-	ok := validate.Date(request.From, request.To, request.Date)
-	if !ok {
 		c.Log.Info("quotes_controller :: GetQuotes :: validation :: invalid request")
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Bad request :/"})
 		return

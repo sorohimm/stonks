@@ -47,7 +47,7 @@ type IncomeStatementMongo struct {
 type IncomeStatementReportsMongo struct {
 	FiscalDateEnding                  string  `json:"fiscalDateEnding,omitempty"                  bson:"fiscalDateEnding,omitempty"`
 	ReportedCurrency                  string  `json:"reportedCurrency,omitempty"                  bson:"reportedCurrency,omitempty"`
-	GrossProfit                       float64 `json:"grossProfit"                       bson:"grossProfit,omitempty"`
+	GrossProfit                       float64 `json:"grossProfit"                                 bson:"grossProfit,omitempty"`
 	TotalRevenue                      float64 `json:"totalRevenue,omitempty"                      bson:"totalRevenue,omitempty"`
 	CostOfRevenue                     float64 `json:"costOfRevenue,omitempty"                     bson:"costOfRevenue,omitempty"`
 	CostofGoodsAndServicesSold        float64 `json:"costofGoodsAndServicesSold,omitempty"        bson:"costofGoodsAndServicesSold,omitempty"`
