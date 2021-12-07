@@ -12,7 +12,7 @@ services:
       - ../configs/details_collections.env
       - ../configs/quotes_collections.env
     ports:
-      - ${APPLICATION_PORT}:8080
+      - ${APPLICATION_PORT:-8080}:8080
     networks:
       - network
     restart: always
@@ -24,13 +24,13 @@ services:
     env_file:
       - ../configs/config.env
     ports:
-      - ${MONGODB_PORT}:27017
+      - ${MONGODB_PORT:-27017}:27017
     networks:
       - network
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER:-dcoadmin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-admin}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE:-jupiter}
     volumes:
       - ../assets/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
     healthcheck:
@@ -44,7 +44,7 @@ services:
     container_name: db-adminer
     restart: always
     ports:
-      - ${ADMINER_PORT}:8080
+      - ${ADMINER_PORT:-17860}:8080
     networks:
       - network
     depends_on:

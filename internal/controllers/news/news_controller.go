@@ -1,10 +1,12 @@
 package news_controller
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
-	"net/http"
 
 	"stonks/internal/interfaces/news_interfaces"
 	"stonks/internal/models/news"
@@ -19,13 +21,16 @@ type NewsControllers struct {
 func (c *NewsControllers) GetNews(ctx *gin.Context) {
 	parameters := ctx.Request.URL.Query()
 
+	from := strings.Replace(parameters.Get("from"), "-", "/", -1)
+	to := strings.Replace(parameters.Get("to"), "-", "/", -1)
+
 	request := news_models.Request{
 		Company:  parameters.Get("q"),
 		SortBy:   parameters.Get("sort_by"),
 		Page:     parameters.Get("page"),
 		PageSize: parameters.Get("page_size"),
-		From:     parameters.Get("from"),
-		To:       parameters.Get("to"),
+		From:     from,
+		To:       to,
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
@@ -34,6 +39,9 @@ func (c *NewsControllers) GetNews(ctx *gin.Context) {
 		return
 	}
 
+	parameters.Set("from", from)
+	parameters.Set("to", to)
+	
 	resp, err := c.NewsService.GetNews(parameters)
 	if err != nil {
 		c.Log.Error("news_controller :: GetNews :: unknown server error")

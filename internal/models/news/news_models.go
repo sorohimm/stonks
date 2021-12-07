@@ -17,10 +17,10 @@ type News struct {
 }
 
 type Request struct {
-	Company  string `validate:"required"`
-	SortBy   string `validate:"omitempty,oneof=relevancy date rank"`
-	Page     string `validate:"omitempty,numeric,min=1,max=100"`
-	PageSize string `validate:"omitempty,numeric,min=1,max=100"`
-	From     string `validate:"datetime"`
-	To       string `validate:"datetime"`
+	Company  string `json:"q" validate:"required"`
+	SortBy   string `json:"sort_by" validate:"omitempty,oneof=relevancy date rank"`
+	Page     string `json:"page" validate:"omitempty,numeric,min=1,max=100"`
+	PageSize string `json:"page_size" validate:"omitempty,numeric,min=1,max=100"`
+	From     string `json:"from" validate:"datetime=2006-01-02"`
+	To       string `json:"to" validate:"datetime=2006-01-02"`
 }

@@ -2,7 +2,7 @@ package aggregate_models
 
 type Ticker struct {
 	Symbol      string  `json:"symbol,omitempty"`
-	Coefficient float64 `json:"coefficient,omitempty" json:"coefficient,omitempty"`
+	Coefficient float64 `json:"c,omitempty"`
 }
 
 type Request struct {
