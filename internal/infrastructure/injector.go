@@ -55,6 +55,7 @@ func (e *environment) InjectNewsController() news_controller.NewsControllers {
 		NewsService: &news_service.NewsService{
 			Log: e.logger,
 			NewsRepo: &news_repo.NewsRepo{
+				Log: e.logger,
 				Client: http.DefaultClient,
 			},
 			Config: e.cfg,

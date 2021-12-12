@@ -9,7 +9,7 @@ import (
 func (c *CompanyDetailsControllers) GetIncomeStatement(ctx *gin.Context) {
 	values := ctx.Request.URL.Query()
 
-	request := details_models.DetailsRequest{
+	request := details_models.DetailsRequest {
 		Symbol:   values.Get("symbol"),
 		From:     values.Get("from"),
 		To:       values.Get("to"),

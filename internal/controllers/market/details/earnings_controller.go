@@ -13,7 +13,7 @@ func (c *CompanyDetailsControllers) GetEarnings(ctx *gin.Context) {
 		Symbol:   values.Get("symbol"),
 		From:     values.Get("from"),
 		To:       values.Get("to"),
-		Interval: values.Get("timing"),
+		Interval: values.Get("interval"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {

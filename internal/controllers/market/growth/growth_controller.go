@@ -32,8 +32,8 @@ func (c *GrowthControllers) GetGrowth(ctx *gin.Context) {
 
 	resp, err := c.GrowthService.GetGrowth(values)
 	if err != nil {
-		c.Log.Info("growth_controller :: GetGrowth :: unknown server error")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong :("})
+		c.Log.Infof("growth_controller :: GetGrowth :: server :: %s", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
