@@ -5,7 +5,7 @@
 
 ## Run the app
 
-    sh assets/run.sh
+    make run
 
 ## Links
 * [swagger doc](https://app.swaggerhub.com/apis/sorohimm/stonks/1.0.0)
