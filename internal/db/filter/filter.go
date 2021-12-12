@@ -279,7 +279,7 @@ func Growth(t models.Timing) mongo.Pipeline {
 		p := mongo.Pipeline{
 			{{"$match", bson.M{"_meta.symbol": t.Get("symbol")}}},
 			{{"$project", bson.M{
-				"_meta": "$_meta",
+				"symbol": "$_meta.symbol",
 				"begin": bson.M{
 					"$filter": bson.M{
 						"input": "$series",
@@ -305,7 +305,7 @@ func Growth(t models.Timing) mongo.Pipeline {
 			},
 			}},
 			{{"$project", bson.M{
-				"_meta": "$_meta",
+				"symbol": "$symbol",
 				"begin": bson.M{"$first": "$begin"},
 				"end":   bson.M{"$first": "$end"},
 			},
@@ -317,14 +317,14 @@ func Growth(t models.Timing) mongo.Pipeline {
 	p := mongo.Pipeline{
 		{{"$match", bson.M{"_meta.symbol": t.Get("symbol")}}},
 		{{"$project", bson.M{
-			"_meta": "$_meta",
+			"symbol": "$_meta.symbol",
 			"begin": bson.M{
 				"$filter": bson.M{
 					"input": "$series",
 					"as":    "a",
 					"cond": bson.M{
 						"$eq": bson.A{
-							"$$a.date", t.Get("from"),
+							"$$a.date", t.From,
 						},
 					},
 				},
@@ -333,7 +333,7 @@ func Growth(t models.Timing) mongo.Pipeline {
 		},
 		}},
 		{{"$project", bson.M{
-			"_meta": "$_meta",
+			"symbol": "$symbol",
 			"begin": bson.M{"$first": "$begin"},
 			"end":   "$end",
 		},

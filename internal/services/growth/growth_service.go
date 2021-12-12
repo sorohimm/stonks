@@ -1,7 +1,7 @@
 package growth_services
 
 import (
-	"fmt"
+	"errors"
 	"go.uber.org/zap"
 	"net/http"
 	"net/url"
@@ -14,7 +14,6 @@ import (
 	"stonks/internal/interfaces/stocks_api_interfaces"
 	"stonks/internal/models"
 	gmodels "stonks/internal/models/growth"
-	"strconv"
 )
 
 type GrowthService struct {
@@ -26,18 +25,15 @@ type GrowthService struct {
 	DbRepo        db_interfaces.IDbRepo
 }
 
-func growthPercent(begin string, end string) string {
-	bf, _ := strconv.ParseFloat(begin, 32)
-	ef, _ := strconv.ParseFloat(end, 32)
-	percent := (ef/bf)*100 - 100
-	return fmt.Sprintf("%.3f%s", percent, " %")
+func GrowthPercent(begin float64, end float64) float64 {
+	return (end / begin) * 100 - 100
 }
 
 func CalculateGrowth(v *gmodels.Response) {
-	v.Growth.OpenGrowth = growthPercent(v.Begin.Open, v.End.Open)
-	v.Growth.HighGrowth = growthPercent(v.Begin.High, v.End.High)
-	v.Growth.LowGrowth = growthPercent(v.Begin.Low, v.End.Low)
-	v.Growth.CloseGrowth = growthPercent(v.Begin.Close, v.End.Close)
+	v.Growth.OpenGrowth = GrowthPercent(v.Begin.Open, v.End.Open)
+	v.Growth.HighGrowth = GrowthPercent(v.Begin.High, v.End.High)
+	v.Growth.LowGrowth = GrowthPercent(v.Begin.Low, v.End.Low)
+	v.Growth.CloseGrowth = GrowthPercent(v.Begin.Close, v.End.Close)
 }
 
 func (s *GrowthService) BuildRequest(values url.Values) *http.Request {
@@ -59,33 +55,46 @@ func (s *GrowthService) GetGrowth(values url.Values) (interface{}, error) {
 
 	var pipe = filter.Growth(t)
 
-	if db.IsDocExist(database, "DailySeries", filter.Exist(t.Get("symbol"))) {
-		response, err := s.GrowthRepo.GetGrowth(database, "DailySeries", pipe)
+	if db.IsDocExist(database, s.Config.QuotesCollection.Daily, filter.Exist(t.Get("symbol"))) {
+		response, err := s.GrowthRepo.GetGrowth(database, s.Config.QuotesCollection.Daily, pipe)
 		if err != nil {
-			s.Log.Infof("quotes_service :: dbroutine error")
+			s.Log.Info("growth_service :: GetGrowth :: dbroutine error")
 			return nil, err
 		}
+
+		if response.Empty() {
+			s.Log.Info("growth_service :: GetGrowth :: no suitable data")
+			return nil, errors.New("there is no suitable data")
+		}
+
 		CalculateGrowth(&response)
 		return response, nil
 	} else {
 		request := s.BuildRequest(values)
 		apiResponse, err := s.QuotesApiRepo.GetDailyQuotes(request)
 		if err != nil {
-			s.Log.Infof("growth_service :: dbroutine error")
+			s.Log.Infof("growth_service :: GetGrowth :: api error")
 			return nil, err
 		}
 
-		_, err = s.DbRepo.InsertOne(database, "DailySeries", apiResponse)
+		_, err = s.DbRepo.InsertOne(database, s.Config.QuotesCollection.Daily, apiResponse)
 		if err != nil {
-			s.Log.Errorf("quotes repo: InsertQuotes insertion error: %s", err)
+			s.Log.Errorf("quotes repo :: GetGrowth :: InsertQuotes insertion error: %s", err)
 			return nil, err
 		}
 
-		response, err := s.GrowthRepo.GetGrowth(database, "DailySeries", pipe)
+		response, err := s.GrowthRepo.GetGrowth(database, s.Config.QuotesCollection.Daily, pipe)
 		if err != nil {
-			s.Log.Infof("growth_service :: dbroutine error")
+			s.Log.Infof("growth_service :: GetGrowth :: dbroutine error")
 			return nil, err
 		}
+
+		if response.Empty() {
+			s.Log.Info("growth_service :: GetGrowth :: no suitable data")
+			return nil, errors.New("there is no suitable data")
+		}
+
+		CalculateGrowth(&response)
 		return response, nil
 	}
 }

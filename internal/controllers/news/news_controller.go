@@ -29,8 +29,8 @@ func (c *NewsControllers) GetNews(ctx *gin.Context) {
 		SortBy:   parameters.Get("sort_by"),
 		Page:     parameters.Get("page"),
 		PageSize: parameters.Get("page_size"),
-		From:     from,
-		To:       to,
+		From:     parameters.Get("from"),
+		To:       parameters.Get("to"),
 	}
 
 	if err := c.Validator.Struct(request); err != nil {
@@ -41,7 +41,7 @@ func (c *NewsControllers) GetNews(ctx *gin.Context) {
 
 	parameters.Set("from", from)
 	parameters.Set("to", to)
-	
+
 	resp, err := c.NewsService.GetNews(parameters)
 	if err != nil {
 		c.Log.Error("news_controller :: GetNews :: unknown server error")
