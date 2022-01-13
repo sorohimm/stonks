@@ -5,7 +5,7 @@
 
 ## Run the app
 
-    The API is launched with a single command: make run
+    The API is launched with a single command: **make run**
     But for this you will need to install Docker on the device
 
 ## Links
