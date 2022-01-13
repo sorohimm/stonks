@@ -5,7 +5,8 @@
 
 ## Run the app
 
-    make run
+    The API is launched with a single command: make run
+    But for this you will need to install Docker on the device
 
 ## Links
 * [swagger doc](https://app.swaggerhub.com/apis/sorohimm/stonks/1.0.0)
